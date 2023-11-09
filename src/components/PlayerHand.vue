@@ -27,6 +27,7 @@ export default {
             } else {
                 this.selectedDomino = domino;
             }
+            this.$emit('on-selected-domino', this.selectedDomino);
         }
     }
 }

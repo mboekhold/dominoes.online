@@ -1,7 +1,7 @@
 <template>
     <div>
-        <Board />
-        <Player :hand="playerHand" />
+        <Board :playedDominos="playedDominos" :selectedDomino="selectedDomino" @on-play-selected-domino="playSelectedDomino" />
+        <Player :hand="playerHand" @on-selected-domino="onSelectedDomino" />
     </div>
 </template>
 <script>
@@ -25,7 +25,7 @@ export default {
             ],
             playedDominos: [],
             playerHand: [],
-            selectedDomino: null,
+            selectedDomino: null
         }
     },
     methods: {
@@ -39,6 +39,14 @@ export default {
             for (let i = 0; i < 7; i++) {
                 this.playerHand.push(this.dominoSet.pop());
             }
+        },
+        onSelectedDomino(domino) {
+            this.selectedDomino = domino;
+        },
+        playSelectedDomino(domino) {
+            this.playedDominos.push(domino);
+            this.playerHand = this.playerHand.filter(d => d !== domino);
+            this.selectedDomino = null;
         }
     },
     mounted() {

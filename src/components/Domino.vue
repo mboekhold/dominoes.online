@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="domino hover:bottom-2" :class="{'bottom-2' : selected}">
+        <div v-if="!placeHorizontal" class="hover:bottom-2 domino-vertical" :class="{'bottom-2' : selected}">
             <div class="h-full relative">
                 <template v-if="topDots === 1">
                     <div class="dot center"></div>
@@ -73,6 +73,79 @@
                 </template>
             </div>
         </div>
+        <div v-if="placeHorizontal" class="domino-horizontal">
+            <div class="h-full w-full relative">
+                <template v-if="topDots === 1">
+                    <div class="dot center"></div>
+                </template>
+                <template v-if="topDots === 2">
+                    <div class="dot top-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="topDots === 3">
+                    <div class="dot top-left"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="topDots === 4">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="topDots === 5">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="topDots === 6">
+                    <div class="dot top-left"></div>
+                    <div class="dot center-left"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot center-right"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+            </div>
+            <div class="w-px bg-gray-200 border-0 dark:bg-gray-700"></div>
+            <div class="h-full w-full relative">
+                <template v-if="bottomDots === 1">
+                    <div class="dot center"></div>
+                </template>
+                <template v-if="bottomDots === 2">
+                    <div class="dot top-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="bottomDots === 3">
+                    <div class="dot top-left"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="bottomDots === 4">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="bottomDots === 5">
+                    <div class="dot top-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot center"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+                <template v-if="bottomDots === 6">
+                    <div class="dot top-left"></div>
+                    <div class="dot center-left"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot top-right"></div>
+                    <div class="dot center-right"></div>
+                    <div class="dot bottom-right"></div>
+                </template>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -96,11 +169,6 @@ export default {
             type: Boolean,
             required: false,
             default: false
-        }
-    },
-    watch: {
-        selected: function (newVal, oldVal) {
-            console.log(newVal);
         }
     }
 }
@@ -156,7 +224,10 @@ export default {
     bottom: 10%;
     right: 10%;
 }
-.domino {
+.domino-vertical {
     @apply bg-white rounded-lg border border-black h-24 w-14 px-1 flex justify-between flex-col relative cursor-pointer;
+}
+.domino-horizontal {
+    @apply bg-white rounded-lg border border-black h-14 w-24 py-1 flex justify-between flex-row relative cursor-pointer;
 }
 </style>

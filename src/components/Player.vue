@@ -1,6 +1,6 @@
 <template>
     <div>
-        <PlayerHand :hand="hand" />
+        <PlayerHand :hand="hand" @on-selected-domino="selectedDomino" />
     </div>
 </template>
 <script>
@@ -14,6 +14,15 @@ export default {
             type: Array,
             required: true
         },
+    },
+    data() {
+        return {
+        }
+    },
+    methods: {
+        selectedDomino(domino) {
+            this.$emit('on-selected-domino', domino);
+        }
     }
 }
 </script>
