@@ -1,33 +1,33 @@
 <template>
     <div>
-        <div v-if="!placeHorizontal" class="hover:bottom-2 domino-vertical" :class="{'bottom-2' : selected}">
+        <div v-if="!placeHorizontal" class="domino-vertical" :class="{'bottom-2' : selected}">
             <div class="h-full relative">
-                <template v-if="topDots === 1">
+                <template v-if="domino.top === 1">
                     <div class="dot center"></div>
                 </template>
-                <template v-if="topDots === 2">
+                <template v-if="domino.top === 2">
                     <div class="dot top-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 3">
+                <template v-if="domino.top === 3">
                     <div class="dot top-left"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 4">
+                <template v-if="domino.top === 4">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 5">
+                <template v-if="domino.top === 5">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 6">
+                <template v-if="domino.top === 6">
                     <div class="dot top-left"></div>
                     <div class="dot center-left"></div>
                     <div class="dot bottom-left"></div>
@@ -36,34 +36,34 @@
                     <div class="dot bottom-right"></div>
                 </template>
             </div>
-            <div class="h-px bg-gray-200 border-0 dark:bg-gray-700"></div>
+            <div class="h-px bg-gray-600 border-0 dark:bg-gray-700"></div>
             <div class="h-full relative">
-                <template v-if="bottomDots === 1">
+                <template v-if="domino.bottom === 1">
                     <div class="dot center"></div>
                 </template>
-                <template v-if="bottomDots === 2">
+                <template v-if="domino.bottom === 2">
                     <div class="dot top-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 3">
+                <template v-if="domino.bottom === 3">
                     <div class="dot top-left"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 4">
+                <template v-if="domino.bottom === 4">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 5">
+                <template v-if="domino.bottom === 5">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 6">
+                <template v-if="domino.bottom === 6">
                     <div class="dot top-left"></div>
                     <div class="dot center-left"></div>
                     <div class="dot bottom-left"></div>
@@ -75,32 +75,32 @@
         </div>
         <div v-if="placeHorizontal" class="domino-horizontal">
             <div class="h-full w-full relative">
-                <template v-if="topDots === 1">
+                <template v-if="domino.top === 1">
                     <div class="dot center"></div>
                 </template>
-                <template v-if="topDots === 2">
+                <template v-if="domino.top === 2">
                     <div class="dot top-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 3">
+                <template v-if="domino.top === 3">
                     <div class="dot top-left"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 4">
+                <template v-if="domino.top === 4">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 5">
+                <template v-if="domino.top === 5">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="topDots === 6">
+                <template v-if="domino.top === 6">
                     <div class="dot top-left"></div>
                     <div class="dot center-left"></div>
                     <div class="dot bottom-left"></div>
@@ -111,37 +111,37 @@
             </div>
             <div class="w-px bg-gray-200 border-0 dark:bg-gray-700"></div>
             <div class="h-full w-full relative">
-                <template v-if="bottomDots === 1">
+                <template v-if="domino.bottom === 1">
                     <div class="dot center"></div>
                 </template>
-                <template v-if="bottomDots === 2">
+                <template v-if="domino.bottom === 2">
                     <div class="dot top-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 3">
+                <template v-if="domino.bottom === 3">
                     <div class="dot top-left"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 4">
+                <template v-if="domino.bottom === 4">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 5">
+                <template v-if="domino.bottom === 5">
                     <div class="dot top-left"></div>
                     <div class="dot top-right"></div>
                     <div class="dot center"></div>
                     <div class="dot bottom-left"></div>
                     <div class="dot bottom-right"></div>
                 </template>
-                <template v-if="bottomDots === 6">
+                <template v-if="domino.bottom === 6">
                     <div class="dot top-left"></div>
-                    <div class="dot center-left"></div>
-                    <div class="dot bottom-left"></div>
+                    <div class="dot top-center"></div>
                     <div class="dot top-right"></div>
-                    <div class="dot center-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
             </div>
@@ -152,12 +152,8 @@
 <script>
 export default {
     props: {
-        topDots: {
-            type: Number,
-            required: true
-        },
-        bottomDots: {
-            type: Number,
+        domino: {
+            type: Object,
             required: true
         },
         placeHorizontal: {
@@ -223,6 +219,17 @@ export default {
     position: absolute;
     bottom: 10%;
     right: 10%;
+}
+
+.top-center {
+    position: absolute;
+    top: 10%;
+    left: 39%;
+}
+.bottom-center {
+    position: absolute;
+    bottom: 10%;
+    left: 39%;
 }
 .domino-vertical {
     @apply bg-white rounded-lg border border-black h-24 w-14 px-1 flex justify-between flex-col relative cursor-pointer;

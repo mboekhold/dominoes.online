@@ -1,7 +1,7 @@
 <template>
     <div class="player-hand">
         <div v-for="domino in hand" @click="selectDomino(domino)">
-            <Domino :selected="selectedDomino === domino" :topDots="domino.top" :bottomDots="domino.bottom" />
+            <Domino :selected="selectedDomino === domino" :domino="domino" />
         </div>
     </div>
 </template>

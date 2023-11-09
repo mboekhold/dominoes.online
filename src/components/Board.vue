@@ -1,10 +1,10 @@
 <template>
   <div class="h-screen w-screen flex items-center justify-center">
     <div v-for="domino in playedDominos">
-        <Domino :topDots="domino.top" :bottomDots="domino.bottom" :placeHorizontal="!isDouble(domino)" />
+        <Domino :domino="domino" :placeHorizontal="!isDouble(domino)" />
     </div>
     <div class="flex">
-        <div v-if="selectedDomino" :class="{'domino-placeholder-horizontal': !isDouble(selectedDomino), 'domino-placeholder-vertical': isDouble(selectedDomino)}" @click="playSelectedDomino()">
+        <div v-if="playableDomino" :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
         </div>
     </div>
   </div>
@@ -17,14 +17,14 @@ export default {
             type: Array,
             required: true
         },
-        selectedDomino: {
+        playableDomino: {
             type: Object,
             required: false
         },
     },
     methods: {
-        playSelectedDomino() {
-            this.$emit('on-play-selected-domino', this.selectedDomino);
+        playDomino() {
+            this.$emit('on-play-domino', this.playableDomino);
         },
         isDouble(domino) {
             return domino.top === domino.bottom;

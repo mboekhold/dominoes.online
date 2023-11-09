@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Board :playedDominos="playedDominos" :selectedDomino="selectedDomino" @on-play-selected-domino="playSelectedDomino" />
+        <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
         <Player :hand="playerHand" @on-selected-domino="onSelectedDomino" />
     </div>
 </template>
@@ -25,7 +25,8 @@ export default {
             ],
             playedDominos: [],
             playerHand: [],
-            selectedDomino: null
+            selectedDomino: null,
+            playableDomino: null
         }
     },
     methods: {
@@ -41,12 +42,46 @@ export default {
             }
         },
         onSelectedDomino(domino) {
+            // Reset if they selected a playable domino but now they unselected it
+            if(this.playableDomino && !domino) {
+                this.playableDomino = null;
+            }
+            if(domino) {
+                let canPlayDomino = this.checkIfCanPlayDomino(domino);
+                if (canPlayDomino) {
+                    //Show on board where it can be placed
+                    this.playableDomino = domino;
+                }
+            }
             this.selectedDomino = domino;
         },
-        playSelectedDomino(domino) {
+        checkIfCanPlayDomino(domino) {
+            if(this.playedDominos.length == 0) {
+                return true;
+            } else if (this.playedDominos.length == 1) {
+                let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
+                if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (this.playedDominos.length > 1) {
+                let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
+                let secondLastPlayedDomino = this.playedDominos[this.playedDominos.length - 2];
+                if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
+                    return true;
+                } else if (secondLastPlayedDomino.top == domino.top || secondLastPlayedDomino.top == domino.bottom || secondLastPlayedDomino.bottom == domino.top || secondLastPlayedDomino.bottom == domino.bottom) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        },
+        playDomino(domino) {
             this.playedDominos.push(domino);
             this.playerHand = this.playerHand.filter(d => d !== domino);
             this.selectedDomino = null;
+            this.playableDomino = null;
         }
     },
     mounted() {
