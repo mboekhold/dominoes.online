@@ -102,10 +102,10 @@
                 </template>
                 <template v-if="domino.top === 6">
                     <div class="dot top-left"></div>
-                    <div class="dot center-left"></div>
-                    <div class="dot bottom-left"></div>
+                    <div class="dot top-center"></div>
                     <div class="dot top-right"></div>
-                    <div class="dot center-right"></div>
+                    <div class="dot bottom-left"></div>
+                    <div class="dot bottom-center"></div>
                     <div class="dot bottom-right"></div>
                 </template>
             </div>
