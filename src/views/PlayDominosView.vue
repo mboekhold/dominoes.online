@@ -55,11 +55,9 @@ export default {
                         "placement": placement.placement,
                     };
                     if (placement.rotate) {
-                        console.log('before: ', domino);
                         let bottom = domino.bottom
                         domino.bottom = domino.top;
                         domino.top = bottom;
-                        console.log('after: ', domino);
                     }
                 }
             }
@@ -100,28 +98,28 @@ export default {
                     }
                 }
             } else {
+                console.log(this.playedDominos);
                 let tail = this.playedDominos[0];
-                let head = this.playedDominos[this.playedDominos.length];
-                console.log(tail, head)
-                if (tail.bottom === domino.top) {
-                    return {
-                        canPlay: true,
-                        placement: 0,
-                        rotate: false
-                    }
-                } else if (tail.bottom === domino.bottom) {
+                let head = this.playedDominos[this.playedDominos.length - 1];
+                if (tail.top === domino.top) {
                     return {
                         canPlay: true,
                         placement: 0,
                         rotate: true
                     }
-                } else if (head.top === domino.top) {
+                } else if (tail.top === domino.bottom) {
+                    return {
+                        canPlay: true,
+                        placement: 0,
+                        rotate: false
+                    }
+                } else if (head.bottom === domino.top) {
                     return {
                         canPlay: true,
                         placement: this.playedDominos.length,
                         rotate: false
                     }
-                } else if (head.top === domino.bottom) {
+                } else if (head.bottom === domino.bottom) {
                     return {
                         canPlay: true,
                         placement: this.playedDominos.length,
@@ -130,8 +128,7 @@ export default {
                 }
             }
         },
-        playDomino(domino) {
-            const placement = domino.placement;
+        playDomino(domino, placement) {
             this.playedDominos.splice(placement, 0, domino);
             console.log(this.playedDominos);
             this.playerHand = this.playerHand.filter(d => d !== domino);

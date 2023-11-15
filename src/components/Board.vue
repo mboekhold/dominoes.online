@@ -2,7 +2,7 @@
   <div class="h-screen w-screen flex items-center justify-center">
     <div v-if="playableDomino">
         <div v-if="playableDomino.placement === 0">
-            <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
+            <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino)}" @click="playDomino()">
                 </div>
         </div>
     </div>
@@ -12,7 +12,7 @@
     <div class="flex">
         <div v-if="playableDomino">
             <div v-if="playableDomino.placement !== 0">
-                <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
+                <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino)}" @click="playDomino()">
                 </div>
             </div>
         </div>
@@ -34,7 +34,7 @@ export default {
     },
     methods: {
         playDomino() {
-            this.$emit('on-play-domino', this.playableDomino);
+            this.$emit('on-play-domino', this.playableDomino.domino, this.playableDomino.placement);
         },
         isDouble(domino) {
             return domino.top === domino.bottom;
