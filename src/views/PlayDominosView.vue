@@ -47,60 +47,93 @@ export default {
                 this.playableDomino = null;
             }
             if(domino) {
-                let [canPlay, placement] = this.checkNextPlacement(domino);
-                console.log(canPlay, placement);
-                if (canPlay) {
+                let placement = this.checkNextPlacement(domino);
+                if (placement.canPlay) {
                     //Show on board where it can be placed
-                    domino.placement = placement;
-                    this.playableDomino = domino;
+                    this.playableDomino = {
+                        "domino": domino,
+                        "placement": placement.placement,
+                    };
+                    if (placement.rotate) {
+                        console.log('before: ', domino);
+                        let bottom = domino.bottom
+                        domino.bottom = domino.top;
+                        domino.top = bottom;
+                        console.log('after: ', domino);
+                    }
                 }
             }
             this.selectedDomino = domino;
         },
         checkNextPlacement(domino) {
             if(this.playedDominos.length === 0) {
-                return [true, 0];
+                return {
+                    canPlay: true,
+                    placement: 0,
+                    rotate: false
+                }
             } else if(this.playedDominos.length === 1) {
                 let head = this.playedDominos[this.playedDominos.length - 1];
-                if(head.top === domino.top || head.top === domino.bottom) {
-                    return [true, 0];
-                } else if(head.bottom === domino.top || head.bottom === domino.bottom) {
-                    return [true, this.playedDominos.length];
+                if(head.top === domino.top) {
+                    return {
+                        canPlay: true,
+                        placement: 0,
+                        rotate: true
+                    }
+                } else if(head.top === domino.bottom) {
+                    return {
+                        canPlay: true,
+                        placement: 0,
+                        rotate: false
+                    }
+                } else if (head.bottom === domino.bottom) {
+                    return {
+                        canPlay: true,
+                        placement: 1,
+                        rotate: true
+                    }
+                } else if (head.bottom === domino.top) {
+                    return {
+                        canPlay: true,
+                        placement: 1,
+                        rotate: false
+                    }
                 }
             } else {
                 let tail = this.playedDominos[0];
-                console.log(tail);
                 let head = this.playedDominos[this.playedDominos.length];
-                if (tail.top == domino.top || tail.top == domino.bottom) {
-                    return [true, 0];
-                } else if (head.bottom == domino.top || head.bottom == domino.bottom) {
-                    return [true, this.playedDominos.length];
-                } else {
-                    return [false, null];
+                console.log(tail, head)
+                if (tail.bottom === domino.top) {
+                    return {
+                        canPlay: true,
+                        placement: 0,
+                        rotate: false
+                    }
+                } else if (tail.bottom === domino.bottom) {
+                    return {
+                        canPlay: true,
+                        placement: 0,
+                        rotate: true
+                    }
+                } else if (head.top === domino.top) {
+                    return {
+                        canPlay: true,
+                        placement: this.playedDominos.length,
+                        rotate: false
+                    }
+                } else if (head.top === domino.bottom) {
+                    return {
+                        canPlay: true,
+                        placement: this.playedDominos.length,
+                        rotate: true
+                    }
                 }
             }
-            // } else if (this.playedDominos.length == 1) {
-            //     let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
-            //     if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
-            //         return true;
-            //     } else {
-            //         return false;
-            //     }
-            // } else if (this.playedDominos.length > 1) {
-            //     let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
-            //     let secondLastPlayedDomino = this.playedDominos[this.playedDominos.length - 2];
-            //     if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
-            //         return true;
-            //     } else if (secondLastPlayedDomino.top == domino.top || secondLastPlayedDomino.top == domino.bottom || secondLastPlayedDomino.bottom == domino.top || secondLastPlayedDomino.bottom == domino.bottom) {
-            //         return true;
-            //     } else {
-            //         return false;
-            //     }
-            // }
         },
         playDomino(domino) {
             const placement = domino.placement;
             this.playedDominos.splice(placement, 0, domino);
+            console.log(this.playedDominos);
             this.playerHand = this.playerHand.filter(d => d !== domino);
             this.selectedDomino = null;
             this.playableDomino = null;
