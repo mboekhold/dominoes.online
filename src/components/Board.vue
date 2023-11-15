@@ -1,10 +1,20 @@
 <template>
   <div class="h-screen w-screen flex items-center justify-center">
+    <div v-if="playableDomino">
+        <div v-if="playableDomino.placement === 0">
+            <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
+                </div>
+        </div>
+    </div>
     <div v-for="domino in playedDominos">
         <Domino :domino="domino" :placeHorizontal="!isDouble(domino)" />
     </div>
     <div class="flex">
-        <div v-if="playableDomino" :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
+        <div v-if="playableDomino">
+            <div v-if="playableDomino.placement !== 0">
+                <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino), 'domino-placeholder-vertical': isDouble(playableDomino)}" @click="playDomino()">
+                </div>
+            </div>
         </div>
     </div>
   </div>

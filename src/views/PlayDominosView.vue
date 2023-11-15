@@ -47,38 +47,60 @@ export default {
                 this.playableDomino = null;
             }
             if(domino) {
-                let canPlayDomino = this.checkIfCanPlayDomino(domino);
-                if (canPlayDomino) {
+                let [canPlay, placement] = this.checkNextPlacement(domino);
+                console.log(canPlay, placement);
+                if (canPlay) {
                     //Show on board where it can be placed
+                    domino.placement = placement;
                     this.playableDomino = domino;
                 }
             }
             this.selectedDomino = domino;
         },
-        checkIfCanPlayDomino(domino) {
-            if(this.playedDominos.length == 0) {
-                return true;
-            } else if (this.playedDominos.length == 1) {
-                let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
-                if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
-                    return true;
-                } else {
-                    return false;
+        checkNextPlacement(domino) {
+            if(this.playedDominos.length === 0) {
+                return [true, 0];
+            } else if(this.playedDominos.length === 1) {
+                let head = this.playedDominos[this.playedDominos.length - 1];
+                if(head.top === domino.top || head.top === domino.bottom) {
+                    return [true, 0];
+                } else if(head.bottom === domino.top || head.bottom === domino.bottom) {
+                    return [true, this.playedDominos.length];
                 }
-            } else if (this.playedDominos.length > 1) {
-                let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
-                let secondLastPlayedDomino = this.playedDominos[this.playedDominos.length - 2];
-                if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
-                    return true;
-                } else if (secondLastPlayedDomino.top == domino.top || secondLastPlayedDomino.top == domino.bottom || secondLastPlayedDomino.bottom == domino.top || secondLastPlayedDomino.bottom == domino.bottom) {
-                    return true;
+            } else {
+                let tail = this.playedDominos[0];
+                console.log(tail);
+                let head = this.playedDominos[this.playedDominos.length];
+                if (tail.top == domino.top || tail.top == domino.bottom) {
+                    return [true, 0];
+                } else if (head.bottom == domino.top || head.bottom == domino.bottom) {
+                    return [true, this.playedDominos.length];
                 } else {
-                    return false;
+                    return [false, null];
                 }
             }
+            // } else if (this.playedDominos.length == 1) {
+            //     let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
+            //     if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
+            //         return true;
+            //     } else {
+            //         return false;
+            //     }
+            // } else if (this.playedDominos.length > 1) {
+            //     let lastPlayedDomino = this.playedDominos[this.playedDominos.length - 1];
+            //     let secondLastPlayedDomino = this.playedDominos[this.playedDominos.length - 2];
+            //     if (lastPlayedDomino.top == domino.top || lastPlayedDomino.top == domino.bottom || lastPlayedDomino.bottom == domino.top || lastPlayedDomino.bottom == domino.bottom) {
+            //         return true;
+            //     } else if (secondLastPlayedDomino.top == domino.top || secondLastPlayedDomino.top == domino.bottom || secondLastPlayedDomino.bottom == domino.top || secondLastPlayedDomino.bottom == domino.bottom) {
+            //         return true;
+            //     } else {
+            //         return false;
+            //     }
+            // }
         },
         playDomino(domino) {
-            this.playedDominos.push(domino);
+            const placement = domino.placement;
+            this.playedDominos.splice(placement, 0, domino);
             this.playerHand = this.playerHand.filter(d => d !== domino);
             this.selectedDomino = null;
             this.playableDomino = null;
