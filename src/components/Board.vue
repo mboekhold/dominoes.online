@@ -43,10 +43,7 @@ export default {
     components: { Domino },
 }
 </script>
-<style>
-body {
-  @apply bg-blue-500;
-}
+<style scoped>
 .domino-placeholder-vertical {
     @apply rounded-lg border border-yellow-200 h-24 w-14 px-1 flex justify-between flex-col relative cursor-pointer;
 }

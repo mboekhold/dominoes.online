@@ -48,16 +48,14 @@ export default {
             }
             if(domino) {
                 let placement = this.checkNextPlacement(domino);
-                if (placement.canPlay) {
-                    //Show on board where it can be placed
-                    this.playableDomino = {
-                        "domino": domino,
-                        "placement": placement.placement,
-                    };
-                    if (placement.rotate) {
-                        let bottom = domino.bottom
-                        domino.bottom = domino.top;
-                        domino.top = bottom;
+                if (placement) {
+                    if (placement.canPlay) {
+                        //Show on board where it can be placed
+                        this.playableDomino = {
+                            "domino": domino,
+                            "placement": placement.placement,
+                            "rotate": placement.rotate
+                        };
                     }
                 }
             }
@@ -128,7 +126,12 @@ export default {
                 }
             }
         },
-        playDomino(domino, placement) {
+        playDomino(domino, placement, rotate) {
+            if(rotate) {
+                let bottom = domino.bottom
+                domino.bottom = domino.top;
+                domino.top = bottom;
+            }
             this.playedDominos.splice(placement, 0, domino);
             console.log(this.playedDominos);
             this.playerHand = this.playerHand.filter(d => d !== domino);
