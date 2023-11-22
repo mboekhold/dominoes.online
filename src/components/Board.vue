@@ -34,7 +34,7 @@ export default {
     },
     methods: {
         playDomino() {
-            this.$emit('on-play-domino', this.playableDomino.domino, this.playableDomino.placement);
+            this.$emit('on-play-domino', this.playableDomino.domino, this.playableDomino.placement, this.playableDomino.rotate);
         },
         isDouble(domino) {
             return domino.top === domino.bottom;

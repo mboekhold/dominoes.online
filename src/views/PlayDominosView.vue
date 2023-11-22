@@ -127,6 +127,7 @@ export default {
             }
         },
         playDomino(domino, placement, rotate) {
+            console.log(rotate)
             if(rotate) {
                 let bottom = domino.bottom
                 domino.bottom = domino.top;
