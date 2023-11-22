@@ -41,9 +41,3 @@ export default {
   }
 }
 </script>
-
-<style>
-body {
-  @apply bg-gray-900;
-}
-</style>
