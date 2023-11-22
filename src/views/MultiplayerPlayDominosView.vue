@@ -25,6 +25,9 @@ export default {
             ],
             playedDominos: [],
             playerHand: [],
+            player1Hand: [],
+            player2Hand: [],
+            player3Hand: [],
             selectedDomino: null,
             playableDomino: null
         }
@@ -39,6 +42,9 @@ export default {
         dealHand() {
             for (let i = 0; i < 7; i++) {
                 this.playerHand.push(this.dominoSet.pop());
+                this.player1Hand.push(this.dominoSet.pop());
+                this.player2Hand.push(this.dominoSet.pop());
+                this.player3Hand.push(this.dominoSet.pop());
             }
         },
         onSelectedDomino(domino) {

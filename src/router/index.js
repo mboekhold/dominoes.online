@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PlayDominosView from '../views/PlayDominosView.vue'
+import PracticePlayDominosView from '../views/PracticePlayDominosView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,9 +11,9 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/dominos',
-      name: 'dominos',
-      component: PlayDominosView
+      path: '/practice',
+      name: 'practice',
+      component: PracticePlayDominosView
     }
   ]
 })
