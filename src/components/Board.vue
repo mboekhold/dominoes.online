@@ -1,7 +1,7 @@
 <template>
   <div class="h-screen w-screen flex items-center justify-center">
     <div v-if="playableDomino">
-        <div v-if="playableDomino.placement === 0 || playableDomino.placement === -1">
+        <div v-if="playableDomino.placement === 0 || playableDomino.placement === 3">
             <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino)}" @click="playDomino()">
             </div>
         </div>
@@ -12,7 +12,7 @@
     </div>
     <div class="flex">
         <div v-if="playableDomino">
-            <div v-if="playableDomino.placement !== 0 || playableDomino.placement === -1">
+            <div v-if="playableDomino.placement !== 0 || playableDomino.placement === 3">
                 <div :class="{'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino)}" @click="playDomino()">
                 </div>
             </div>
