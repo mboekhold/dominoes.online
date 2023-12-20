@@ -47,6 +47,16 @@ export default {
                 this.player3Hand.push(this.dominoSet.pop());
             }
         },
+        dealTestHand() {
+            this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 3))
+            this.playerHand.push(this.dominoSet.find(x => x.top === 4 && x.bottom === 4))
+            this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 4))
+            this.playerHand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 4))
+            // this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom ==3))
+            // this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom ==3))
+            // this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom ==3))
+            // this.playerHand.push(this.dominoSet.find(x => x.top === 3 && x.bottom ==3))
+        },
         onSelectedDomino(domino) {
             // Reset if they selected a playable domino but now they unselected it
             if(this.playableDomino && !domino) {
@@ -76,7 +86,14 @@ export default {
                 }
             } else if(this.playedDominos.length === 1) {
                 let head = this.playedDominos[this.playedDominos.length - 1];
-                if(head.top === domino.top) {
+                if((head.top === domino.top || head.top === domino.bottom) && (head.bottom === domino.top || head.bottom === domino.bottom)) {
+                    return {
+                        canPlay: true,
+                        placement: -1,
+                        rotate: false
+                    }
+                }
+                else if(head.top === domino.top) {
                     return {
                         canPlay: true,
                         placement: 0,
@@ -102,28 +119,43 @@ export default {
                     }
                 }
             } else {
-                console.log(this.playedDominos);
                 let tail = this.playedDominos[0];
                 let head = this.playedDominos[this.playedDominos.length - 1];
-                if (tail.top === domino.top) {
+                if((tail.top === domino.top || tail.top === domino.bottom) && (head.bottom === domino.top || head.bottom === domino.bottom)) {
+                    console.log("1")
+                    console.log("MATCH TAIL: " + tail.top === domino.top)
+                    console.log("MATCH HEAD: " + tail.top === domino.bottom)
+                    console.log("MATCH HEAD: " + head.bottom === domino.top)
+                    console.log("MATCH HEAD: " + head.bottom === domino.top)
+                    return {
+                        canPlay: true,
+                        placement: -1,
+                        rotate: false
+                    }
+                }
+                else if (tail.top === domino.top) {
+                    console.log("2")
                     return {
                         canPlay: true,
                         placement: 0,
                         rotate: true
                     }
                 } else if (tail.top === domino.bottom) {
+                    console.log("3")
                     return {
                         canPlay: true,
                         placement: 0,
                         rotate: false
                     }
                 } else if (head.bottom === domino.top) {
+                    console.log("4")
                     return {
                         canPlay: true,
                         placement: this.playedDominos.length,
                         rotate: false
                     }
                 } else if (head.bottom === domino.bottom) {
+                    console.log("5")
                     return {
                         canPlay: true,
                         placement: this.playedDominos.length,
@@ -148,7 +180,7 @@ export default {
     },
     mounted() {
         this.shuffleDominos();
-        this.dealHand();
+        this.dealTestHand();
     }
 }
 </script>
