@@ -70,7 +70,9 @@ export default {
                         this.playableDomino = {
                             "domino": domino,
                             "placement": placement.placement,
-                            "rotate": placement.rotate
+                            "rotate": placement.rotate,
+                            "rotate0": placement.rotate0,
+                            "rotate1": placement.rotate1
                         };
                     }
                 }
@@ -81,40 +83,43 @@ export default {
             if(this.playedDominos.length === 0) {
                 return {
                     canPlay: true,
-                    placement: 0,
+                    placement: [0],
                     rotate: false
                 }
             } else if(this.playedDominos.length === 1) {
                 let head = this.playedDominos[this.playedDominos.length - 1];
+                // Domino can be placed on both sides..
                 if((head.top === domino.top || head.top === domino.bottom) && (head.bottom === domino.top || head.bottom === domino.bottom)) {
                     return {
                         canPlay: true,
-                        placement: 3,
-                        rotate: false
+                        placement: [0, 1],
+                        rotate: false,
+                        rotate0: head.top === domino.top,
+                        rotate1: head.top === domino.bottom
                     }
                 }
                 else if(head.top === domino.top) {
                     return {
                         canPlay: true,
-                        placement: 0,
+                        placement: [0],
                         rotate: true
                     }
                 } else if(head.top === domino.bottom) {
                     return {
                         canPlay: true,
-                        placement: 0,
+                        placement: [0],
                         rotate: false
                     }
                 } else if (head.bottom === domino.bottom) {
                     return {
                         canPlay: true,
-                        placement: 1,
+                        placement: [1],
                         rotate: true
                     }
                 } else if (head.bottom === domino.top) {
                     return {
                         canPlay: true,
-                        placement: 1,
+                        placement: [1],
                         rotate: false
                     }
                 }
@@ -128,35 +133,35 @@ export default {
                     console.log("MATCH HEAD: " + head.bottom === domino.top)
                     return {
                         canPlay: true,
-                        placement: 3,
+                        placement: [0, 1],
                         rotate: false
                     }
                 }
                 else if (tail.top === domino.top) {
                     return {
                         canPlay: true,
-                        placement: 0,
+                        placement: [0],
                         rotate: true
                     }
                 } else if (tail.top === domino.bottom) {
                     console.log("3")
                     return {
                         canPlay: true,
-                        placement: 0,
+                        placement: [0],
                         rotate: false
                     }
                 } else if (head.bottom === domino.top) {
                     console.log("4")
                     return {
                         canPlay: true,
-                        placement: 1,
+                        placement: [1],
                         rotate: false
                     }
                 } else if (head.bottom === domino.bottom) {
                     console.log("5")
                     return {
                         canPlay: true,
-                        placement: 1,
+                        placement: [1],
                         rotate: true
                     }
                 }
@@ -172,6 +177,10 @@ export default {
             // if placement is at the tail
             if (placement === 0) {
                 this.playedDominos.splice(0, 0, domino);
+            } else if (placement === 3) {
+                // How do i decide if its to the tail or the head?
+                this.playedDominos.splice(0, 0, domino)
+            // Placement is at the head
             } else {
                 this.playedDominos.splice(this.playedDominos.length, 0, domino)
             }
