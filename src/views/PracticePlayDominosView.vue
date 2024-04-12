@@ -3,8 +3,8 @@
         <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
         <Player :hand="playerHand" :playerId="1" @on-selected-domino="onSelectedDomino" />
         <Player :hand="player1Hand" :playerId="2" />
-        <!-- <Player :hand="player2Hand" :playerId="3" />
-        <Player :hand="player3Hand" :playerId="4" /> -->
+        <Player :hand="player2Hand" :playerId="3" />
+        <Player :hand="player3Hand" :playerId="4" />
     </div>
 </template>
 <script>
@@ -199,6 +199,12 @@ export default {
             setTimeout(() => {
                 this.player1Play();
             }, 2000);
+            setTimeout(() => {
+                this.player2Play();
+            }, 4000);
+            setTimeout(() => {
+                this.player3Play();
+            }, 6000);
         },
         player1Play() {
             let firstPlayableDomino = this.player1Hand.find(domino => this.checkNextPlacement(domino));
@@ -229,6 +235,66 @@ export default {
                 this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             }
             this.player1Hand = this.player1Hand.filter(d => d !== firstPlayableDomino);
+        },
+        player2Play() {
+            let firstPlayableDomino = this.player2Hand.find(domino => this.checkNextPlacement(domino));
+            let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
+            // if placement is at the tail
+            console.log(playablePlacement)
+            console.log(firstPlayableDomino)
+            if (playablePlacement.placement.includes(0)) {
+                console.log("0")
+                if (playablePlacement.rotate0) {
+                    let bottom = firstPlayableDomino.bottom
+                    firstPlayableDomino.bottom = firstPlayableDomino.top;
+                    firstPlayableDomino.top = bottom;
+                }
+                this.playedDominos.splice(0, 0, firstPlayableDomino);
+            } else if (playablePlacement.placement.includes(1)) {
+                console.log("1")
+                if (playablePlacement.rotate1) {
+                    let bottom = firstPlayableDomino.bottom
+                    firstPlayableDomino.top = firstPlayableDomino.bottom;
+                    firstPlayableDomino.top = bottom;
+                }
+                // How do i decide if its to the tail or the head?
+                this.playedDominos.splice(0, 0, firstPlayableDomino)
+                // Placement is at the head
+            } else {
+                console.log("2")
+                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+            }
+            this.player2Hand = this.player2Hand.filter(d => d !== firstPlayableDomino);
+        },
+        player3Play() {
+            let firstPlayableDomino = this.player3Hand.find(domino => this.checkNextPlacement(domino));
+            let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
+            // if placement is at the tail
+            console.log(playablePlacement)
+            console.log(firstPlayableDomino)
+            if (playablePlacement.placement.includes(0)) {
+                console.log("0")
+                if (playablePlacement.rotate0) {
+                    let bottom = firstPlayableDomino.bottom
+                    firstPlayableDomino.bottom = firstPlayableDomino.top;
+                    firstPlayableDomino.top = bottom;
+                }
+                this.playedDominos.splice(0, 0, firstPlayableDomino);
+            } else if (playablePlacement.placement.includes(1)) {
+                console.log("1")
+                if (playablePlacement.rotate1) {
+                    let bottom = firstPlayableDomino.bottom
+                    firstPlayableDomino.top = firstPlayableDomino.bottom;
+                    firstPlayableDomino.top = bottom;
+                }
+                // How do i decide if its to the tail or the head?
+                this.playedDominos.splice(0, 0, firstPlayableDomino)
+                // Placement is at the head
+            } else {
+                console.log("2")
+                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+            }
+            this.player3Hand = this.player3Hand.filter(d => d !== firstPlayableDomino);
         }
     },
     mounted() {
