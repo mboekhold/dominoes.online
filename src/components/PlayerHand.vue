@@ -12,6 +12,10 @@ export default {
         hand: {
             type: Array,
             required: true
+        },
+        playerId: {
+            type: Number,
+            required: true
         }
     },
     components: { Domino },
@@ -32,14 +36,14 @@ export default {
     }
 }
 </script>
-<style>
+<style scoped>
 .player-hand {
     display: flex;
     padding: 4px;
-    gap: 10px;
-    position: absolute;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
+    gap: 5px;
+}
+#player2 {
+    flex-direction: column;
+    gap: 0px;
 }
 </style>
