@@ -1,21 +1,23 @@
 <template>
-    <div class="h-screen w-screen flex items-center justify-center">
-        <div v-if="playableDomino">
-            <div v-if="playableDomino.placement.includes(0)">
-                <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
-                    @click="playDomino(0)">
-                </div>
-            </div>
-
-        </div>
-        <div v-for="domino in playedDominos">
-            <Domino :domino="domino" :placeHorizontal="!isDouble(domino)" />
-        </div>
-        <div class="flex">
+    <div class="w-screen h-screen rounded-xl mx-auto p-14">
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto">
             <div v-if="playableDomino">
-                <div v-if="playableDomino.placement.includes(1)">
+                <div v-if="playableDomino.placement.includes(0)">
                     <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
-                        @click="playDomino(1)">
+                        @click="playDomino(0)">
+                    </div>
+                </div>
+    
+            </div>
+            <div v-for="domino in playedDominos">
+                <Domino :domino="domino" :placeHorizontal="!isDouble(domino)" />
+            </div>
+            <div class="flex">
+                <div v-if="playableDomino">
+                    <div v-if="playableDomino.placement.includes(1)">
+                        <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
+                            @click="playDomino(1)">
+                        </div>
                     </div>
                 </div>
             </div>

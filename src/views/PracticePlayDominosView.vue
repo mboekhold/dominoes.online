@@ -186,10 +186,6 @@ export default {
             // if placement is at the tail
             if (placement === 0) {
                 this.playedDominos.splice(0, 0, domino);
-            } else if (placement === 3) {
-                // How do i decide if its to the tail or the head?
-                this.playedDominos.splice(0, 0, domino)
-                // Placement is at the head
             } else {
                 this.playedDominos.splice(this.playedDominos.length, 0, domino)
             }
@@ -213,7 +209,7 @@ export default {
             console.log(playablePlacement)
             console.log(firstPlayableDomino)
             if (playablePlacement.placement.includes(0)) {
-                console.log("0")
+                console.log("A")
                 if (playablePlacement.rotate0) {
                     let bottom = firstPlayableDomino.bottom
                     firstPlayableDomino.bottom = firstPlayableDomino.top;
@@ -221,17 +217,17 @@ export default {
                 }
                 this.playedDominos.splice(0, 0, firstPlayableDomino);
             } else if (playablePlacement.placement.includes(1)) {
-                console.log("1")
+                console.log("B")
                 if (playablePlacement.rotate1) {
                     let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.top = firstPlayableDomino.bottom;
+                    firstPlayableDomino.bottom = firstPlayableDomino.top;
                     firstPlayableDomino.top = bottom;
                 }
                 // How do i decide if its to the tail or the head?
-                this.playedDominos.splice(0, 0, firstPlayableDomino)
+                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
                 // Placement is at the head
             } else {
-                console.log("2")
+                console.log("C")
                 this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             }
             this.player1Hand = this.player1Hand.filter(d => d !== firstPlayableDomino);
@@ -243,7 +239,7 @@ export default {
             console.log(playablePlacement)
             console.log(firstPlayableDomino)
             if (playablePlacement.placement.includes(0)) {
-                console.log("0")
+                console.log("A")
                 if (playablePlacement.rotate0) {
                     let bottom = firstPlayableDomino.bottom
                     firstPlayableDomino.bottom = firstPlayableDomino.top;
@@ -251,17 +247,15 @@ export default {
                 }
                 this.playedDominos.splice(0, 0, firstPlayableDomino);
             } else if (playablePlacement.placement.includes(1)) {
-                console.log("1")
+                console.log("B")
                 if (playablePlacement.rotate1) {
                     let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.top = firstPlayableDomino.bottom;
+                    firstPlayableDomino.bottom = firstPlayableDomino.top;
                     firstPlayableDomino.top = bottom;
                 }
-                // How do i decide if its to the tail or the head?
-                this.playedDominos.splice(0, 0, firstPlayableDomino)
-                // Placement is at the head
+                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             } else {
-                console.log("2")
+                console.log("C")
                 this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             }
             this.player2Hand = this.player2Hand.filter(d => d !== firstPlayableDomino);
@@ -273,7 +267,7 @@ export default {
             console.log(playablePlacement)
             console.log(firstPlayableDomino)
             if (playablePlacement.placement.includes(0)) {
-                console.log("0")
+                console.log("A")
                 if (playablePlacement.rotate0) {
                     let bottom = firstPlayableDomino.bottom
                     firstPlayableDomino.bottom = firstPlayableDomino.top;
@@ -281,25 +275,28 @@ export default {
                 }
                 this.playedDominos.splice(0, 0, firstPlayableDomino);
             } else if (playablePlacement.placement.includes(1)) {
-                console.log("1")
+                console.log("B")
                 if (playablePlacement.rotate1) {
                     let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.top = firstPlayableDomino.bottom;
+                    firstPlayableDomino.bottom = firstPlayableDomino.top;
                     firstPlayableDomino.top = bottom;
                 }
-                // How do i decide if its to the tail or the head?
-                this.playedDominos.splice(0, 0, firstPlayableDomino)
-                // Placement is at the head
+                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             } else {
-                console.log("2")
+                console.log("C")
                 this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
             }
+
             this.player3Hand = this.player3Hand.filter(d => d !== firstPlayableDomino);
         }
     },
     mounted() {
         this.shuffleDominos();
         this.dealHand();
+        console.log(this.playerHand)
+        console.log(this.player1Hand)
+        console.log(this.player2Hand)
+        console.log(this.player3Hand)
     }
 }
 </script>
