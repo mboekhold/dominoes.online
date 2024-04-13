@@ -180,23 +180,23 @@ export default {
             }
         },
         playDomino(domino, placement, rotate) {
-            if (rotate) {
-                let bottom = domino.bottom
-                domino.bottom = domino.top;
-                domino.top = bottom;
+            if (this.currentPlayerTurn === 0) {
+                if (rotate) {
+                    let bottom = domino.bottom
+                    domino.bottom = domino.top;
+                    domino.top = bottom;
+                }
+                // if placement is at the tail
+                if (placement === 0) {
+                    this.playedDominos.splice(0, 0, domino);
+                } else {
+                    this.playedDominos.splice(this.playedDominos.length, 0, domino)
+                }
+                this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
+                this.selectedDomino = null;
+                this.playableDomino = null;
+                // clearTimeout(this.timeoutId);
             }
-            // if placement is at the tail
-            if (placement === 0) {
-                this.playedDominos.splice(0, 0, domino);
-            } else {
-                this.playedDominos.splice(this.playedDominos.length, 0, domino)
-            }
-            this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
-            this.selectedDomino = null;
-            this.playableDomino = null;
-            // clearTimeout(this.timeoutId);
-            this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
-            console.log(this.currentPlayerTurn);
         },
         opponentPlayerPlay(player) {
             // The player is playing the first domino, its the player with the double six
@@ -274,7 +274,8 @@ export default {
             this.showNotification(this.playerWithDoubleSix, notificationMessage);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
-            for (let i = 0; i < 7; i++) {
+            for (let i = 0; i < 28; i++) {
+                console.log('Round', i);
                 await this.playRound(i);
             }
         }
