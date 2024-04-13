@@ -1,53 +1,58 @@
 <template>
     <div>
-        <div v-if="playerId === 1" :id="'playerBox' + playerId">
-            <div v-if="notification"
+        <div v-if="player.id === 1" :id="'playerBox' + player.id">
+            <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 -top-24 notification text-center flex items-center justify-center">
                 <div>
-                    {{ notification }}
+                    {{ player.notification }}
                 </div>
             </div>
             <div class="absolute right-10 text-white">
-                {{ hand.length }}
+                {{ player.hand.length }}
             </div>
-            <PlayerHand :hand="hand" @on-selected-domino="selectedDomino" :id="'playerHand' + playerId"
-                :playerId="playerId" />
+            <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id "
+                :playerId="player.id " />
+            <!-- <div v-if="player.id - 1 === currentPlayerTurn" ref="progressBar" style="width: 90%;">
+                <div class="progress-bar">
+                    
+                </div>
+            </div> -->
         </div>
-        <div :id="'playerBox' + playerId" v-else-if="playerId === 2">
-            <div v-if="notification"
-                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+        <div :id="'playerBox' + player.id " v-else-if="player.id  === 2">
+            <div v-if="player.notification"
+                class="absolute bg-white rounded-md h-10 w-48 right-8 notification text-center flex items-center justify-center -rotate-90">
                 <div>
-                    {{ notification }}
+                    {{ player.notification }}
                 </div>
             </div>
             <div class="absolute bottom-1 text-white">
-                {{ hand.length }}
+                {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="hand" :id="'playerHand' + playerId" :playerId="playerId" />
+            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :id="'playerBox' + playerId" v-else-if="playerId === 3">
-            <div v-if="notification"
-                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+        <div :id="'playerBox' + player.id" v-else-if="player.id === 3">
+            <div v-if="player.notification"
+                class="absolute bg-white rounded-md h-10 w-48 top-24 notification-reverse text-center flex items-center justify-center">
                 <div>
-                    {{ notification }}
+                    {{ player.notification }}
                 </div>
             </div>
             <div class="absolute right-5 text-white">
-                {{ hand.length }}
+                {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="hand" :id="'playerHand' + playerId" :playerId="playerId" />
+            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :id="'playerBox' + playerId" v-else-if="playerId === 4">
-            <div v-if="notification"
-                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+        <div :id="'playerBox' + player.id" v-else-if="player.id === 4">
+            <div v-if="player.notification"
+                class="absolute bg-white rounded-md h-10 w-48 left-8 notification text-center flex items-center justify-center rotate-90">
                 <div>
-                    {{ notification }}
+                    {{ player.notification }}
                 </div>
             </div>
             <div class="absolute bottom-1 text-white">
-                {{ hand.length }}
+                {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="hand" :id="'playerHand' + playerId" :playerId="playerId" />
+            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
 
     </div>
@@ -61,16 +66,12 @@ export default {
         OpponentPlayerHand
     },
     props: {
-        hand: {
-            type: Array,
+        player: {
+            type: Object,
             required: true
         },
-        playerId: {
+        currentPlayerTurn: {
             type: Number,
-            required: true
-        },
-        notification: {
-            type: String,
             required: false
         }
     },
@@ -82,6 +83,16 @@ export default {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         }
+    },
+    watch: {
+        // currentPlayerTurn(newValue) {
+        //     if (newValue === this.player.id - 1) {
+        //         setInterval(() => {
+        //             console.log(this.$refs.progressBar.getBoundingClientRect());
+        //             this.$refs.progressBar.style.width = 10;
+        //         }, 1000);
+        //     }
+        // }
     }
 }
 </script>
@@ -174,5 +185,21 @@ export default {
     transform: translateX(-50%);
     bottom: -25px;
     color: white;
+}
+.notification-reverse::after {
+    content: '▲';
+    font-size: 25px;
+    /* Unicode arrow character */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -25px;
+    color: white;
+}
+.progress-bar {
+    @apply  w-[90%] border-t-2 border-yellow-300;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
 }
 </style>

@@ -1,10 +1,10 @@
 <template>
     <div>
         <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
-        <Player :hand="playerHands[0]" :playerId="1" @on-selected-domino="onSelectedDomino" :notification="notification" />
-        <Player :hand="playerHands[1]" :playerId="2" />
-        <Player :hand="playerHands[2]" :playerId="3" />
-        <Player :hand="playerHands[3]" :playerId="4" />
+        <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :currentPlayerTurn="currentPlayerTurn" />
+        <Player :player="players[1]" :currentPlayerTurn="currentPlayerTurn" />
+        <Player :player="players[2]" :currentPlayerTurn="currentPlayerTurn" />
+        <Player :player="players[3]" :currentPlayerTurn="currentPlayerTurn" />
         <div v-if="!gameStarted">
             <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
                 Start game
@@ -42,7 +42,9 @@ export default {
             selectedDomino: null,
             playableDomino: null,
             playerWithDoubleSix: null,
-            notification: null
+            notification: null,
+            currentPlayerTurn: null,
+            timeoutId: null
         }
     },
     methods: {
@@ -55,7 +57,7 @@ export default {
         dealHand() {
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
-                    this.playerHands[j].push(this.dominoSet.pop());
+                    this.players[j].hand.push(this.dominoSet.pop());
                 }
             }
         },
@@ -189,106 +191,92 @@ export default {
             } else {
                 this.playedDominos.splice(this.playedDominos.length, 0, domino)
             }
-            this.playerHands[0] = this.playerHands[0].filter(d => d !== domino);
+            this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
             this.selectedDomino = null;
             this.playableDomino = null;
-            setTimeout(() => {
-                this.player1Play();
-            }, 2000);
-            setTimeout(() => {
-                this.player2Play();
-            }, 4000);
-            setTimeout(() => {
-                this.player3Play();
-            }, 6000);
+            // clearTimeout(this.timeoutId);
+            this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+            console.log(this.currentPlayerTurn);
         },
-        player1Play() {
-            let firstPlayableDomino = this.playerHands[1].find(domino => this.checkNextPlacement(domino));
-            let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
-            // if placement is at the tail
-            if (playablePlacement.placement.includes(0)) {
-                if (playablePlacement.rotate0) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
+        opponentPlayerPlay(player) {
+            // The player is playing the first domino, its the player with the double six
+            if(this.playedDominos.length === 0) {
+                if(this.playerWithDoubleSix === player) {
+                    let domino = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
+                    console.log(domino);
+                    this.playedDominos.splice(0, 0, domino);
+                    this.players[player].hand = this.players[player].hand.filter(d => d !== domino);
                 }
-                this.playedDominos.splice(0, 0, firstPlayableDomino);
-            } else if (playablePlacement.placement.includes(1)) {
-                if (playablePlacement.rotate1) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
-                }
-                // How do i decide if its to the tail or the head?
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-                // Placement is at the head
             } else {
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+                let firstPlayableDomino = this.players[player].hand.find(domino => this.checkNextPlacement(domino));
+                let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
+                // if placement is at the tail
+                if (playablePlacement.placement.includes(0)) {
+                    if (playablePlacement.rotate0) {
+                        let bottom = firstPlayableDomino.bottom
+                        firstPlayableDomino.bottom = firstPlayableDomino.top;
+                        firstPlayableDomino.top = bottom;
+                    }
+                    this.playedDominos.splice(0, 0, firstPlayableDomino);
+                } else if (playablePlacement.placement.includes(1)) {
+                    if (playablePlacement.rotate1) {
+                        let bottom = firstPlayableDomino.bottom
+                        firstPlayableDomino.bottom = firstPlayableDomino.top;
+                        firstPlayableDomino.top = bottom;
+                    }
+                    this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+                } else {
+                    this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+                }
+                this.players[player].hand = this.players[player].hand.filter(d => d !== firstPlayableDomino);
             }
-            this.playerHands[1] = this.playerHands[1].filter(d => d !== firstPlayableDomino);
-        },
-        player2Play() {
-            let firstPlayableDomino = this.playerHands[2].find(domino => this.checkNextPlacement(domino));
-            let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
-            // if placement is at the tail
-            if (playablePlacement.placement.includes(0)) {
-                if (playablePlacement.rotate0) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
-                }
-                this.playedDominos.splice(0, 0, firstPlayableDomino);
-            } else if (playablePlacement.placement.includes(1)) {
-                if (playablePlacement.rotate1) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
-                }
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-            } else {
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-            }
-           this.playerHands[2] = this.playerHands[2].filter(d => d !== firstPlayableDomino);
-        },
-        player3Play() {
-            let firstPlayableDomino = this.playerHands[3].find(domino => this.checkNextPlacement(domino));
-            let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
-            // if placement is at the tail
-            if (playablePlacement.placement.includes(0)) {
-                if (playablePlacement.rotate0) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
-                }
-                this.playedDominos.splice(0, 0, firstPlayableDomino);
-            } else if (playablePlacement.placement.includes(1)) {
-                if (playablePlacement.rotate1) {
-                    let bottom = firstPlayableDomino.bottom
-                    firstPlayableDomino.bottom = firstPlayableDomino.top;
-                    firstPlayableDomino.top = bottom;
-                }
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-            } else {
-                this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-            }
-
-            this.playerHands[3] = this.playerHands[3].filter(d => d !== firstPlayableDomino);
         },
         findPlayerWithDoubleSix() {
-            for (let i = 0; i < this.playerHands.length; i++) {
-                if (this.playerHands[i].find(x => x.top === 6 && x.bottom === 6)) {
+            for (let i = 0; i < this.players.length; i++) {
+                if (this.players[i].hand.find(x => x.top === 6 && x.bottom === 6)) {
                     return i;
                 }
             }
         },
-        startGame() {
+        showNotification(player, message) {
+            this.players[player].notification = message;
+            setTimeout(() => {
+                this.players[player].notification = null;
+            }, 3000);
+        },
+        async playRound() {
+            if (this.currentPlayerTurn === 0) {
+                console.log('Your turn');
+                await new Promise(resolve => {
+                    this.timeoutId = setTimeout(() => {
+                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        resolve();
+                    }, 5000);
+                })
+            } else {
+                console.log('Opponent turn');
+                await new Promise(resolve => {
+                    setTimeout(() => {
+                        this.opponentPlayerPlay(this.currentPlayerTurn);
+                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        resolve();
+                    }, 3000);
+                })
+            }
+        },
+        async startGame() {
             this.shuffleDominos();
             this.dealHand();
             this.gameStarted = true;
-            // Game loop
-            const playerWithDoubleSix = this.findPlayerWithDoubleSix();
+            this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            this.notification = `Player ${playerWithDoubleSix + 1} starts`;
+            const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
+            this.showNotification(this.playerWithDoubleSix, notificationMessage);
+            const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
+            this.currentPlayerTurn = playOrder[0];
+            for (let i = 0; i < 7; i++) {
+                await this.playRound(i);
+            }
         }
     },
 }
