@@ -1,24 +1,49 @@
 <template>
     <div>
         <div v-if="playerId === 1" :id="'playerBox' + playerId">
+            <div v-if="notification"
+                class="absolute bg-white rounded-md h-10 w-48 -top-24 notification text-center flex items-center justify-center">
+                <div>
+                    {{ notification }}
+                </div>
+            </div>
             <div class="absolute right-10 text-white">
                 {{ hand.length }}
             </div>
-            <PlayerHand :hand="hand" @on-selected-domino="selectedDomino" :id="'playerHand' + playerId" :playerId="playerId" />
+            <PlayerHand :hand="hand" @on-selected-domino="selectedDomino" :id="'playerHand' + playerId"
+                :playerId="playerId" />
         </div>
         <div :id="'playerBox' + playerId" v-else-if="playerId === 2">
+            <div v-if="notification"
+                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+                <div>
+                    {{ notification }}
+                </div>
+            </div>
             <div class="absolute bottom-1 text-white">
                 {{ hand.length }}
             </div>
             <OpponentPlayerHand :hand="hand" :id="'playerHand' + playerId" :playerId="playerId" />
         </div>
         <div :id="'playerBox' + playerId" v-else-if="playerId === 3">
+            <div v-if="notification"
+                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+                <div>
+                    {{ notification }}
+                </div>
+            </div>
             <div class="absolute right-5 text-white">
                 {{ hand.length }}
             </div>
             <OpponentPlayerHand :hand="hand" :id="'playerHand' + playerId" :playerId="playerId" />
         </div>
         <div :id="'playerBox' + playerId" v-else-if="playerId === 4">
+            <div v-if="notification"
+                class="absolute bg-white rounded-md h-10 w-48 -top-16 notification text-center flex items-center justify-center">
+                <div>
+                    {{ notification }}
+                </div>
+            </div>
             <div class="absolute bottom-1 text-white">
                 {{ hand.length }}
             </div>
@@ -43,6 +68,10 @@ export default {
         playerId: {
             type: Number,
             required: true
+        },
+        notification: {
+            type: String,
+            required: false
         }
     },
     data() {
@@ -71,11 +100,13 @@ export default {
     align-items: center;
     justify-content: center;
 }
+
 #playerHand1 {
     position: absolute;
     bottom: 20px;
-    
+
 }
+
 #playerBox2 {
     @apply rounded-xl h-24;
     position: absolute;
@@ -88,12 +119,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:  #282f3d;
+    background-color: #282f3d;
 }
+
 #playerHand2 {
     @apply flex flex-col items-center;
     bottom: 10px;
 }
+
 #playerBox3 {
     @apply rounded-xl h-24;
     position: absolute;
@@ -105,12 +138,14 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:  #282f3d;
+    background-color: #282f3d;
 }
+
 #playerHand3 {
     @apply flex items-center flex-row;
     right: 10px;
 }
+
 #playerBox4 {
     @apply rounded-xl h-24;
     position: absolute;
@@ -122,10 +157,22 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color:  #282f3d;
+    background-color: #282f3d;
 }
+
 #playerHand4 {
     @apply flex items-center flex-col;
     right: 10px;
+}
+
+.notification::after {
+    content: '▼';
+    font-size: 25px;
+    /* Unicode arrow character */
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -25px;
+    color: white;
 }
 </style>

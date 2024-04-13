@@ -1,7 +1,7 @@
 <template>
     <div>
         <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
-        <Player :hand="playerHands[0]" :playerId="1" @on-selected-domino="onSelectedDomino" />
+        <Player :hand="playerHands[0]" :playerId="1" @on-selected-domino="onSelectedDomino" :notification="notification" />
         <Player :hand="playerHands[1]" :playerId="2" />
         <Player :hand="playerHands[2]" :playerId="3" />
         <Player :hand="playerHands[3]" :playerId="4" />
@@ -33,14 +33,16 @@ export default {
             ],
             gameStarted: false,
             playedDominos: [],
-            playerHands: [
-                [],
-                [],
-                [],
-                []
+            players: [
+                { id: 1, hand: [], notification: null },
+                { id: 2, hand: [], notification: null },
+                { id: 3, hand: [], notification: null },
+                { id: 4, hand: [], notification: null }
             ],
             selectedDomino: null,
-            playableDomino: null
+            playableDomino: null,
+            playerWithDoubleSix: null,
+            notification: null
         }
     },
     methods: {
@@ -273,18 +275,10 @@ export default {
             this.playerHands[3] = this.playerHands[3].filter(d => d !== firstPlayableDomino);
         },
         findPlayerWithDoubleSix() {
-            const doesFirstPlayerHaveDoubleSix = this.playerHand.find(domino => domino.top === 6 && domino.bottom === 6);
-            const doesPlayer1HaveDoubleSix = this.player1Hand.find(domino => domino.top === 6 && domino.bottom === 6);
-            const doesPlayer2HaveDoubleSix = this.player2Hand.find(domino => domino.top === 6 && domino.bottom === 6);
-            const doesPlayer3HaveDoubleSix = this.player3Hand.find(domino => domino.top === 6 && domino.bottom === 6);
-            if (doesFirstPlayerHaveDoubleSix) {
-                return 1;
-            } else if (doesPlayer1HaveDoubleSix) {
-                return 2;
-            } else if (doesPlayer2HaveDoubleSix) {
-                return 3;
-            } else if (doesPlayer3HaveDoubleSix) {
-                return 4;
+            for (let i = 0; i < this.playerHands.length; i++) {
+                if (this.playerHands[i].find(x => x.top === 6 && x.bottom === 6)) {
+                    return i;
+                }
             }
         },
         startGame() {
@@ -292,10 +286,9 @@ export default {
             this.dealHand();
             this.gameStarted = true;
             // Game loop
-            // while (true) {
-            //     // First the player with the double 6 plays
-            //     const playerWithDoubleSix = this.findPlayerWithDoubleSix();
-            // }
+            const playerWithDoubleSix = this.findPlayerWithDoubleSix();
+            // Player with double six starts, then goes clockwise
+            this.notification = `Player ${playerWithDoubleSix + 1} starts`;
         }
     },
 }
