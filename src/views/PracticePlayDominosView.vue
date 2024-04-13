@@ -5,6 +5,11 @@
         <Player :hand="player1Hand" :playerId="2" />
         <Player :hand="player2Hand" :playerId="3" />
         <Player :hand="player3Hand" :playerId="4" />
+        <div v-if="!gameStarted">
+            <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
+                Start game
+            </button>
+        </div>
     </div>
 </template>
 <script>
@@ -26,6 +31,7 @@ export default {
                 { top: 3, bottom: 5 }, { top: 3, bottom: 6 }, { top: 4, bottom: 4 }, { top: 4, bottom: 5 },
                 { top: 4, bottom: 6 }, { top: 5, bottom: 5 }, { top: 5, bottom: 6 }, { top: 6, bottom: 6 }
             ],
+            gameStarted: false,
             playedDominos: [],
             playerHand: [],
             player1Hand: [],
@@ -288,15 +294,21 @@ export default {
             }
 
             this.player3Hand = this.player3Hand.filter(d => d !== firstPlayableDomino);
+        },
+        startGame() {
+            this.shuffleDominos();
+            this.dealHand();
+            this.gameStarted = true;
         }
     },
-    mounted() {
-        this.shuffleDominos();
-        this.dealHand();
-        console.log(this.playerHand)
-        console.log(this.player1Hand)
-        console.log(this.player2Hand)
-        console.log(this.player3Hand)
-    }
 }
 </script>
+
+<style>
+.start-game-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+</style>
