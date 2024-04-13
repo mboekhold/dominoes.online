@@ -102,7 +102,6 @@ export default {
                     }
                 }
             } else {
-                console.log(this.playedDominos);
                 let tail = this.playedDominos[0];
                 let head = this.playedDominos[this.playedDominos.length - 1];
                 if (tail.top === domino.top) {
@@ -133,14 +132,12 @@ export default {
             }
         },
         playDomino(domino, placement, rotate) {
-            console.log(rotate)
             if(rotate) {
                 let bottom = domino.bottom
                 domino.bottom = domino.top;
                 domino.top = bottom;
             }
             this.playedDominos.splice(placement, 0, domino);
-            console.log(this.playedDominos);
             this.playerHand = this.playerHand.filter(d => d !== domino);
             this.selectedDomino = null;
             this.playableDomino = null;
