@@ -7,23 +7,29 @@
                     {{ player.notification }}
                 </div>
             </div>
+            <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-5 rounded-full h-3 w-3 bg-orange-400">
+
+            </div>
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
-            <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id "
-                :playerId="player.id " />
+            <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
+                :playerId="player.id" />
             <!-- <div v-if="player.id - 1 === currentPlayerTurn" ref="progressBar" style="width: 90%;">
                 <div class="progress-bar">
                     
                 </div>
             </div> -->
         </div>
-        <div :id="'playerBox' + player.id " v-else-if="player.id  === 2">
+        <div :id="'playerBox' + player.id" v-else-if="player.id === 2">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 right-8 notification text-center flex items-center justify-center -rotate-90">
                 <div>
                     {{ player.notification }}
                 </div>
+            </div>
+            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+
             </div>
             <div class="absolute bottom-1 text-white">
                 {{ player.hand.length }}
@@ -37,6 +43,9 @@
                     {{ player.notification }}
                 </div>
             </div>
+            <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-2 rounded-full h-3 w-3 bg-orange-400">
+
+            </div>
             <div class="absolute right-5 text-white">
                 {{ player.hand.length }}
             </div>
@@ -48,6 +57,9 @@
                 <div>
                     {{ player.notification }}
                 </div>
+            </div>
+            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+
             </div>
             <div class="absolute bottom-1 text-white">
                 {{ player.hand.length }}
@@ -186,6 +198,7 @@ export default {
     bottom: -25px;
     color: white;
 }
+
 .notification-reverse::after {
     content: '▲';
     font-size: 25px;
@@ -196,8 +209,9 @@ export default {
     top: -25px;
     color: white;
 }
+
 .progress-bar {
-    @apply  w-[90%] border-t-2 border-yellow-300;
+    @apply w-[90%] border-t-2 border-yellow-300;
     left: 50%;
     transform: translateX(-50%);
     bottom: 10px;
