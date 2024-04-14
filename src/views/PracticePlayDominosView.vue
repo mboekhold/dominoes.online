@@ -203,12 +203,16 @@ export default {
             if(this.playedDominos.length === 0) {
                 if(this.playerWithDoubleSix === player) {
                     let domino = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
-                    console.log(domino);
                     this.playedDominos.splice(0, 0, domino);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== domino);
                 }
             } else {
                 let firstPlayableDomino = this.players[player].hand.find(domino => this.checkNextPlacement(domino));
+                // If no playable domino, pass
+                if (!firstPlayableDomino) {
+                    this.showNotification(player, 'Pass');
+                    return;
+                }
                 let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
                 // if placement is at the tail
                 if (playablePlacement.placement.includes(0)) {
@@ -246,7 +250,6 @@ export default {
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
-                console.log('Your turn');
                 await new Promise(resolve => {
                     this.timeoutId = setTimeout(() => {
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
@@ -254,7 +257,6 @@ export default {
                     }, 5000);
                 })
             } else {
-                console.log('Opponent turn');
                 await new Promise(resolve => {
                     setTimeout(() => {
                         this.opponentPlayerPlay(this.currentPlayerTurn);
@@ -274,9 +276,8 @@ export default {
             this.showNotification(this.playerWithDoubleSix, notificationMessage);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
-            for (let i = 0; i < 28; i++) {
-                console.log('Round', i);
-                await this.playRound(i);
+            while (true) {
+                await this.playRound();
             }
         }
     },
