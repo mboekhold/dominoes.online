@@ -1,3 +1,4 @@
+<!-- GAME MANAGER -->
 <template>
     <div>
         <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
@@ -246,7 +247,7 @@ export default {
             this.players[player].notification = message;
             setTimeout(() => {
                 this.players[player].notification = null;
-            }, 3000);
+            }, 5000);
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
@@ -254,7 +255,7 @@ export default {
                     this.timeoutId = setTimeout(() => {
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
-                    }, 5000);
+                    }, 11000);
                 })
             } else {
                 await new Promise(resolve => {
@@ -279,8 +280,8 @@ export default {
             while (true) {
                 await this.playRound();
             }
-        }
-    },
+        },
+    }
 }
 </script>
 

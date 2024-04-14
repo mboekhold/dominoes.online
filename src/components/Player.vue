@@ -7,19 +7,19 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-5 rounded-full h-3 w-3 bg-orange-400">
+            <!-- <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-5 rounded-full h-3 w-3 bg-orange-400">
 
-            </div>
+            </div> -->
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
                 :playerId="player.id" />
-            <!-- <div v-if="player.id - 1 === currentPlayerTurn" ref="progressBar" style="width: 90%;">
-                <div class="progress-bar">
-                    
+            <div v-if="player.id - 1 === currentPlayerTurn" class="flex justify-end mt-20 progress-bar-container">
+                <div class="progress-bar" :ref="'progressBar' + player.id">
+
                 </div>
-            </div> -->
+            </div>
         </div>
         <div :id="'playerBox' + player.id" v-else-if="player.id === 2">
             <div v-if="player.notification"
@@ -89,22 +89,29 @@ export default {
     },
     data() {
         return {
+            intervalId: null
         }
     },
     methods: {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
-        }
+        },
     },
     watch: {
-        // currentPlayerTurn(newValue) {
-        //     if (newValue === this.player.id - 1) {
-        //         setInterval(() => {
-        //             console.log(this.$refs.progressBar.getBoundingClientRect());
-        //             this.$refs.progressBar.style.width = 10;
-        //         }, 1000);
-        //     }
-        // }
+        currentPlayerTurn(newValue) {
+            console.log(newValue)
+            if (newValue === 0) {
+                var width = 100;
+                this.intervalId = setInterval(() => {
+                    if (width <= 0) {
+                        clearInterval(this.intervalId);
+                    } else {
+                        width -= 0.1;
+                        this.$refs.progressBar1.style.width = width + '%';
+                    }
+                }, 10);
+            }
+        }
     }
 }
 </script>
@@ -210,10 +217,22 @@ export default {
     color: white;
 }
 
+.progress-bar-container {
+    position: relative;
+    width: 500px;
+}
+
 .progress-bar {
-    @apply w-[90%] border-t-2 border-yellow-300;
-    left: 50%;
-    transform: translateX(-50%);
-    bottom: 10px;
+    @apply border-t-2 border-orange-400 h-2;
+    /* Adjust height as needed */
+    position: absolute;
+    /* Position within parent container */
+    top: 0;
+    /* Align to top */
+    left: 0;
+    /* Start from left */
+    /* Smooth filling animation */
+    width: 100%;
+    /* Initial width: 0% */
 }
 </style>
