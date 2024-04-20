@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto">
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10">
             <div v-if="playableDomino">
                 <div v-if="playableDomino.placement.includes(0)">
                     <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"

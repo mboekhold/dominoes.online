@@ -259,6 +259,7 @@ export default {
                     this.resolve = resolve;
                     this.timeoutId = setTimeout(() => {
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        this.showNotification(0, 'Pass');
                         resolve();
                     }, 11000);
                 })

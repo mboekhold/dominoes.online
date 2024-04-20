@@ -98,16 +98,16 @@ export default {
         },
     },
     watch: {
+        // This function will be triggered for each player turn
         currentPlayerTurn(newValue, oldValue) {
-            console.log(newValue, oldValue)
-            if (newValue === 0 && this.player.id === 0) {
+            console.log(this.player.id)
+            if (newValue === 0 && this.player.id - 1 === 0) {
                 var width = 100;
                 this.intervalId = setInterval(() => {
                     if (width <= 0) {
                         clearInterval(this.intervalId);
                     } else {
                         width -= 0.1;
-                        console.log(this.$refs.progressBar1.style.width)
                         this.$refs.progressBar1.style.width = width + '%';
                     }
                 }, 10);
