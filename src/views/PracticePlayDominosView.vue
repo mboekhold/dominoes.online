@@ -45,7 +45,8 @@ export default {
             playerWithDoubleSix: null,
             notification: null,
             currentPlayerTurn: null,
-            timeoutId: null
+            timeoutId: null,
+            resolve: null
         }
     },
     methods: {
@@ -196,13 +197,15 @@ export default {
                 this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
                 this.selectedDomino = null;
                 this.playableDomino = null;
-                // clearTimeout(this.timeoutId);
+                this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                clearTimeout(this.timeoutId);
+                this.resolve();
             }
         },
         opponentPlayerPlay(player) {
             // The player is playing the first domino, its the player with the double six
-            if(this.playedDominos.length === 0) {
-                if(this.playerWithDoubleSix === player) {
+            if (this.playedDominos.length === 0) {
+                if (this.playerWithDoubleSix === player) {
                     let domino = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
                     this.playedDominos.splice(0, 0, domino);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== domino);
@@ -252,6 +255,8 @@ export default {
         async playRound() {
             if (this.currentPlayerTurn === 0) {
                 await new Promise(resolve => {
+                    // Reference to resolve function to be used later if the player does decide to play
+                    this.resolve = resolve;
                     this.timeoutId = setTimeout(() => {
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
