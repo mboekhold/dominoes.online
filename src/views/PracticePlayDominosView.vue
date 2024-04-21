@@ -2,10 +2,10 @@
 <template>
     <div>
         <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
-        <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :currentPlayerTurn="currentPlayerTurn" />
-        <Player :player="players[1]" :currentPlayerTurn="currentPlayerTurn" />
-        <Player :player="players[2]" :currentPlayerTurn="currentPlayerTurn" />
-        <Player :player="players[3]" :currentPlayerTurn="currentPlayerTurn" />
+        <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0"/>
+        <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
+        <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
+        <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
         <div v-if="!gameStarted">
             <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
                 Start game

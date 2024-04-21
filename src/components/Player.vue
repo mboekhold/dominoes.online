@@ -7,15 +7,12 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <!-- <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-5 rounded-full h-3 w-3 bg-orange-400">
-
-            </div> -->
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
                 :playerId="player.id" />
-            <div v-if="player.id - 1 === currentPlayerTurn" class="flex justify-end mt-20 progress-bar-container">
+            <div v-if="turn" class="flex justify-end mt-20 progress-bar-container">
                 <div class="progress-bar" :ref="'progressBar' + player.id">
 
                 </div>
@@ -28,7 +25,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute bottom-1 text-white">
@@ -43,7 +40,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute left-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute right-5 text-white">
@@ -58,7 +55,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute bottom-1 text-white">
@@ -82,9 +79,9 @@ export default {
             type: Object,
             required: true
         },
-        currentPlayerTurn: {
-            type: Number,
-            required: false
+        turn: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
@@ -99,9 +96,8 @@ export default {
     },
     watch: {
         // This function will be triggered for each player turn
-        currentPlayerTurn(newValue, oldValue) {
-            console.log(this.player.id)
-            if (newValue === 0 && this.player.id - 1 === 0) {
+        turn(newValue, oldValue) {
+            if (newValue && this.player.id === 1) {
                 var width = 100;
                 this.intervalId = setInterval(() => {
                     if (width <= 0) {
@@ -112,7 +108,7 @@ export default {
                     }
                 }, 10);
             }
-            if (oldValue === 0) {
+            if (newValue === false && this.player.id === 1) {
                 clearInterval(this.intervalId);
             }
         }
