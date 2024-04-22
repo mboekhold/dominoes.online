@@ -95,7 +95,6 @@ export default {
         },
     },
     watch: {
-        // This function will be triggered for each player turn
         turn(newValue, oldValue) {
             if (newValue && this.player.id === 1) {
                 var width = 100;
