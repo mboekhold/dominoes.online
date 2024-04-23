@@ -276,9 +276,9 @@ export default {
             }
         },
         async startGame() {
+            this.gameStarted = true;
             this.shuffleDominos();
             this.dealHand();
-            this.gameStarted = true;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
             const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;

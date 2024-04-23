@@ -12,8 +12,8 @@
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
                 :playerId="player.id" />
-            <div v-if="turn" class="flex justify-end mt-20 progress-bar-container">
-                <div class="progress-bar" :ref="'progressBar' + player.id">
+            <div class="flex justify-end mt-20 progress-bar-container" :class="{ 'hidden': !turn }">
+                <div class="progress-bar" :style="{ width: progressBarWidth }" :ref="'progressBar' + player.id">
 
                 </div>
             </div>
@@ -92,6 +92,22 @@ export default {
     methods: {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
+        },
+    },
+    computed: {
+        progressBarWidth() {
+            if (this.turn && this.player.id === 1) {
+                var width = 100;
+                setInterval(() => {
+                    if (width <= 0) {
+                        clearInterval(this.intervalId);
+                    } else {
+                        width -= 0.1;
+                        this.$refs.progressBar1.style.width = width + '%';
+                    }
+                }, 10);
+            }
+            return '100%'; // Return a default value or handle other cases
         },
     },
     watch: {
