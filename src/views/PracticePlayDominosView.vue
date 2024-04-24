@@ -1,7 +1,7 @@
 <!-- GAME MANAGER -->
 <template>
     <div>
-        <Board :playedDominos="playedDominos" :playableDomino="playableDomino" @on-play-domino="playDomino" />
+        <Board ref="board" :playableDomino="playableDomino" @on-play-domino="playDomino" />
         <div v-if="!gameStarted">
             <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
                 Start game
@@ -66,11 +66,13 @@ export default {
             }
         },
         dealTestHand() {
-            this.playerHand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 5))
-            this.playerHand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 5))
-            this.playerHand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
-            this.playerHand.push(this.dominoSet.find(x => x.top === 0 && x.bottom === 5))
-            this.playerHand.push(this.dominoSet.find(x => x.top === 0 && x.bottom === 0))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 5))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 5))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 2))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 6))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 6 && x.bottom === 6))
+            this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
         },
         onSelectedDomino(domino) {
             // Reset if they selected a playable domino but now they unselected it
@@ -184,7 +186,9 @@ export default {
             }
         },
         playDomino(domino, placement, rotate) {
-            if (this.currentPlayerTurn === 0) {
+            console.log('play domino');
+            console.log(this.currentPlayerTurn)
+            // if (this.currentPlayerTurn === 0) {
                 if (rotate) {
                     let bottom = domino.bottom
                     domino.bottom = domino.top;
@@ -193,16 +197,18 @@ export default {
                 // if placement is at the tail
                 if (placement === 0) {
                     this.playedDominos.splice(0, 0, domino);
+                    this.addToBoard(domino, 0);
                 } else {
                     this.playedDominos.splice(this.playedDominos.length, 0, domino)
+                    this.addToBoard(domino, 1);
                 }
                 this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
                 this.selectedDomino = null;
                 this.playableDomino = null;
-                this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                // this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                 clearTimeout(this.timeoutId);
                 this.resolve();
-            }
+            // }
         },
         opponentPlayerPlay(player) {
             // The player is playing the first domino, its the player with the double six
@@ -228,6 +234,7 @@ export default {
                         firstPlayableDomino.top = bottom;
                     }
                     this.playedDominos.splice(0, 0, firstPlayableDomino);
+                    this.addToBoard(firstPlayableDomino, 0);
                 } else if (playablePlacement.placement.includes(1)) {
                     if (playablePlacement.rotate1) {
                         let bottom = firstPlayableDomino.bottom
@@ -235,8 +242,10 @@ export default {
                         firstPlayableDomino.top = bottom;
                     }
                     this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+                    this.addToBoard(firstPlayableDomino, 1);
                 } else {
                     this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
+                    this.addToBoard(firstPlayableDomino, 1);
                 }
                 this.players[player].hand = this.players[player].hand.filter(d => d !== firstPlayableDomino);
             }
@@ -275,19 +284,23 @@ export default {
                 })
             }
         },
+        addToBoard(domino, placement) {
+            this.$refs.board.addToBoard(domino, placement);
+        },
         async startGame() {
             this.gameStarted = true;
             this.shuffleDominos();
-            this.dealHand();
-            this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
+            this.dealTestHand();
+            this.currentPlayerTurn === 0;
+            // this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
-            this.showNotification(this.playerWithDoubleSix, notificationMessage);
-            const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
-            this.currentPlayerTurn = playOrder[0];
-            while (true) {
-                await this.playRound();
-            }
+            // const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
+            // this.showNotification(this.playerWithDoubleSix, notificationMessage);
+            // const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
+            // this.currentPlayerTurn = playOrder[0];
+            // while (true) {
+            //     await this.playRound();
+            // }
         },
     }
 }
