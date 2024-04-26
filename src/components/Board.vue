@@ -59,12 +59,14 @@ export default {
             return domino.top === domino.bottom;
         },
         addToBoard(domino, placement) {
+            console.log(placement)
             // This is the first domino, don't need to check anything
             if (this.dominosOnBoard.length === 0) {
                 let dominoToAdd = {
                     domino: domino,
                     x: this.boardWidth / 2 + 27,
                     y: this.boardHeight / 2 + 5,
+                    placement: placement
                 }
                 this.dominosOnBoard.push(dominoToAdd);
                 return;
@@ -74,22 +76,45 @@ export default {
                 if (placement === 0) {
                     // Now check if its a double or not, if it is the spacing is different
                     if (this.isDouble(domino)) {
-                        dominoToAdd = {
-                            domino: domino,
-                            x: this.dominosOnBoard[0].x - this.dominoWidth,
-                            y: this.boardHeight / 2 + 5,
-
+                        if (this.dominosOnBoard.length === 0) {
+                            dominoToAdd = {
+                                domino: domino,
+                                x: this.dominosOnBoard[0].x - this.dominoWidth,
+                                y: this.boardHeight / 2 + 5,
+                                placement: placement
+                            }
+                        } else {
+                            dominoToAdd = {
+                                domino: domino,
+                                x: this.dominosOnBoard[0].x - this.dominoWidth,
+                                y: this.boardHeight / 2 + 5,
+                                placement: placement
+                            }
                         }
-                    // Not a double, so just use the normal spacing
+                        // Not a double, so just use the normal spacing
                     } else {
-                        // We need to check if the previous one was a normal domino or a double
-                        dominoToAdd = {
-                            domino: domino,
-                            x: this.dominosOnBoard[0].x - this.dominoHeight,
-                            y: this.boardHeight / 2 + 22,
+                        // We need to check if the previous one was a normal domino or a double and if its the same placement
+                        const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+                        if (this.isDouble(lastDomino.domino) && lastDomino.placement === 0) {
+                            console.log("LAST ONE WAS DOUBLE")
+                            dominoToAdd = {
+                                domino: domino,
+                                x: this.dominosOnBoard[0].x - this.dominoHeight,
+                                y: this.boardHeight / 2 + 25,
+                                placement: placement
+                            }
+                        } else {
+                            // Last one was not a double so we need more spacing
+                            console.log("A")
+                            dominoToAdd = {
+                                domino: domino,
+                                x: this.dominosOnBoard[0].x - this.dominoHeight,
+                                y: this.boardHeight / 2 + 25,
+                                placement: placement
+                            }
                         }
                     }
-                // Placement is 1, so we need to add to the right
+                    // Placement is 1, so we need to add to the right
                 } else {
                     // Now we check if its a double or not, if it is the spacing is different
                     if (this.isDouble(domino)) {
@@ -97,12 +122,40 @@ export default {
                             domino: domino,
                             x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
                             y: this.boardHeight / 2 + 5,
+                            placement: placement
                         }
+                        // Not a double, so just use the normal spacing
                     } else {
-                        dominoToAdd = {
-                            domino: domino,
-                            x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
-                            y: this.boardHeight / 2 + 22,
+                        // We need to check if the previous one was a normal domino or a double from the same placement
+                        const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+                        if (this.isDouble(lastDomino.domino)) {
+                            if (this.dominosOnBoard.length === 1) {
+                                console.log("1")
+                                dominoToAdd = {
+                                    domino: domino,
+                                    x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
+                                    y: this.boardHeight / 2 + 22,
+                                    placement: placement
+                                }
+                            } else {
+                                // if (lastDomino.placement === 1) {
+                                    dominoToAdd = {
+                                        domino: domino,
+                                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
+                                        y: this.boardHeight / 2 + 22,
+                                        placement: placement
+                                    }
+                                // }
+                            }
+                        } else {
+                            // Last one was not a double so we need more spacing
+                            console.log("OKOK1")
+                            dominoToAdd = {
+                                domino: domino,
+                                x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
+                                y: this.boardHeight / 2 + 22,
+                                placement: placement
+                            }
                         }
                     }
                 }
