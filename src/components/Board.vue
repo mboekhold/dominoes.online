@@ -4,21 +4,20 @@
             ref="board">
             <div v-if="playableDomino">
                 <div v-if="playableDomino.placement.includes(0)">
-                    <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
-                        @click="playDomino(0)">
+                    <div class="absolute" :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
+                        @click="playDomino(0)" :style="previewPlacement(playableDomino)">
                     </div>
                 </div>
-
             </div>
             <div v-for="domino in dominosOnBoard">
                 <Domino :domino="domino.domino" class="absolute" :style="getPlacement(domino)"
                     :placeHorizontal="!isDouble(domino.domino)" />
             </div>
-            <div class="flex">
+            <div>
                 <div v-if="playableDomino">
                     <div v-if="playableDomino.placement.includes(1)">
-                        <div :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
-                            @click="playDomino(1)">
+                        <div class="absolute" :class="{ 'domino-placeholder-horizontal': !isDouble(playableDomino.domino), 'domino-placeholder-vertical': isDouble(playableDomino.domino) }"
+                            @click="playDomino(1)" :style="previewPlacement(playableDomino)">
                         </div>
                     </div>
                 </div>
@@ -54,70 +53,72 @@ export default {
             } else {
                 this.$emit('on-play-domino', this.playableDomino.domino, 1, this.playableDomino.rotate1);
             }
-
         },
         isDouble(domino) {
             return domino.top === domino.bottom;
         },
-        addToBoard(domino, placement) {
+        previewPlacement(domino, placement) {
+            let dominoPlacement = this.getNextDominoPlacement(domino.domino, domino.placement);
+            return `top:${dominoPlacement.y}px; left: ${dominoPlacement.x}px`;
+        },
+        previewDominoPlacement(domino, placement) {
+            const dominoToAdd = this.getNextDominoPlacement(domino, placement);
+            return dominoToAdd;
+        },
+        getNextDominoPlacement(domino, placement) {
             // This is the first domino, don't need to check anything
             if (this.dominosOnBoard.length === 0) {
-                let dominoToAdd = {}
                 if (this.isDouble(domino)) {
-                    dominoToAdd = {
+                    return {
                         domino: domino,
                         x: this.boardWidth / 2,
                         y: this.boardHeight / 2,
                         placement: placement
                     }
-                } else {
-                    dominoToAdd = {
+                } else if (!this.isDouble(domino)) {
+                    return {
                         domino: domino,
                         x: this.boardWidth / 2,
                         y: this.boardHeight / 2 + this.horizontalDominoOffset,
                         placement: placement
                     }
                 }
-                this.dominosOnBoard.push(dominoToAdd);
-                return;
-            } else {
+            } else if (this.dominosOnBoard.length > 0) {
                 // check if left or right 0 is left, 1 is right
-                let dominoToAdd = {}
                 if (placement === 0) {
                     // Now check if its a double or not, if it is the spacing is different
                     if (this.isDouble(domino)) {
-                        // For edge case, we need to check if the last one was a normal one
+                        // For the edge case where someone doesnt start with a double, we need to check if 
+                        // the last one was a normal one
                         const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                         if (!this.isDouble(lastDomino.domino)) {
-                            dominoToAdd = {
+                            return {
                                 domino: domino,
                                 x: this.dominosOnBoard[0].x - this.dominoWidth,
                                 y: this.boardHeight / 2,
                                 placement: placement
                             }
-                        } else {
-                            dominoToAdd = {
-                                domino: domino,
-                                x: this.dominosOnBoard[0].x - this.dominoWidth,
-                                y: this.boardHeight / 2 + this.horizontalDominoOffset,
-                                placement: placement
-                            }
                         }
-                        // Not a double, so just use the normal spacing
-                    } else {
+                        return {
+                            domino: domino,
+                            x: this.dominosOnBoard[0].x - this.dominoWidth,
+                            y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                            placement: placement
+                        }
+                    } else if (!this.isDouble(domino)) {
                         // We need to check if the previous one was a normal domino or a double and if it was from the same placement
                         const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                         if (this.isDouble(lastDomino.domino) && lastDomino.placement === 0) {
-                            dominoToAdd = {
+                            return {
                                 domino: domino,
                                 x: this.dominosOnBoard[0].x - this.dominoHeight,
                                 // We want to put it in the middle, so thats why the offset
                                 y: this.boardHeight / 2 + this.horizontalDominoOffset,
                                 placement: placement
                             }
-                        } else {
+                        } else if (!this.isDouble(lastDomino.domino)) {
                             // Last one was not a double so we need more spacing
-                            dominoToAdd = {
+                            return {
                                 domino: domino,
                                 x: this.dominosOnBoard[0].x - this.dominoHeight,
                                 y: this.boardHeight / 2 + this.horizontalDominoOffset,
@@ -126,10 +127,10 @@ export default {
                         }
                     }
                     // Placement is 1, so we need to add to the right
-                } else if(placement === 1) {
+                } else if (placement === 1) {
                     // Now we check if its a double or not, if it is the spacing is different
                     if (this.isDouble(domino)) {
-                        dominoToAdd = {
+                        return {
                             domino: domino,
                             x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
                             y: this.boardHeight / 2,
@@ -139,58 +140,51 @@ export default {
                         // We need to check if the previous one was a normal domino or a double from the same placement
                         const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                         if (this.isDouble(lastDomino.domino)) {
-                            dominoToAdd = {
+                            return {
                                 domino: domino,
                                 x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
                                 y: this.boardHeight / 2 + this.horizontalDominoOffset,
                                 placement: placement
                             }
-                            // if (lastDomino.placement === 1) {
-                            dominoToAdd = {
+                        } else {
+                            // Last one was not a double so we need more spacing
+                            return {
                                 domino: domino,
-                                x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
+                                x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
                                 y: this.boardHeight / 2 + this.horizontalDominoOffset,
                                 placement: placement
                             }
-                            // }
-                    } else {
-                        // Last one was not a double so we need more spacing
-                        dominoToAdd = {
-                            domino: domino,
-                            x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
-                            y: this.boardHeight / 2 + this.horizontalDominoOffset,
-                            placement: placement
                         }
                     }
-    }
-}
-this.pushToBoard(dominoToAdd, placement);
+                }
+
             }
         },
-pushToBoard(dominoToAdd, placement) {
-    if (placement === 0) {
-        this.dominosOnBoard.unshift(dominoToAdd);
-    } else {
-        this.dominosOnBoard.push(dominoToAdd);
-    }
-},
-getPlacement(domino) {
-    return `top:${domino.y}px; left: ${domino.x}px`;
-}
+        addToBoard(domino, placement) {
+            const dominoToAdd = this.getNextDominoPlacement(domino, placement);
+            if (placement === 0) {
+                this.dominosOnBoard.unshift(dominoToAdd);
+            } else {
+                this.dominosOnBoard.push(dominoToAdd);
+            }
+        },
+        getPlacement(domino) {
+            return `top:${domino.y}px; left: ${domino.x}px`;
+        }
     },
-mounted() {
-    this.boardWidth = this.$refs.board.clientWidth;
-    this.boardHeight = this.$refs.board.clientHeight;
-},
-components: { Domino },
+    mounted() {
+        this.boardWidth = this.$refs.board.clientWidth;
+        this.boardHeight = this.$refs.board.clientHeight;
+    },
+    components: { Domino },
 }
 </script>
 <style scoped>
 .domino-placeholder-vertical {
-    @apply rounded-lg border border-yellow-200 h-24 w-14 px-1 flex justify-between flex-col relative cursor-pointer;
+    @apply rounded-lg border border-yellow-200 h-24 w-14 px-1 flex justify-between flex-col  cursor-pointer;
 }
 
 .domino-placeholder-horizontal {
-    @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col relative cursor-pointer;
+    @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col  cursor-pointer;
 }
 </style>
