@@ -1,7 +1,7 @@
 <!-- GAME MANAGER -->
 <template>
     <div>
-        <Board ref="board" :playableDomino="playableDomino" @on-play-domino="playDomino" />
+        <Board ref="board" @on-play-domino="playDomino" />
         <div v-if="!gameStarted">
             <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
                 Start game
@@ -74,141 +74,13 @@ export default {
             this.players[0].hand.push(this.dominoSet.find(x => x.top === 6 && x.bottom === 6))
             this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
         },
-        onSelectedDomino(domino) {
-            // Reset if they selected a playable domino but now they unselected it
-            if (this.playableDomino && !domino) {
-                this.playableDomino = null;
-            }
-            if (domino) {
-                let placement = this.checkNextPlacement(domino);
-                if (placement) {
-                    if (placement.canPlay) {
-                        //Show on board where it can be placed
-                        this.playableDomino = {
-                            "domino": domino,
-                            "placement": placement.placement,
-                            "rotate0": placement.rotate0,
-                            "rotate1": placement.rotate1
-                        };
-                    }
-                }
-            }
-            this.selectedDomino = domino;
+        onSelectedDomino(selectedDomino) {
+            this.$refs.board.previewDominoPlacement(selectedDomino);
         },
-        checkNextPlacement(domino) {
-            if (this.playedDominos.length === 0) {
-                return {
-                    canPlay: true,
-                    placement: [0],
-                    rotate0: false,
-                    rotate1: false
-                }
-            } else if (this.playedDominos.length === 1) {
-                let head = this.playedDominos[this.playedDominos.length - 1];
-                // Domino can be placed on both sides..
-                if ((head.top === domino.top || head.top === domino.bottom) && (head.bottom === domino.top || head.bottom === domino.bottom)) {
-                    return {
-                        canPlay: true,
-                        placement: [0, 1],
-                        rotate0: head.top === domino.top,
-                        rotate1: head.top === domino.bottom
-                    }
-                }
-                else if (head.top === domino.top) {
-                    return {
-                        canPlay: true,
-                        placement: [0],
-                        rotate0: true,
-                        rotate1: false
-                    }
-                } else if (head.top === domino.bottom) {
-                    return {
-                        canPlay: true,
-                        placement: [0],
-                        rotate0: false,
-                        rotate1: false
-                    }
-                } else if (head.bottom === domino.bottom) {
-                    return {
-                        canPlay: true,
-                        placement: [1],
-                        rotate0: false,
-                        rotate1: true
-                    }
-                } else if (head.bottom === domino.top) {
-                    return {
-                        canPlay: true,
-                        placement: [1],
-                        rotate0: false,
-                        rotate1: false
-                    }
-                }
-            } else {
-                let tail = this.playedDominos[0];
-                let head = this.playedDominos[this.playedDominos.length - 1];
-                if ((tail.top === domino.top || tail.top === domino.bottom) && (head.bottom === domino.top || head.bottom === domino.bottom)) {
-                    return {
-                        canPlay: true,
-                        placement: [0, 1],
-                        rotate0: tail.top === domino.top,
-                        rotate1: head.bottom === domino.bottom
-                    }
-                }
-                else if (tail.top === domino.top) {
-                    return {
-                        canPlay: true,
-                        placement: [0],
-                        rotate0: true,
-                        rotate1: false
-                    }
-                } else if (tail.top === domino.bottom) {
-                    return {
-                        canPlay: true,
-                        placement: [0],
-                        rotate0: false,
-                        rotate1: false,
-                    }
-                } else if (head.bottom === domino.top) {
-                    return {
-                        canPlay: true,
-                        placement: [1],
-                        rotate0: false,
-                        rotate1: false
-                    }
-                } else if (head.bottom === domino.bottom) {
-                    return {
-                        canPlay: true,
-                        placement: [1],
-                        rotate0: false,
-                        rotate1: true
-                    }
-                }
-            }
-        },
-        playDomino(domino, placement, rotate) {
-            console.log('play domino');
-            console.log(this.currentPlayerTurn)
-            // if (this.currentPlayerTurn === 0) {
-                if (rotate) {
-                    let bottom = domino.bottom
-                    domino.bottom = domino.top;
-                    domino.top = bottom;
-                }
-                // if placement is at the tail
-                if (placement === 0) {
-                    this.playedDominos.splice(0, 0, domino);
-                    this.addToBoard(domino, 0);
-                } else {
-                    this.playedDominos.splice(this.playedDominos.length, 0, domino)
-                    this.addToBoard(domino, 1);
-                }
-                this.players[0].hand = this.players[0].hand.filter(d => d !== domino);
-                this.selectedDomino = null;
-                this.playableDomino = null;
-                // this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
-                clearTimeout(this.timeoutId);
-                this.resolve();
-            // }
+        playDomino(domino) {
+            // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
+            const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
+            this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
         },
         opponentPlayerPlay(player) {
             // The player is playing the first domino, its the player with the double six
