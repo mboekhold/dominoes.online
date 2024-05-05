@@ -66,13 +66,22 @@ export default {
             }
         },
         dealTestHand() {
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 5))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 5))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 2))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 6))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 6 && x.bottom === 6))
-            this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 3))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 6))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 6 && x.bottom === 6))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 3))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 4))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 4 && x.bottom === 6))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 3))
+            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 3))
+            for (let i = 0; i < 20; i++) {
+                this.players[0].hand.push(this.dominoSet.pop());
+            }
         },
         onSelectedDomino(selectedDomino) {
             this.$refs.board.previewDominoPlacement(selectedDomino);

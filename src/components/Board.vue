@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10"
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 relative"
             ref="board">
             <div v-if="tailPreviewDomino" class="absolute"
                 :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
@@ -34,7 +34,7 @@ export default {
             horizontalDominoOffset: 20,
             tailTransitioningDominos: [],
             headTransitioningDominos: [],
-            transitionTail: false,
+            transitionTail: null,
             transitionOver: false,
             reverseTail: false,
             reverseHead: false,
@@ -65,6 +65,9 @@ export default {
             this.headPreviewDomino = null;
         },
         isDouble(domino) {
+            if(domino.forceHorizontal){
+                return false;
+            }
             return domino.top === domino.bottom || domino.forceVertical;
         },
         previewPlacement(domino, placement) {
@@ -84,9 +87,9 @@ export default {
                 const coordinates = this.getNextDominoPlacement(this.tailPreviewDomino, 0);
                 this.tailPreviewDomino.x = coordinates.x;
                 this.tailPreviewDomino.y = coordinates.y;
-                if (coordinates.forceVertical) {
-                    this.tailPreviewDomino.forceVertical = true;
-                }
+                this.tailPreviewDomino.reverse = coordinates.reverse;
+                this.tailPreviewDomino.forceHorizontal = coordinates.forceHorizontal;
+                this.tailPreviewDomino.forceVertical = coordinates.forceVertical;
             }
             if (domino.placement.includes(1)) {
                 this.headPreviewDomino = { ...domino };
@@ -187,6 +190,7 @@ export default {
                         return this.getTransitionOverDomino(domino);
                     }
                     else if (this.reverseTail) {
+                        console.log('reverse tail')
                         return this.getTailPlacementReverse(domino);
                     }
                     return this.getTailPlacement(domino);
@@ -207,7 +211,10 @@ export default {
             }
         },
         getPlacement(domino) {
-            return `top:${domino.y}px; left: ${domino.x}px`;
+            if(domino.reverse){
+                return `top:${domino.y}px; left: ${domino.x}px; transform: rotate(180deg);`;
+            }
+            return `top:${domino.y}px; left: ${domino.x}px;`;
         },
         isOverflowing(domino, placement) {
             if (this.dominosOnBoard.length === 0) {
@@ -274,36 +281,41 @@ export default {
             if (this.isDouble(domino)) {
                 // For the edge case where someone doesnt start with a double, we need to check if 
                 // the last one was a normal one
-                const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+                const lastDomino = this.dominosOnBoard[0]
                 if (!this.isDouble(lastDomino)) {
                     return {
                         x: this.dominosOnBoard[0].x + this.dominoWidth,
-                        y: this.boardHeight / 2 - this.dominoHeight,
+                        y: this.dominosOnBoard[0].y,
+                        reverse: true,
                     }
                 }
                 return {
-                    x: this.dominosOnBoard[0].x + this.dominoWidth,
-                    y: this.boardHeight / 2 - this.dominoHeight,
+                    x: this.dominosOnBoard[0].x + this.dominoHeight,
+                    y: this.dominosOnBoard[0].y,
+                    reverse: true,
                 }
             } else if (!this.isDouble(domino)) {
                 // We need to check if the previous one was a normal domino or a double and if it was from the same placement
-                const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+                const lastDomino = this.dominosOnBoard[0]
                 if (this.isDouble(lastDomino) && lastDomino.placement === 0) {
                     return {
                         x: this.dominosOnBoard[0].x + this.dominoHeight,
                         // We want to put it in the middle, so thats why the offset
-                        y: this.boardHeight / 2 - this.dominoHeight,
+                        y: this.dominosOnBoard[0].y,
+                        reverse: true,
                     }
                 } else if (!this.isDouble(lastDomino)) {
                     // Last one was not a double so we need more spacing
                     return {
                         x: this.dominosOnBoard[0].x + this.dominoHeight,
-                        y: this.boardHeight / 2 - this.dominoHeight,
+                        y: this.dominosOnBoard[0].y,
+                        reverse: true,
                     }
                 } else {
                     return {
                         x: this.dominosOnBoard[0].x + this.dominoHeight,
-                        y: this.boardHeight / 2 - this.dominoHeight,
+                        y: this.dominosOnBoard[0].y,
+                        reverse: true,
                     }
 
                 }
@@ -391,13 +403,12 @@ export default {
             }
         },
         getTransitionOverDomino(domino){
-            console.log('transition over domino');
             const lastDomino = this.dominosOnBoard[0]
-            console.log(lastDomino);
             return {
                 x: lastDomino.x + this.dominoWidth,
                 y: lastDomino.y,
                 forceHorizontal: true,
+                reverse: true,
             }
         }
     },
@@ -408,8 +419,9 @@ export default {
                 let head = newvalue[newvalue.length - 1];
                 if (this.isOverflowing(tail, 0)) {
                     // Now force the next 2 dominos to be placed vertical
-                    this.transitionTail = true;
-                    console.log('transition tail');
+                    if(this.transitionTail === null) {
+                        this.transitionTail = true;
+                    }
                     if(this.transitionTail){
                         this.tailTransitioningDominos.push(tail);
                         if (this.tailTransitioningDominos.length === 3) {
@@ -419,11 +431,11 @@ export default {
                         }
                     }
                     else if(this.transitionOver){
-                        // 
+                        this.transitionOver = false;
+                        this.reverseTail = true;
                     }
                 } else if (this.isOverflowing(head, 1)) {
                     this.reverseHead = true;
-                    console.log('overflowing head');
                 }
             },
             deep: true
