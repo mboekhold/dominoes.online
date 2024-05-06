@@ -172,8 +172,8 @@ export default {
             if (this.dominosOnBoard.length === 0) {
                 if (this.isDouble(domino)) {
                     return {
-                        x: this.boardWidth / 2,
-                        y: this.boardHeight / 2,
+                        x: this.boardWidth / 2 - this.dominoWidth / 2,
+                        y: this.boardHeight / 2 - this.dominoHeight / 2,
                     }
                 } else if (!this.isDouble(domino)) {
                     return {
@@ -223,7 +223,7 @@ export default {
             if (placement === 0) {
                 // Get the last played domino on the tail side
                 const lastDomino = this.dominosOnBoard[0];
-                if (lastDomino.x - this.dominoWidth <= 180) {
+                if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
                     return true;
                 }
             } else {
@@ -242,36 +242,36 @@ export default {
             if (this.isDouble(domino)) {
                 // For the edge case where someone doesnt start with a double, we need to check if 
                 // the last one was a normal one
-                const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+                const lastDomino = this.dominosOnBoard[0]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[0].x - this.dominoWidth,
-                        y: this.boardHeight / 2,
+                        x: lastDomino.x - this.dominoWidth,
+                        y: lastDomino.y - this.horizontalDominoOffset,
                     }
                 }
                 return {
-                    x: this.dominosOnBoard[0].x - this.dominoWidth,
-                    y: this.boardHeight / 2,
+                    x: lastDomino.x - this.dominoWidth,
+                    y: lastDomino.y,
                 }
             } else if (!this.isDouble(domino)) {
                 // We need to check if the previous one was a normal domino or a double and if it was from the same placement
-                const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
-                if (this.isDouble(lastDomino) && lastDomino.placement === 0) {
+                const lastDomino = this.dominosOnBoard[0]
+                if (this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[0].x - this.dominoHeight,
+                        x: lastDomino.x - this.dominoHeight,
                         // We want to put it in the middle, so thats why the offset
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        y: lastDomino.y + this.horizontalDominoOffset,
                     }
                 } else if (!this.isDouble(lastDomino)) {
                     // Last one was not a double so we need more spacing
                     return {
-                        x: this.dominosOnBoard[0].x - this.dominoHeight,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x - this.dominoHeight,
+                        y: lastDomino.y,
                     }
                 } else {
                     return {
-                        x: this.dominosOnBoard[0].x - this.dominoHeight,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x - this.dominoHeight,
+                        y: lastDomino.y,
                     }
 
                 }
@@ -284,14 +284,14 @@ export default {
                 const lastDomino = this.dominosOnBoard[0]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[0].x + this.dominoWidth,
-                        y: this.dominosOnBoard[0].y,
+                        x: lastDomino.x + this.dominoWidth,
+                        y: lastDomino.y,
                         reverse: true,
                     }
                 }
                 return {
-                    x: this.dominosOnBoard[0].x + this.dominoHeight,
-                    y: this.dominosOnBoard[0].y,
+                    x: lastDomino.x + this.dominoHeight,
+                    y: lastDomino.y,
                     reverse: true,
                 }
             } else if (!this.isDouble(domino)) {
@@ -299,22 +299,22 @@ export default {
                 const lastDomino = this.dominosOnBoard[0]
                 if (this.isDouble(lastDomino) && lastDomino.placement === 0) {
                     return {
-                        x: this.dominosOnBoard[0].x + this.dominoHeight,
+                        x: lastDomino.x + this.dominoHeight,
                         // We want to put it in the middle, so thats why the offset
-                        y: this.dominosOnBoard[0].y,
+                        y: lastDomino.y,
                         reverse: true,
                     }
                 } else if (!this.isDouble(lastDomino)) {
                     // Last one was not a double so we need more spacing
                     return {
-                        x: this.dominosOnBoard[0].x + this.dominoHeight,
-                        y: this.dominosOnBoard[0].y,
+                        x: lastDomino.x + this.dominoHeight,
+                        y: lastDomino.y,
                         reverse: true,
                     }
                 } else {
                     return {
-                        x: this.dominosOnBoard[0].x + this.dominoHeight,
-                        y: this.dominosOnBoard[0].y,
+                        x: lastDomino.x + this.dominoHeight,
+                        y: lastDomino.y,
                         reverse: true,
                     }
 
@@ -328,27 +328,27 @@ export default {
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
-                        y: this.boardHeight / 2,
+                        x: lastDomino.x + this.dominoHeight,
+                        y: lastDomino.y - this.horizontalDominoOffset,
                     }
                 }
                 return {
-                    x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
-                    y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                    x: lastDomino.x + this.dominoWidth,
+                    y: lastDomino.y - this.horizontalDominoOffset,
                 }
             } else {
                 // We need to check if the previous one was a normal domino or a double from the same placement
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoWidth,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x + this.dominoWidth,
+                        y: lastDomino.y + this.horizontalDominoOffset,
                     }
                 } else {
                     // Last one was not a double so we need more spacing
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x + this.dominoHeight,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x + this.dominoHeight,
+                        y: lastDomino.y,
                     }
                 }
             }
@@ -360,27 +360,27 @@ export default {
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x - this.dominoHeight,
-                        y: this.boardHeight / 2,
+                        x: lastDomino.x - this.dominoHeight,
+                        y: lastDomino.y - this.horizontalDominoOffset,
                     }
                 }
                 return {
-                    x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x - this.dominoWidth,
-                    y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                    x: lastDomino.x - this.dominoWidth,
+                    y: lastDomino.y - this.horizontalDominoOffset,
                 }
             } else {
                 // We need to check if the previous one was a normal domino or a double from the same placement
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (this.isDouble(lastDomino)) {
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x - this.dominoWidth,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x - this.dominoWidth,
+                        y: lastDomino.y,
                     }
                 } else {
                     // Last one was not a double so we need more spacing
                     return {
-                        x: this.dominosOnBoard[this.dominosOnBoard.length - 1].x - this.dominoHeight,
-                        y: this.boardHeight / 2 + this.horizontalDominoOffset,
+                        x: lastDomino.x - this.dominoHeight,
+                        y: lastDomino.y,
                     }
                 }
             }
@@ -391,14 +391,14 @@ export default {
             const lastDomino = this.dominosOnBoard[0]
             if (!this.isDouble(lastDomino)) {
                 return {
-                    x: this.dominosOnBoard[0].x,
-                    y: this.boardHeight / 2 - (this.dominoHeight - this.verticalDominoOffset),
+                    x: lastDomino.x,
+                    y: lastDomino.y - (this.dominoHeight),
                     forceVertical: true,
                 }
             }
             return {
-                x: this.dominosOnBoard[0].x,
-                y: this.dominosOnBoard[0].y - (this.dominoHeight),
+                x: lastDomino.x,
+                y: lastDomino.y - this.dominoHeight,
                 forceVertical: true,
             }
         },
