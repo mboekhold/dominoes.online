@@ -35,10 +35,12 @@ export default {
             tailTransitioningDominos: [],
             headTransitioningDominos: [],
             transitionTail: null,
-            transitionOver: false,
+            transitionTailOver: false,
             reverseTail: false,
             reverseHead: false,
             transitionHead: false,
+            transitionHeadOver: false,
+            currentHeadRow: 0,
             currentTailRow: 0,
         }
     },
@@ -97,6 +99,9 @@ export default {
                 const coordinates = this.getNextDominoPlacement(this.headPreviewDomino, 1);
                 this.headPreviewDomino.x = coordinates.x;
                 this.headPreviewDomino.y = coordinates.y;
+                this.headPreviewDomino.reverse = coordinates.reverse;
+                this.headPreviewDomino.forceHorizontal = coordinates.forceHorizontal;
+                this.headPreviewDomino.forceVertical = coordinates.forceVertical;
             }
         },
         setNextPlacementDetails(domino) {
@@ -187,8 +192,8 @@ export default {
                     if (this.transitionTail) {
                         return this.getTailTransitioningDomino(domino);
                     }
-                    else if (this.transitionOver) {
-                        return this.getTransitionOverDomino(domino);
+                    else if (this.transitionTailOver) {
+                        return this.getTransitionTailOverDomino(domino);
                     }
                     else if (this.reverseTail) {
                         console.log('reverse tail')
@@ -196,6 +201,12 @@ export default {
                     }
                     return this.getTailPlacement(domino);
                 } else if (placement === 1) {
+                    if(this.transitionHead) {
+                        return this.getHeadTransitioningDomino(domino);
+                    }
+                    else if (this.transitionHeadOver) {
+                        return this.getTransitionHeadOverDomino(domino);
+                    }
                     if (this.reverseHead) {
                         return this.getHeadPlacementReverse(domino);
                     }
@@ -237,9 +248,11 @@ export default {
                 }
                 // Get the last played domino on the tail side
             } else {
-                const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
-                if (lastDomino.x + this.dominoWidth >= this.boardWidth) {
-                    return true;
+                if(this.currentHeadRow % 2 === 0) {
+                    const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+                    if (lastDomino.x + (this.dominoHeight * 2) >= this.boardWidth) {
+                        return true;
+                    }
                 }
             }
         },
@@ -315,6 +328,7 @@ export default {
                         reverse: true,
                     }
                 } else if (!this.isDouble(lastDomino)) {
+                    console.log("Last domino was not a double")
                     // Last one was not a double so we need more spacing
                     return {
                         x: lastDomino.x + this.dominoHeight,
@@ -412,7 +426,33 @@ export default {
                 forceVertical: true,
             }
         },
-        getTransitionOverDomino(domino) {
+        getHeadTransitioningDomino(domino) {
+            // For the edge case where someone doesnt start with a double, we need to check if 
+            // the last one was a normal one
+            const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+            if (!this.isDouble(lastDomino)) {
+                return {
+                    x: lastDomino.x + this.dominoHeight / 2 - 5,
+                    y: lastDomino.y + this.dominoWidth,
+                    forceVertical: true,
+                }
+            }
+            return {
+                x: lastDomino.x,
+                y: lastDomino.y + this.dominoHeight,
+                forceVertical: true,
+            }
+        },
+        getTransitionTailOverDomino(domino) {
+            const lastDomino = this.dominosOnBoard[0]
+            return {
+                x: lastDomino.x + this.dominoWidth,
+                y: lastDomino.y,
+                forceHorizontal: true,
+                reverse: true,
+            }
+        },
+        getTransitionHeadOverDomino(domino) {
             const lastDomino = this.dominosOnBoard[0]
             return {
                 x: lastDomino.x + this.dominoWidth,
@@ -427,23 +467,34 @@ export default {
             handler(newvalue) {
                 let tail = newvalue[0];
                 let head = newvalue[newvalue.length - 1];
-                console.log(tail)
                 if (this.isOverflowing(tail, 0)) {
                     // Now force the next 2 dominos to be placed vertical
                     this.transitionTail = true;
                     this.tailTransitioningDominos.push(tail);
                     if (this.tailTransitioningDominos.length === 3) {
                         this.transitionTail = false;
-                        this.transitionOver = true;
+                        this.transitionTailOver = true;
                         this.tailTransitioningDominos = [];
                         this.currentTailRow++;
                     }
-                } else if (this.transitionOver) {
-                    this.transitionOver = false;
+                } 
+                if (this.transitionTailOver) {
+                    this.transitionTailOver = false;
                     this.reverseTail = true;
                 }
-                else if (this.isOverflowing(head, 1)) {
+                if (this.isOverflowing(head, 1)) {
                     this.reverseHead = true;
+                }
+                if(this.isOverflowing(head, 1)) {
+                    this.transitionHead = true;
+                    this.headTransitioningDominos.push(head);
+                    console.log("Overflowing head")
+                    if (this.headTransitioningDominos.length === 3) {
+                        this.transitionHead = false;
+                        this.transitionHeadOver = true;
+                        this.headTransitioningDominos = [];
+                        this.currentHeadRow++;
+                    }
                 }
             },
             deep: true
