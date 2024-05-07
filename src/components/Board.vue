@@ -39,6 +39,7 @@ export default {
             reverseTail: false,
             reverseHead: false,
             transitionHead: false,
+            currentTailRow: 0,
         }
     },
     methods: {
@@ -65,7 +66,7 @@ export default {
             this.headPreviewDomino = null;
         },
         isDouble(domino) {
-            if(domino.forceHorizontal){
+            if (domino.forceHorizontal) {
                 return false;
             }
             return domino.top === domino.bottom || domino.forceVertical;
@@ -186,7 +187,7 @@ export default {
                     if (this.transitionTail) {
                         return this.getTailTransitioningDomino(domino);
                     }
-                    else if(this.transitionOver){
+                    else if (this.transitionOver) {
                         return this.getTransitionOverDomino(domino);
                     }
                     else if (this.reverseTail) {
@@ -211,7 +212,7 @@ export default {
             }
         },
         getPlacement(domino) {
-            if(domino.reverse){
+            if (domino.reverse) {
                 return `top:${domino.y}px; left: ${domino.x}px; transform: rotate(180deg);`;
             }
             return `top:${domino.y}px; left: ${domino.x}px;`;
@@ -221,11 +222,20 @@ export default {
                 return false;
             }
             if (placement === 0) {
-                // Get the last played domino on the tail side
-                const lastDomino = this.dominosOnBoard[0];
-                if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
-                    return true;
+                if (this.currentTailRow % 2 === 0) {
+                    const lastDomino = this.dominosOnBoard[0];
+                    if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
+                        return true;
+                    }
+                } else {
+                    const lastDomino = this.dominosOnBoard[0];
+                    console.log(lastDomino.x)
+                    console.log(this.boardWidth)
+                    if (lastDomino.x + this.dominoHeight >= this.boardWidth) {
+                        return true;
+                    }
                 }
+                // Get the last played domino on the tail side
             } else {
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
                 if (lastDomino.x + this.dominoWidth >= this.boardWidth) {
@@ -284,24 +294,24 @@ export default {
                 const lastDomino = this.dominosOnBoard[0]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x + this.dominoWidth,
-                        y: lastDomino.y,
+                        x: lastDomino.x + this.dominoHeight,
+                        y: lastDomino.y - this.horizontalDominoOffset,
                         reverse: true,
                     }
                 }
                 return {
-                    x: lastDomino.x + this.dominoHeight,
+                    x: lastDomino.x + this.dominoWidth,
                     y: lastDomino.y,
                     reverse: true,
                 }
             } else if (!this.isDouble(domino)) {
                 // We need to check if the previous one was a normal domino or a double and if it was from the same placement
                 const lastDomino = this.dominosOnBoard[0]
-                if (this.isDouble(lastDomino) && lastDomino.placement === 0) {
+                if (this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x + this.dominoHeight,
+                        x: lastDomino.x + this.dominoWidth,
                         // We want to put it in the middle, so thats why the offset
-                        y: lastDomino.y,
+                        y: lastDomino.y + this.horizontalDominoOffset,
                         reverse: true,
                     }
                 } else if (!this.isDouble(lastDomino)) {
@@ -402,7 +412,7 @@ export default {
                 forceVertical: true,
             }
         },
-        getTransitionOverDomino(domino){
+        getTransitionOverDomino(domino) {
             const lastDomino = this.dominosOnBoard[0]
             return {
                 x: lastDomino.x + this.dominoWidth,
@@ -417,24 +427,22 @@ export default {
             handler(newvalue) {
                 let tail = newvalue[0];
                 let head = newvalue[newvalue.length - 1];
+                console.log(tail)
                 if (this.isOverflowing(tail, 0)) {
                     // Now force the next 2 dominos to be placed vertical
-                    if(this.transitionTail === null) {
-                        this.transitionTail = true;
+                    this.transitionTail = true;
+                    this.tailTransitioningDominos.push(tail);
+                    if (this.tailTransitioningDominos.length === 3) {
+                        this.transitionTail = false;
+                        this.transitionOver = true;
+                        this.tailTransitioningDominos = [];
+                        this.currentTailRow++;
                     }
-                    if(this.transitionTail){
-                        this.tailTransitioningDominos.push(tail);
-                        if (this.tailTransitioningDominos.length === 3) {
-                            this.transitionTail = false;
-                            this.transitionOver = true;
-                            this.tailTransitioningDominos = [];
-                        }
-                    }
-                    else if(this.transitionOver){
-                        this.transitionOver = false;
-                        this.reverseTail = true;
-                    }
-                } else if (this.isOverflowing(head, 1)) {
+                } else if (this.transitionOver) {
+                    this.transitionOver = false;
+                    this.reverseTail = true;
+                }
+                else if (this.isOverflowing(head, 1)) {
                     this.reverseHead = true;
                 }
             },
