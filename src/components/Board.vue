@@ -15,6 +15,9 @@
                 :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                 @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
             </div>
+            <div class="absolute -bottom-36 h-32 w-10">
+
+            </div>
         </div>
     </div>
 </template>
@@ -196,7 +199,6 @@ export default {
                         return this.getTransitionTailOverDomino(domino);
                     }
                     else if (this.reverseTail) {
-                        console.log('reverse tail')
                         return this.getTailPlacementReverse(domino);
                     }
                     return this.getTailPlacement(domino);
@@ -204,10 +206,10 @@ export default {
                     if(this.transitionHead) {
                         return this.getHeadTransitioningDomino(domino);
                     }
-                    else if (this.transitionHeadOver) {
+                    if (this.transitionHeadOver) {
                         return this.getTransitionHeadOverDomino(domino);
                     }
-                    if (this.reverseHead) {
+                    else if (this.reverseHead) {
                         return this.getHeadPlacementReverse(domino);
                     }
                     return this.getHeadPlacement(domino);
@@ -240,8 +242,6 @@ export default {
                     }
                 } else {
                     const lastDomino = this.dominosOnBoard[0];
-                    console.log(lastDomino.x)
-                    console.log(this.boardWidth)
                     if (lastDomino.x + this.dominoHeight >= this.boardWidth) {
                         return true;
                     }
@@ -328,8 +328,6 @@ export default {
                         reverse: true,
                     }
                 } else if (!this.isDouble(lastDomino)) {
-                    console.log("Last domino was not a double")
-                    // Last one was not a double so we need more spacing
                     return {
                         x: lastDomino.x + this.dominoHeight,
                         y: lastDomino.y,
@@ -384,27 +382,31 @@ export default {
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x - this.dominoHeight,
+                        x: lastDomino.x - this.dominoWidth,
                         y: lastDomino.y - this.horizontalDominoOffset,
+                        reverse: true,
                     }
                 }
                 return {
                     x: lastDomino.x - this.dominoWidth,
                     y: lastDomino.y - this.horizontalDominoOffset,
+                    reverse: true,
                 }
             } else {
                 // We need to check if the previous one was a normal domino or a double from the same placement
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x - this.dominoWidth,
-                        y: lastDomino.y,
+                        x: lastDomino.x - this.dominoHeight,
+                        y: lastDomino.y + this.horizontalDominoOffset,
+                        reverse: true,
                     }
                 } else {
                     // Last one was not a double so we need more spacing
                     return {
                         x: lastDomino.x - this.dominoHeight,
                         y: lastDomino.y,
+                        reverse: true,
                     }
                 }
             }
@@ -453,10 +455,11 @@ export default {
             }
         },
         getTransitionHeadOverDomino(domino) {
-            const lastDomino = this.dominosOnBoard[0]
+            const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+            console.log("aqui")
             return {
-                x: lastDomino.x + this.dominoWidth,
-                y: lastDomino.y,
+                x: lastDomino.x - this.dominoHeight,
+                y: lastDomino.y + this.dominoHeight / 2 - 10,
                 forceHorizontal: true,
                 reverse: true,
             }
@@ -478,23 +481,23 @@ export default {
                         this.currentTailRow++;
                     }
                 } 
-                if (this.transitionTailOver) {
+                else if (this.transitionTailOver) {
                     this.transitionTailOver = false;
                     this.reverseTail = true;
-                }
-                if (this.isOverflowing(head, 1)) {
-                    this.reverseHead = true;
                 }
                 if(this.isOverflowing(head, 1)) {
                     this.transitionHead = true;
                     this.headTransitioningDominos.push(head);
-                    console.log("Overflowing head")
                     if (this.headTransitioningDominos.length === 3) {
                         this.transitionHead = false;
                         this.transitionHeadOver = true;
                         this.headTransitioningDominos = [];
                         this.currentHeadRow++;
                     }
+                }
+                else if (this.transitionHeadOver) {
+                    this.transitionHeadOver = false;
+                    this.reverseHead = true;
                 }
             },
             deep: true
