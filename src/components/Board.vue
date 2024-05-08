@@ -2,6 +2,8 @@
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 relative"
             ref="board">
+            <div class="absolute -top-28 h-32 w-10">
+            </div>
             <div v-if="tailPreviewDomino" class="absolute"
                 :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
                 @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
@@ -15,8 +17,7 @@
                 :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                 @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
             </div>
-            <div class="absolute -bottom-36 h-32 w-10">
-
+            <div class="absolute -bottom-28 h-32 w-10">
             </div>
         </div>
     </div>
@@ -250,7 +251,7 @@ export default {
             } else {
                 if(this.currentHeadRow % 2 === 0) {
                     const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
-                    if (lastDomino.x + (this.dominoHeight * 2) >= this.boardWidth) {
+                    if (lastDomino.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
                         return true;
                     }
                 }
