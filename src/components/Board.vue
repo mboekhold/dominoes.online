@@ -206,7 +206,7 @@ export default {
                         return this.getTailPlacement(domino);
                     } else if (this.currentTailRow % 2 === 1) {
                         if (this.transitionTail) {
-                            return this.getTailTransitioningDomino(domino);
+                            return this.getTailTransitioningDominoReverse(domino);
                         }
                         else if (this.transitionTailOver) {
                             return this.getTransitionTailOverDomino(domino);
@@ -444,16 +444,17 @@ export default {
             }
         },
         getTailTransitioningDominoReverse(domino) {
+            console.log('reverse')
             const lastDomino = this.dominosOnBoard[0]
             if (!this.isDouble(lastDomino)) {
                 return {
-                    x: lastDomino.x - this.dominoWidth,
-                    y: lastDomino.y - this.dominoHeight,
+                    x: lastDomino.x + this.dominoWidth - 18,
+                    y: lastDomino.y - (this.dominoHeight),
                     forceVertical: true,
                 }
             }
             return {
-                x: lastDomino.x - this.dominoWidth,
+                x: lastDomino.x,
                 y: lastDomino.y - this.dominoHeight,
                 forceVertical: true,
             }
