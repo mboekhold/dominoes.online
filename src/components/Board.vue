@@ -179,7 +179,6 @@ export default {
             }
         },
         getNextDominoPlacement(domino, placement) {
-            console.log(this.currentTailRow)
             if (this.dominosOnBoard.length === 0) {
                 if (this.isDouble(domino)) {
                     return {
@@ -202,12 +201,10 @@ export default {
                             return this.getTransitionTailOverDominoReverse(domino);
                         }
                         else if (this.reverseTail) {
-                            return this.getTailPlacementReverse(domino);
+                            return this.getTailPlacement(domino);
                         }
-                        console.log("A")
                         return this.getTailPlacement(domino);
                     } else if (this.currentTailRow % 2 === 1) {
-                        console.log("B")
                         if (this.transitionTail) {
                             return this.getTailTransitioningDomino(domino);
                         }
@@ -215,6 +212,7 @@ export default {
                             return this.getTransitionTailOverDomino(domino);
                         }
                         else if (this.reverseTail) {
+                            
                             return this.getTailPlacementReverse(domino);
                         }
                         return this.getTailPlacement(domino);

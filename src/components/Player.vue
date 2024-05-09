@@ -11,7 +11,7 @@
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                :playerId="player.id" />
+                :playerId="player.id" class="w-full overflow-auto" />
             <div class="flex justify-end mt-20 progress-bar-container" :class="{ 'hidden': !turn }">
                 <div class="progress-bar" :style="{ width: progressBarWidth }" :ref="'progressBar' + player.id">
 
