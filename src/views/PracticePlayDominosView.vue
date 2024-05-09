@@ -79,7 +79,7 @@ export default {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 3))
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 3))
-            for (let i = 0; i < 20; i++) {
+            for (let i = 0; i < 27; i++) {
                 this.players[0].hand.push(this.dominoSet.pop());
             }
         },
