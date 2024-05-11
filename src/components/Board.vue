@@ -2,8 +2,6 @@
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 relative"
             ref="board">
-            <div class="absolute -top-32 h-44 w-10">
-            </div>
             <div v-if="tailPreviewDomino" class="absolute"
                 :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
                 @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
@@ -17,8 +15,7 @@
                 :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                 @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
             </div>
-            <div class="absolute -bottom-60 h-10 w-10">
-            </div>
+            <div class="absolute" ref="boardScroll"></div>
         </div>
     </div>
 </template>
@@ -183,11 +180,11 @@ export default {
                 if (this.isDouble(domino)) {
                     return {
                         x: this.boardWidth / 2 - this.dominoWidth / 2,
-                        y: this.boardHeight / 2 - this.dominoHeight / 2 + 100,
+                        y: this.boardHeight / 2 - this.dominoHeight / 2,
                     }
                 } else if (!this.isDouble(domino)) {
                     return {
-                        x: this.boardWidth / 2,
+                        x: this.boardWidth / 2 - this.dominoHeight / 2,
                         y: this.boardHeight / 2 + this.horizontalDominoOffset,
                     }
                 }
@@ -209,12 +206,14 @@ export default {
                             return this.getTailTransitioningDominoReverse(domino);
                         }
                         else if (this.transitionTailOver) {
+                            console.log("A")
                             return this.getTransitionTailOverDomino(domino);
                         }
                         else if (this.reverseTail) {
-                            
+                            console.log("B")
                             return this.getTailPlacementReverse(domino);
                         }
+                        console.log("C")
                         return this.getTailPlacement(domino);
                     }
                 } else if (placement === 1) {
@@ -444,7 +443,6 @@ export default {
             }
         },
         getTailTransitioningDominoReverse(domino) {
-            console.log('reverse')
             const lastDomino = this.dominosOnBoard[0]
             if (!this.isDouble(lastDomino)) {
                 return {
@@ -501,13 +499,37 @@ export default {
                 forceHorizontal: true,
                 reverse: true,
             }
+        },
+        moveDominoDown() {
+            this.dominosOnBoard.forEach((domino) => {
+                domino.y += this.dominoHeight + 20;
+            });
+        }
+    },
+    computed: {
+        isTailOverflowing() {
+            const lastDomino = this.dominosOnBoard[0];
+            if(this.currentTailRow % 2 === 0) {
+                if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
+                    return true;
+                }
+            } else {
+                if (lastDomino.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
+                    return true;
+                }
+            }
+            return false;
         }
     },
     watch: {
         dominosOnBoard: {
-            handler(newvalue) {
+            handler(newvalue, oldvalue) {
+                console.log("watcher")
+                console.log(newvalue)
+                console.log(oldvalue)
                 let tail = newvalue[0];
                 let head = newvalue[newvalue.length - 1];
+                console.log("handler")
                 if (this.isOverflowing(tail, 0)) {
                     // Now force the next 2 dominos to be placed vertical
                     this.transitionTail = true;
@@ -517,6 +539,7 @@ export default {
                         this.transitionTailOver = true;
                         this.tailTransitioningDominos = [];
                         this.currentTailRow++;
+                        this.moveDominoDown();
                     }
                 }
                 else if (this.transitionTailOver) {
@@ -543,8 +566,7 @@ export default {
     },
     mounted() {
         this.boardWidth = this.$refs.board.clientWidth;
-        this.boardHeight = this.$refs.board.scrollHeight;
-        this.$refs.board.scrollTo(0, 100);
+        this.boardHeight = this.$refs.board.clientHeight;
     },
     components: { Domino },
 }
