@@ -35,7 +35,7 @@ export default {
             horizontalDominoOffset: 20,
             tailTransitioningDominos: [],
             headTransitioningDominos: [],
-            transitionTail: null,
+            // transitionTail: null,
             transitionTailOver: false,
             reverseTail: false,
             reverseHead: false,
@@ -507,18 +507,23 @@ export default {
         }
     },
     computed: {
-        isTailOverflowing() {
-            const lastDomino = this.dominosOnBoard[0];
+        transitionTail() {
+            const lastDomino = this.dominosOnBoard[0]
+            if(this.tailTransitioningDominos.length === 2) {
+                return false;
+            }
             if(this.currentTailRow % 2 === 0) {
                 if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
                     return true;
                 }
-            } else {
+                return false
+            }
+            else if(this.currentTailRow % 2 === 1) {
                 if (lastDomino.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
                     return true;
                 }
+                return false
             }
-            return false;
         }
     },
     watch: {
@@ -561,7 +566,7 @@ export default {
                     this.reverseHead = true;
                 }
             },
-            deep: true
+            // deep: true
         }
     },
     mounted() {
