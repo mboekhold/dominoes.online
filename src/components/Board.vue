@@ -15,7 +15,7 @@
                 :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                 @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
             </div>
-            <div class="absolute" ref="boardScroll"></div>
+            <div class="absolute -bottom-32 w-10 h-10" ref="boardScroll"></div>
         </div>
     </div>
 </template>
@@ -36,7 +36,6 @@ export default {
             tailTransitioningDominos: [],
             headTransitioningDominos: [],
             // transitionTail: null,
-            transitionTailOver: false,
             reverseTail: false,
             reverseHead: false,
             transitionHead: false,
@@ -94,6 +93,8 @@ export default {
                 this.tailPreviewDomino.reverse = coordinates.reverse;
                 this.tailPreviewDomino.forceHorizontal = coordinates.forceHorizontal;
                 this.tailPreviewDomino.forceVertical = coordinates.forceVertical;
+                this.tailPreviewDomino.transitioning = coordinates.transitioning;
+                this.tailPreviewDomino.transitionOver = coordinates.transitionOver;
             }
             if (domino.placement.includes(1)) {
                 this.headPreviewDomino = { ...domino };
@@ -103,6 +104,8 @@ export default {
                 this.headPreviewDomino.reverse = coordinates.reverse;
                 this.headPreviewDomino.forceHorizontal = coordinates.forceHorizontal;
                 this.headPreviewDomino.forceVertical = coordinates.forceVertical;
+                this.headPreviewDomino.transitioning = coordinates.transitioning;
+                this.headPreviewDomino.transitionOver = coordinates.transitionOver;
             }
         },
         setNextPlacementDetails(domino) {
@@ -192,16 +195,18 @@ export default {
                 if (placement === 0) {
                     if (this.currentTailRow % 2 === 0) {
                         if (this.transitionTail) {
+                            console.log("A")
                             return this.getTailTransitioningDomino(domino);
                         }
                         else if (this.transitionTailOver) {
-                            return this.getTransitionTailOverDominoReverse(domino);
+                            return this.getTransitionTailOverDomino(domino);
                         }
                         else if (this.reverseTail) {
                             return this.getTailPlacement(domino);
                         }
                         return this.getTailPlacement(domino);
                     } else if (this.currentTailRow % 2 === 1) {
+                        console.log("HERE")
                         if (this.transitionTail) {
                             return this.getTailTransitioningDominoReverse(domino);
                         }
@@ -234,6 +239,10 @@ export default {
             domino["placement"] = placement;
             if (placement === 0) {
                 this.dominosOnBoard.unshift(domino);
+                if(domino.transitionOver) {
+                    this.currentTailRow++;
+                    this.moveDominoDown();
+                }
             } else {
                 this.dominosOnBoard.push(domino);
             }
@@ -434,12 +443,14 @@ export default {
                     x: lastDomino.x,
                     y: lastDomino.y - (this.dominoHeight),
                     forceVertical: true,
+                    transitioning: true,
                 }
             }
             return {
                 x: lastDomino.x,
                 y: lastDomino.y - this.dominoHeight,
                 forceVertical: true,
+                transitioning: true,
             }
         },
         getTailTransitioningDominoReverse(domino) {
@@ -449,12 +460,14 @@ export default {
                     x: lastDomino.x + this.dominoWidth - 18,
                     y: lastDomino.y - (this.dominoHeight),
                     forceVertical: true,
+                    transitioning: true,
                 }
             }
             return {
                 x: lastDomino.x,
                 y: lastDomino.y - this.dominoHeight,
                 forceVertical: true,
+                transitioning: true,
             }
         },
         getHeadTransitioningDomino(domino) {
@@ -466,12 +479,14 @@ export default {
                     x: lastDomino.x + this.dominoHeight / 2 - 5,
                     y: lastDomino.y + this.dominoWidth,
                     forceVertical: true,
+                    transitioning: true,
                 }
             }
             return {
                 x: lastDomino.x,
                 y: lastDomino.y + this.dominoHeight,
                 forceVertical: true,
+                transitioning: true,
             }
         },
         getTransitionTailOverDomino(domino) {
@@ -481,7 +496,9 @@ export default {
                 y: lastDomino.y,
                 forceHorizontal: true,
                 reverse: true,
+                transitionOver: true,
             }
+           
         },
         getTransitionTailOverDominoReverse(domino) {
             const lastDomino = this.dominosOnBoard[0]
@@ -501,15 +518,22 @@ export default {
             }
         },
         moveDominoDown() {
+            const currentScroll = this.$refs.board.scrollTop;
             this.dominosOnBoard.forEach((domino) => {
                 domino.y += this.dominoHeight + 20;
             });
+            
+            
+            this.$refs.board.scrollTo(0, currentScroll + this.dominoHeight + 20);
         }
     },
     computed: {
         transitionTail() {
-            const lastDomino = this.dominosOnBoard[0]
-            if(this.tailTransitioningDominos.length === 2) {
+            const lastDomino = this.dominosOnBoard[0];
+            const last2Dominos = this.dominosOnBoard.slice(0, 2);
+            // Tranisition is done when the last 2 dominos are transitioning
+            const count = last2Dominos.filter(domino => domino.transitioning).length;
+            if(count === 2) {
                 return false;
             }
             if(this.currentTailRow % 2 === 0) {
@@ -524,7 +548,15 @@ export default {
                 }
                 return false
             }
-        }
+        },
+        transitionTailOver() {
+            const last2Dominos = this.dominosOnBoard.slice(0, 2);
+            const count = last2Dominos.filter(domino => domino.transitioning).length;
+            if(count === 2) {
+                this.reverseTail = true;
+                return true;
+            }
+        },
     },
     watch: {
         dominosOnBoard: {
