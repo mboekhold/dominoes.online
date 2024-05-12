@@ -194,8 +194,8 @@ export default {
             } else if (this.dominosOnBoard.length > 0) {
                 if (placement === 0) {
                     if (this.currentTailRow % 2 === 0) {
+                        console.log("A")
                         if (this.transitionTail) {
-                            console.log("A")
                             return this.getTailTransitioningDomino(domino);
                         }
                         else if (this.transitionTailOver) {
@@ -206,19 +206,16 @@ export default {
                         }
                         return this.getTailPlacement(domino);
                     } else if (this.currentTailRow % 2 === 1) {
-                        console.log("HERE")
+                        console.log("B")
                         if (this.transitionTail) {
                             return this.getTailTransitioningDominoReverse(domino);
                         }
                         else if (this.transitionTailOver) {
-                            console.log("A")
-                            return this.getTransitionTailOverDomino(domino);
+                            return this.getTransitionTailOverDominoReverse(domino);
                         }
                         else if (this.reverseTail) {
-                            console.log("B")
                             return this.getTailPlacementReverse(domino);
                         }
-                        console.log("C")
                         return this.getTailPlacement(domino);
                     }
                 } else if (placement === 1) {
@@ -240,6 +237,7 @@ export default {
             if (placement === 0) {
                 this.dominosOnBoard.unshift(domino);
                 if(domino.transitionOver) {
+                    console.log(this.currentTailRow)
                     this.currentTailRow++;
                     this.moveDominoDown();
                 }
@@ -506,6 +504,7 @@ export default {
                 x: lastDomino.x - this.dominoHeight,
                 y: lastDomino.y,
                 forceHorizontal: true,
+                transitionOver: true,
             }
         },
         getTransitionHeadOverDomino(domino) {
@@ -520,11 +519,11 @@ export default {
         moveDominoDown() {
             const currentScroll = this.$refs.board.scrollTop;
             this.dominosOnBoard.forEach((domino) => {
-                domino.y += this.dominoHeight + 20;
+                domino.y += this.dominoHeight * 2 + 20;
             });
             
             
-            this.$refs.board.scrollTo(0, currentScroll + this.dominoHeight + 20);
+            this.$refs.board.scrollTo(0, currentScroll + this.dominoHeight * 2 + 20);
         }
     },
     computed: {
