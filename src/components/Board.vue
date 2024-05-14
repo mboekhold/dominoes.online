@@ -1,21 +1,23 @@
 <template>
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 relative"
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 py-16 relative"
             ref="board">
-            <div v-if="tailPreviewDomino" class="absolute"
-                :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
-                @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
+            <div ref="playingArea" class="relative h-full w-full overflow-auto">
+                <div v-if="tailPreviewDomino" class="absolute"
+                    :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
+                    @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
+                </div>
+                    <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute" :style="getPlacement(domino)"
+                        :placeHorizontal="!isDouble(domino)" :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
+                    </Domino>
+                <div v-if="headPreviewDomino" class="absolute"
+                    :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
+                    @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
+                </div>
+                <div class="absolute h-10 w-10 -bottom-60">
+
+                </div>
             </div>
-            <div v-for="domino in dominosOnBoard">
-                <Domino :domino="domino" class="absolute" :style="getPlacement(domino)"
-                    :placeHorizontal="!isDouble(domino)" :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
-                </Domino>
-            </div>
-            <div v-if="headPreviewDomino" class="absolute"
-                :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
-                @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
-            </div>
-            <div class="absolute -bottom-32 w-10 h-10" ref="boardScroll"></div>
         </div>
     </div>
 </template>
@@ -194,7 +196,6 @@ export default {
             } else if (this.dominosOnBoard.length > 0) {
                 if (placement === 0) {
                     if (this.currentTailRow % 2 === 0) {
-                        console.log("A")
                         if (this.transitionTail) {
                             return this.getTailTransitioningDomino(domino);
                         }
@@ -206,7 +207,6 @@ export default {
                         }
                         return this.getTailPlacement(domino);
                     } else if (this.currentTailRow % 2 === 1) {
-                        console.log("B")
                         if (this.transitionTail) {
                             return this.getTailTransitioningDominoReverse(domino);
                         }
@@ -237,7 +237,6 @@ export default {
             if (placement === 0) {
                 this.dominosOnBoard.unshift(domino);
                 if(domino.transitionOver) {
-                    console.log(this.currentTailRow)
                     this.currentTailRow++;
                     this.moveDominoDown();
                 }
@@ -517,13 +516,11 @@ export default {
             }
         },
         moveDominoDown() {
-            const currentScroll = this.$refs.board.scrollTop;
+            const currentScroll = this.$refs.playingArea.scrollTop;
             this.dominosOnBoard.forEach((domino) => {
                 domino.y += this.dominoHeight * 2 + 20;
             });
-            
-            
-            this.$refs.board.scrollTo(0, currentScroll + this.dominoHeight * 2 + 20);
+            this.$refs.playingArea.scrollTo(0, currentScroll + this.dominoHeight * 2 + 20);
         }
     },
     computed: {
@@ -557,52 +554,9 @@ export default {
             }
         },
     },
-    watch: {
-        dominosOnBoard: {
-            handler(newvalue, oldvalue) {
-                console.log("watcher")
-                console.log(newvalue)
-                console.log(oldvalue)
-                let tail = newvalue[0];
-                let head = newvalue[newvalue.length - 1];
-                console.log("handler")
-                if (this.isOverflowing(tail, 0)) {
-                    // Now force the next 2 dominos to be placed vertical
-                    this.transitionTail = true;
-                    this.tailTransitioningDominos.push(tail);
-                    if (this.tailTransitioningDominos.length === 3) {
-                        this.transitionTail = false;
-                        this.transitionTailOver = true;
-                        this.tailTransitioningDominos = [];
-                        this.currentTailRow++;
-                        this.moveDominoDown();
-                    }
-                }
-                else if (this.transitionTailOver) {
-                    this.transitionTailOver = false;
-                    this.reverseTail = true;
-                }
-                if (this.isOverflowing(head, 1)) {
-                    this.transitionHead = true;
-                    this.headTransitioningDominos.push(head);
-                    if (this.headTransitioningDominos.length === 3) {
-                        this.transitionHead = false;
-                        this.transitionHeadOver = true;
-                        this.headTransitioningDominos = [];
-                        this.currentHeadRow++;
-                    }
-                }
-                else if (this.transitionHeadOver) {
-                    this.transitionHeadOver = false;
-                    this.reverseHead = true;
-                }
-            },
-            // deep: true
-        }
-    },
     mounted() {
-        this.boardWidth = this.$refs.board.clientWidth;
-        this.boardHeight = this.$refs.board.clientHeight;
+        this.boardWidth = this.$refs.playingArea.clientWidth;
+        this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
     },
     components: { Domino },
 }
@@ -615,4 +569,7 @@ export default {
 .domino-placeholder-horizontal {
     @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col cursor-pointer;
 }
+::-webkit-scrollbar {
+        display: none;
+    }
 </style>
