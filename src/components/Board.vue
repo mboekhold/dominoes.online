@@ -1,15 +1,15 @@
 <template>
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 py-16 relative"
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 py-20 relative"
             ref="board">
             <div ref="playingArea" class="relative h-full w-full overflow-auto">
                 <div v-if="tailPreviewDomino" class="absolute"
                     :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
                     @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
                 </div>
-                    <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute" :style="getPlacement(domino)"
-                        :placeHorizontal="!isDouble(domino)" :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
-                    </Domino>
+                <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute" :style="getPlacement(domino)"
+                    :placeHorizontal="!isDouble(domino)" :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
+                </Domino>
                 <div v-if="headPreviewDomino" class="absolute"
                     :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                     @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
@@ -40,8 +40,6 @@ export default {
             // transitionTail: null,
             reverseTail: false,
             reverseHead: false,
-            transitionHead: false,
-            transitionHeadOver: false,
             currentHeadRow: 0,
             currentTailRow: 0,
         }
@@ -219,16 +217,29 @@ export default {
                         return this.getTailPlacement(domino);
                     }
                 } else if (placement === 1) {
-                    if (this.transitionHead) {
-                        return this.getHeadTransitioningDomino(domino);
+                    if (this.currentHeadRow % 2 === 0) {
+                        if (this.transitionHead) {
+                            return this.getHeadTransitioningDomino(domino);
+                        }
+                        else if (this.transitionHeadOver) {
+                            return this.getTransitionHeadOverDomino(domino);
+                        }
+                        else if (this.reverseHead) {
+                            return this.getHeadPlacement(domino);
+                        }
+                        return this.getHeadPlacement(domino);
+                    } else if (this.currentHeadRow % 2 === 1) {
+                        if (this.transitionHead) {
+                            return this.getHeadTransitioningDominoReverse(domino);
+                        }
+                        else if (this.transitionHeadOver) {
+                            return this.getTransitionHeadOverDominoReverse(domino);
+                        }
+                        else if (this.reverseHead) {
+                            return this.getHeadPlacementReverse(domino);
+                        }
+                        return this.getHeadPlacement(domino);
                     }
-                    if (this.transitionHeadOver) {
-                        return this.getTransitionHeadOverDomino(domino);
-                    }
-                    else if (this.reverseHead) {
-                        return this.getHeadPlacementReverse(domino);
-                    }
-                    return this.getHeadPlacement(domino);
                 }
             }
         },
@@ -236,11 +247,14 @@ export default {
             domino["placement"] = placement;
             if (placement === 0) {
                 this.dominosOnBoard.unshift(domino);
-                if(domino.transitionOver) {
+                if (domino.transitionOver) {
                     this.currentTailRow++;
                     this.moveDominoDown();
                 }
             } else {
+                if(domino.transitionOver){
+                    this.currentHeadRow++;
+                }
                 this.dominosOnBoard.push(domino);
             }
         },
@@ -396,19 +410,20 @@ export default {
             }
         },
         getHeadPlacementReverse(domino) {
+            console.log('reverse')
             if (this.isDouble(domino)) {
                 // For the edge case where someone doesnt start with a double, we need to check if 
                 // the last one was a normal one
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x - this.dominoWidth,
+                        x: lastDomino.x + this.dominoWidth,
                         y: lastDomino.y - this.horizontalDominoOffset,
                         reverse: true,
                     }
                 }
                 return {
-                    x: lastDomino.x - this.dominoWidth,
+                    x: lastDomino.x + this.dominoWidth,
                     y: lastDomino.y - this.horizontalDominoOffset,
                     reverse: true,
                 }
@@ -450,6 +465,25 @@ export default {
                 transitioning: true,
             }
         },
+        getHeadTransitioningDomino(domino) {
+            // For the edge case where someone doesnt start with a double, we need to check if 
+            // the last one was a normal one
+            const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+            if (!this.isDouble(lastDomino)) {
+                return {
+                    x: lastDomino.x + this.dominoHeight / 2 - 5,
+                    y: lastDomino.y + this.dominoWidth,
+                    forceVertical: true,
+                    transitioning: true,
+                }
+            }
+            return {
+                x: lastDomino.x,
+                y: lastDomino.y + this.dominoHeight,
+                forceVertical: true,
+                transitioning: true,
+            }
+        },
         getTailTransitioningDominoReverse(domino) {
             const lastDomino = this.dominosOnBoard[0]
             if (!this.isDouble(lastDomino)) {
@@ -467,13 +501,13 @@ export default {
                 transitioning: true,
             }
         },
-        getHeadTransitioningDomino(domino) {
+        getHeadTransitioningDominoReverse(domino) {
             // For the edge case where someone doesnt start with a double, we need to check if 
             // the last one was a normal one
             const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
             if (!this.isDouble(lastDomino)) {
                 return {
-                    x: lastDomino.x + this.dominoHeight / 2 - 5,
+                    x: lastDomino.x,
                     y: lastDomino.y + this.dominoWidth,
                     forceVertical: true,
                     transitioning: true,
@@ -495,7 +529,17 @@ export default {
                 reverse: true,
                 transitionOver: true,
             }
-           
+
+        },
+        getTransitionHeadOverDomino(domino){
+            const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
+            return {
+                x: lastDomino.x - this.dominoHeight,
+                y: lastDomino.y + this.dominoHeight / 2 - 10,
+                forceHorizontal: true,
+                transitionOver: true,
+                reverse: true,
+            }
         },
         getTransitionTailOverDominoReverse(domino) {
             const lastDomino = this.dominosOnBoard[0]
@@ -506,13 +550,14 @@ export default {
                 transitionOver: true,
             }
         },
-        getTransitionHeadOverDomino(domino) {
+        getTransitionHeadOverDominoReverse(domino) {
             const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
             return {
-                x: lastDomino.x - this.dominoHeight,
+                x: lastDomino.x + this.dominoWidth,
                 y: lastDomino.y + this.dominoHeight / 2 - 10,
                 forceHorizontal: true,
                 reverse: true,
+                transitionOver: true,
             }
         },
         moveDominoDown() {
@@ -529,16 +574,16 @@ export default {
             const last2Dominos = this.dominosOnBoard.slice(0, 2);
             // Tranisition is done when the last 2 dominos are transitioning
             const count = last2Dominos.filter(domino => domino.transitioning).length;
-            if(count === 2) {
+            if (count === 2) {
                 return false;
             }
-            if(this.currentTailRow % 2 === 0) {
+            if (this.currentTailRow % 2 === 0) {
                 if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
                     return true;
                 }
                 return false
             }
-            else if(this.currentTailRow % 2 === 1) {
+            else if (this.currentTailRow % 2 === 1) {
                 if (lastDomino.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
                     return true;
                 }
@@ -548,15 +593,45 @@ export default {
         transitionTailOver() {
             const last2Dominos = this.dominosOnBoard.slice(0, 2);
             const count = last2Dominos.filter(domino => domino.transitioning).length;
-            if(count === 2) {
+            if (count === 2) {
                 this.reverseTail = true;
                 return true;
             }
         },
+        transitionHead() {
+            const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+            const last2Dominos = this.dominosOnBoard.slice(this.dominosOnBoard.length - 2, this.dominosOnBoard.length);
+            // Tranisition is done when the last 2 dominos are transitioning
+            const count = last2Dominos.filter(domino => domino.transitioning).length;
+            if (count === 2) {
+                return false;
+            }
+            if (this.currentHeadRow % 2 === 0) {
+                if (lastDomino.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
+                    return true;
+                }
+                return false
+            }
+            else if (this.currentHeadRow % 2 === 1) {
+                if (lastDomino.x - this.dominoWidth <= this.dominoHeight) {
+                    return true;
+                }
+                return false
+            }
+        },
+        transitionHeadOver() {
+            const last2Dominos = this.dominosOnBoard.slice(this.dominosOnBoard.length - 2, this.dominosOnBoard.length);
+            const count = last2Dominos.filter(domino => domino.transitioning).length;
+            if (count === 2) {
+                this.reverseHead = true;
+                return true;
+            }
+        }
     },
     mounted() {
         this.boardWidth = this.$refs.playingArea.clientWidth;
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
+        this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
     },
     components: { Domino },
 }
@@ -569,7 +644,8 @@ export default {
 .domino-placeholder-horizontal {
     @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col cursor-pointer;
 }
+
 ::-webkit-scrollbar {
-        display: none;
-    }
+    display: none;
+}
 </style>
