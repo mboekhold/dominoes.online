@@ -67,18 +67,6 @@ export default {
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 3))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 2))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 6))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 6 && x.bottom === 6))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 3))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 4))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 4 && x.bottom === 6))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 5 && x.bottom === 6))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 2 && x.bottom === 3))
-            // this.players[0].hand.push(this.dominoSet.find(x => x.top === 3 && x.bottom === 3))
             for (let i = 0; i < 27; i++) {
                 this.players[0].hand.push(this.dominoSet.pop());
             }
@@ -92,44 +80,7 @@ export default {
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
         },
         opponentPlayerPlay(player) {
-            // The player is playing the first domino, its the player with the double six
-            if (this.playedDominos.length === 0) {
-                if (this.playerWithDoubleSix === player) {
-                    let domino = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
-                    this.playedDominos.splice(0, 0, domino);
-                    this.players[player].hand = this.players[player].hand.filter(d => d !== domino);
-                }
-            } else {
-                let firstPlayableDomino = this.players[player].hand.find(domino => this.checkNextPlacement(domino));
-                // If no playable domino, pass
-                if (!firstPlayableDomino) {
-                    this.showNotification(player, 'Pass');
-                    return;
-                }
-                let playablePlacement = this.checkNextPlacement(firstPlayableDomino);
-                // if placement is at the tail
-                if (playablePlacement.placement.includes(0)) {
-                    if (playablePlacement.rotate0) {
-                        let bottom = firstPlayableDomino.bottom
-                        firstPlayableDomino.bottom = firstPlayableDomino.top;
-                        firstPlayableDomino.top = bottom;
-                    }
-                    this.playedDominos.splice(0, 0, firstPlayableDomino);
-                    this.addToBoard(firstPlayableDomino, 0);
-                } else if (playablePlacement.placement.includes(1)) {
-                    if (playablePlacement.rotate1) {
-                        let bottom = firstPlayableDomino.bottom
-                        firstPlayableDomino.bottom = firstPlayableDomino.top;
-                        firstPlayableDomino.top = bottom;
-                    }
-                    this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-                    this.addToBoard(firstPlayableDomino, 1);
-                } else {
-                    this.playedDominos.splice(this.playedDominos.length, 0, firstPlayableDomino)
-                    this.addToBoard(firstPlayableDomino, 1);
-                }
-                this.players[player].hand = this.players[player].hand.filter(d => d !== firstPlayableDomino);
-            }
+            
         },
         findPlayerWithDoubleSix() {
             for (let i = 0; i < this.players.length; i++) {
@@ -144,16 +95,14 @@ export default {
                 this.players[player].notification = null;
             }, 5000);
         },
+        checkNextPlacement(domino) {
+
+        },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
-                    this.timeoutId = setTimeout(() => {
-                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
-                        this.showNotification(0, 'Pass');
-                        resolve();
-                    }, 11000);
                 })
             } else {
                 await new Promise(resolve => {
@@ -173,12 +122,12 @@ export default {
             this.shuffleDominos();
             this.dealTestHand();
             this.currentPlayerTurn === 0;
-            // this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
+            this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            // const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
-            // this.showNotification(this.playerWithDoubleSix, notificationMessage);
-            // const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
-            // this.currentPlayerTurn = playOrder[0];
+            const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
+            this.showNotification(this.playerWithDoubleSix, notificationMessage);
+            const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
+            this.currentPlayerTurn = playOrder[0];
             // while (true) {
             //     await this.playRound();
             // }

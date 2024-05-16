@@ -7,16 +7,14 @@
                     {{ player.notification }}
                 </div>
             </div>
+            <div v-if="turn" class="absolute left-10 rounded-full h-3 w-3 bg-orange-400">
+
+            </div>
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                :playerId="player.id" class="w-full overflow-auto" />
-            <div class="flex justify-end mt-20 progress-bar-container" :class="{ 'hidden': !turn }">
-                <div class="progress-bar" :style="{ width: progressBarWidth }" :ref="'progressBar' + player.id">
-
-                </div>
-            </div>
+                :playerId="player.id" class="w-full items-center justify-center" />
         </div>
         <div :id="'playerBox' + player.id" v-else-if="player.id === 2">
             <div v-if="player.notification"
@@ -93,40 +91,6 @@ export default {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         },
-    },
-    computed: {
-        progressBarWidth() {
-            if (this.turn && this.player.id === 1) {
-                var width = 100;
-                setInterval(() => {
-                    if (width <= 0) {
-                        clearInterval(this.intervalId);
-                    } else {
-                        width -= 0.1;
-                        this.$refs.progressBar1.style.width = width + '%';
-                    }
-                }, 10);
-            }
-            return '100%'; // Return a default value or handle other cases
-        },
-    },
-    watch: {
-        turn(newValue, oldValue) {
-            if (newValue && this.player.id === 1) {
-                var width = 100;
-                this.intervalId = setInterval(() => {
-                    if (width <= 0) {
-                        clearInterval(this.intervalId);
-                    } else {
-                        width -= 0.1;
-                        this.$refs.progressBar1.style.width = width + '%';
-                    }
-                }, 10);
-            }
-            if (newValue === false && this.player.id === 1) {
-                clearInterval(this.intervalId);
-            }
-        }
     }
 }
 </script>

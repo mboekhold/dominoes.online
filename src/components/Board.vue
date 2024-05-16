@@ -410,7 +410,6 @@ export default {
             }
         },
         getHeadPlacementReverse(domino) {
-            console.log('reverse')
             if (this.isDouble(domino)) {
                 // For the edge case where someone doesnt start with a double, we need to check if 
                 // the last one was a normal one
@@ -556,7 +555,6 @@ export default {
                 x: lastDomino.x + this.dominoWidth,
                 y: lastDomino.y + this.dominoHeight / 2 - 10,
                 forceHorizontal: true,
-                reverse: true,
                 transitionOver: true,
             }
         },
