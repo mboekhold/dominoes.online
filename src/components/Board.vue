@@ -236,6 +236,7 @@ export default {
                             return this.getTransitionHeadOverDominoReverse(domino);
                         }
                         else if (this.reverseHead) {
+                            console.log('reverse head');
                             return this.getHeadPlacementReverse(domino);
                         }
                         return this.getHeadPlacement(domino);
@@ -416,13 +417,13 @@ export default {
                 const lastDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1]
                 if (!this.isDouble(lastDomino)) {
                     return {
-                        x: lastDomino.x + this.dominoWidth,
+                        x: lastDomino.x - this.dominoWidth,
                         y: lastDomino.y - this.horizontalDominoOffset,
                         reverse: true,
                     }
                 }
                 return {
-                    x: lastDomino.x + this.dominoWidth,
+                    x: lastDomino.x - this.dominoHeight,
                     y: lastDomino.y - this.horizontalDominoOffset,
                     reverse: true,
                 }
@@ -563,7 +564,11 @@ export default {
             this.dominosOnBoard.forEach((domino) => {
                 domino.y += this.dominoHeight * 2 + 20;
             });
+            this.$refs.playingArea.style = `scroll-behavior: auto;`;
             this.$refs.playingArea.scrollTo(0, currentScroll + this.dominoHeight * 2 + 20);
+            setTimeout(() => {
+                this.$refs.playingArea.style = `scroll-behavior: smooth;`;
+            }, 100);
         }
     },
     computed: {
@@ -654,6 +659,7 @@ export default {
                         const boardView = this.$refs.board.getBoundingClientRect();
                         const rect = this.$refs.tailPreview.getBoundingClientRect();
                         if (rect.top - this.dominoHeight <= boardView.top) {
+                            console.log('scrolling down');
                             this.$refs.playingArea.scrollTo(0, 50, "smooth");
                         }
                     }, 200);
