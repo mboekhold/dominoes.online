@@ -2,15 +2,15 @@
     <div class="w-screen h-screen rounded-xl mx-auto p-14">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto px-10 py-20 relative"
             ref="board">
-            <div ref="playingArea" class="relative h-full w-full overflow-auto">
-                <div v-if="tailPreviewDomino" class="absolute"
+            <div ref="playingArea" id="playingArea" class="relative h-full w-full overflow-auto">
+                <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
                     :class="{ 'domino-placeholder-horizontal': !isDouble(tailPreviewDomino), 'domino-placeholder-vertical': isDouble(tailPreviewDomino) }"
                     @click="playDomino(tailPreviewDomino, 0)" :style="getPlacement(tailPreviewDomino)">
                 </div>
                 <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute" :style="getPlacement(domino)"
                     :placeHorizontal="!isDouble(domino)" :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
                 </Domino>
-                <div v-if="headPreviewDomino" class="absolute"
+                <div v-if="headPreviewDomino" class="absolute" ref="headPreview"
                     :class="{ 'domino-placeholder-horizontal': !isDouble(headPreviewDomino), 'domino-placeholder-vertical': isDouble(headPreviewDomino) }"
                     @click="playDomino(headPreviewDomino, 1)" :style="getPlacement(headPreviewDomino)">
                 </div>
@@ -632,11 +632,34 @@ export default {
         this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
     },
     watch: {
-        tailPreviewDomino(val) {
-            if (val) {
-                this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
+        // When scroll bar is all the way down its hard to see that you can still play on head side. we can improve this
+        // By scrolling down
+        headPreviewDomino(val) {
+            if(val) {
+                if(!this.tailPreviewDomino) {
+                    setTimeout(() => {
+                        const boardView = this.$refs.board.getBoundingClientRect();
+                        const rect = this.$refs.headPreview.getBoundingClientRect();
+                        if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                            this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
+                        }
+                    }, 200);
+                }
             }
         },
+        tailPreviewDomino(val) {
+            if(val) {
+                if(!this.headPreviewDomino) {
+                    setTimeout(() => {
+                        const boardView = this.$refs.board.getBoundingClientRect();
+                        const rect = this.$refs.tailPreview.getBoundingClientRect();
+                        if (rect.top - this.dominoHeight <= boardView.top) {
+                            this.$refs.playingArea.scrollTo(0, 50, "smooth");
+                        }
+                    }, 200);
+                }
+            }
+        }
     },
     components: { Domino },
 }
@@ -653,4 +676,8 @@ export default {
 ::-webkit-scrollbar {
     display: none;
 }
+#playingArea {
+    scroll-behavior: smooth;
+}
+
 </style>
