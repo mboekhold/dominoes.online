@@ -631,6 +631,13 @@ export default {
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
         this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
     },
+    watch: {
+        tailPreviewDomino(val) {
+            if (val) {
+                this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
+            }
+        },
+    },
     components: { Domino },
 }
 </script>
