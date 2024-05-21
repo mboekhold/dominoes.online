@@ -7,19 +7,14 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <!-- <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-5 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute left-10 rounded-full h-3 w-3 bg-orange-400">
 
-            </div> -->
+            </div>
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                :playerId="player.id" />
-            <div v-if="player.id - 1 === currentPlayerTurn" class="flex justify-end mt-20 progress-bar-container">
-                <div class="progress-bar" :ref="'progressBar' + player.id">
-
-                </div>
-            </div>
+                :playerId="player.id" class="w-full items-center justify-center" />
         </div>
         <div :id="'playerBox' + player.id" v-else-if="player.id === 2">
             <div v-if="player.notification"
@@ -28,7 +23,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute bottom-1 text-white">
@@ -43,7 +38,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute left-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute left-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute right-5 text-white">
@@ -58,7 +53,7 @@
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="currentPlayerTurn === player.id - 1" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute bottom-1 text-white">
@@ -82,9 +77,9 @@ export default {
             type: Object,
             required: true
         },
-        currentPlayerTurn: {
-            type: Number,
-            required: false
+        turn: {
+            type: Boolean,
+            required: true
         }
     },
     data() {
@@ -96,26 +91,6 @@ export default {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         },
-    },
-    watch: {
-        // This function will be triggered for each player turn
-        currentPlayerTurn(newValue, oldValue) {
-            console.log(this.player.id)
-            if (newValue === 0 && this.player.id - 1 === 0) {
-                var width = 100;
-                this.intervalId = setInterval(() => {
-                    if (width <= 0) {
-                        clearInterval(this.intervalId);
-                    } else {
-                        width -= 0.1;
-                        this.$refs.progressBar1.style.width = width + '%';
-                    }
-                }, 10);
-            }
-            if (oldValue === 0) {
-                clearInterval(this.intervalId);
-            }
-        }
     }
 }
 </script>
