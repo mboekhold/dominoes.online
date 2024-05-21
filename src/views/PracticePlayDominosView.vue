@@ -72,18 +72,38 @@ export default {
             }
         },
         onSelectedDomino(selectedDomino) {
-            if(this.currentPlayerTurn !== 0) return;
+            if (this.currentPlayerTurn !== 0) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
         },
         playDomino(domino) {
+            if (this.currentPlayerTurn !== 0) return;
             // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
             const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
-            // this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
-            // this.resolve();
+            this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+            this.resolve();
         },
         opponentPlayerPlay(player) {
-            
+            // First check which domino they can play
+            const playableDomino = this.players[player].hand.find(domino => {
+                console.log(this.$refs.board.getNextPlacementOptions(domino))
+                return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
+            })
+            if (playableDomino) {
+                if (playableDomino.placement.length > 1) {
+                    const placement = Math.round(Math.random() * (1 - 0) + 0);
+                    playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
+                    this.$refs.board.playDomino(playableDomino, placement);
+                    const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
+                    this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
+                } else {
+                    const placement = playableDomino.placement[0];
+                    playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
+                    this.$refs.board.playDomino(playableDomino, playableDomino.placement[0]);
+                    const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && playableDomino.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
+                    this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
+                }
+            }
         },
         findPlayerWithDoubleSix() {
             for (let i = 0; i < this.players.length; i++) {
@@ -98,14 +118,20 @@ export default {
                 this.players[player].notification = null;
             }, 5000);
         },
-        checkNextPlacement(domino) {
-
-        },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
+                    const playableDomino = this.players[this.currentPlayerTurn].hand.find(domino => {
+                        console.log(this.$refs.board.getNextPlacementOptions(domino))
+                        return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
+                    })
+                    if(!playableDomino) {
+                        this.showNotification(this.currentPlayerTurn, 'Pass');
+                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        resolve();
+                    }
                 })
             } else {
                 await new Promise(resolve => {
@@ -123,7 +149,7 @@ export default {
         async startGame() {
             this.gameStarted = true;
             this.shuffleDominos();
-            this.dealTestHand();
+            this.dealHand();
             this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
@@ -131,9 +157,9 @@ export default {
             this.showNotification(this.playerWithDoubleSix, notificationMessage);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
-            // while (true) {
-            //     await this.playRound();
-            // }
+            while (true) {
+                await this.playRound();
+            }
         },
     }
 }
