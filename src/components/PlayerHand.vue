@@ -39,7 +39,7 @@ export default {
 <style scoped>
 .player-hand {
     display: flex;
-    padding: 4px;
+    /* padding: 4px; */
     gap: 5px;
 }
 #player2 {

@@ -1,22 +1,22 @@
 <template>
     <div>
-        <div v-if="player.id === 1" :id="'playerBox' + player.id">
+        <div v-if="player.id === 1" class="w-full sm:w-[600px] px-10 sm:p-5 flex justify-center" :class="'playerBox' + player.id">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 -top-24 notification text-center flex items-center justify-center">
                 <div>
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="turn" class="absolute left-10 rounded-full h-3 w-3 bg-orange-400">
+            <div v-if="turn" class="absolute left-5 top-10 sm:left-10 rounded-full h-3 w-3 bg-orange-400">
 
             </div>
             <div class="absolute right-10 text-white">
                 {{ player.hand.length }}
             </div>
             <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                :playerId="player.id" class="w-full items-center justify-center" />
+                :playerId="player.id" class="px-4 items-center justify-center" />
         </div>
-        <div :id="'playerBox' + player.id" v-else-if="player.id === 2">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 2" class="hidden sm:flex">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 right-8 notification text-center flex items-center justify-center -rotate-90">
                 <div>
@@ -29,9 +29,9 @@
             <div class="absolute bottom-1 text-white">
                 {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
+            <OpponentPlayerHand :hand="player.hand" :class="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :id="'playerBox' + player.id" v-else-if="player.id === 3">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 3" class="hidden sm:flex">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 top-24 notification-reverse text-center flex items-center justify-center">
                 <div>
@@ -46,7 +46,7 @@
             </div>
             <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :id="'playerBox' + player.id" v-else-if="player.id === 4">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="hidden sm:flex">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 left-8 notification text-center flex items-center justify-center rotate-90">
                 <div>
@@ -95,17 +95,14 @@ export default {
 }
 </script>
 <style scoped>
-#playerBox1 {
+.playerBox1 {
     @apply rounded-tl-xl rounded-tr-xl h-24;
     background-color: #282f3d;
     position: absolute;
     bottom: 0px;
     padding-bottom: 50px;
-    padding: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 600px;
-    display: flex;
     align-items: center;
     justify-content: center;
 }
@@ -116,16 +113,14 @@ export default {
 
 }
 
-#playerBox2 {
+.playerBox2 {
     @apply rounded-xl h-24;
     position: absolute;
-    padding: 20px;
     right: 20px;
     top: 50%;
     transform: translateY(-50%);
     height: 220px;
     width: 80px;
-    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #282f3d;
@@ -136,7 +131,7 @@ export default {
     bottom: 10px;
 }
 
-#playerBox3 {
+.playerBox3 {
     @apply rounded-xl h-24;
     position: absolute;
     top: 20px;
@@ -144,7 +139,6 @@ export default {
     transform: translateX(-50%);
     height: 80px;
     width: 220px;
-    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #282f3d;
@@ -155,7 +149,7 @@ export default {
     right: 10px;
 }
 
-#playerBox4 {
+.playerBox4 {
     @apply rounded-xl h-24;
     position: absolute;
     top: 50%;
@@ -163,7 +157,6 @@ export default {
     transform: translateY(-50%);
     height: 220px;
     width: 80px;
-    display: flex;
     align-items: center;
     justify-content: center;
     background-color: #282f3d;
