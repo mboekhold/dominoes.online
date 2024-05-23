@@ -95,20 +95,12 @@ export default {
                     this.$refs.board.playDomino(playableDomino, placement);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    console.log('Player: ')
-                    console.log(player)
-                    console.log('Domino Played: ')
-                    console.log(playableDomino)
                 } else {
                     const placement = playableDomino.placement[0];
                     playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
                     this.$refs.board.playDomino(playableDomino, playableDomino.placement[0]);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    console.log('Player: ')
-                    console.log(player)
-                    console.log('Domino Played: ')
-                    console.log(playableDomino)
                 }
             } else {
                 this.showNotification(player, 'Pass');
