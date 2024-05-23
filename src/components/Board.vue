@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen h-screen rounded-xl mx-auto p-4 sm:p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto sm:px-10 sm:py-12 relative"
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto sm:px-10 sm:pt-10 sm:pb-14 relative"
             ref="board">
             <div ref="playingArea" id="playingArea" class="relative h-full w-full overflow-auto">
                 <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
