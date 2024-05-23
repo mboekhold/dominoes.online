@@ -1,5 +1,5 @@
 <template>
-    <div class="player-hand">
+    <div class="player-hand overflow-x-scroll">
         <div v-for="domino in hand" @click="selectDomino(domino)">
             <Domino :selected="selectedDomino === domino" :domino="domino" />
         </div>
