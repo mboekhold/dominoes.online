@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen rounded-xl mx-auto p-4 sm:p-14">
+    <div class="w-screen h-screen rounded-xl mx-auto p-4 pb-32 sm:p-14">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto sm:px-10 sm:pt-10 sm:pb-14 relative"
             ref="board">
             <div ref="playingArea" id="playingArea" class="relative h-full w-full overflow-auto">
@@ -17,6 +17,24 @@
                 </div>
                 <div class="absolute h-10 w-10 -bottom-60">
 
+                </div>
+                <div v-if="showChevronUp"
+                    class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-10 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-6 h-6 text-black">
+                        <path fill-rule="evenodd"
+                            d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div v-if="showChevronDown"
+                    class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                        class="w-6 h-6 text-black">
+                        <path fill-rule="evenodd"
+                            d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+                            clip-rule="evenodd" />
+                    </svg>
                 </div>
             </div>
         </div>
@@ -43,6 +61,8 @@ export default {
             reverseHead: false,
             currentHeadRow: 0,
             currentTailRow: 0,
+            showChevronDown: false,
+            showChevronUp: false,
         }
     },
     methods: {
@@ -625,6 +645,33 @@ export default {
         this.boardWidth = this.$refs.playingArea.clientWidth;
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
         this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
+        this.$refs.playingArea.addEventListener('scroll', () => {
+            const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+            const tail = this.dominosOnBoard[0];
+            if (head) {
+                const headElem = document.getElementById(`domino-${head.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = headElem.offsetTop;
+                if((eTop) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                    this.showChevronDown = true;
+                } else {
+                    this.showChevronDown = false;
+                }
+            }
+            if (tail) {
+                const tailElem = document.getElementById(`domino-${tail.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = tailElem.offsetTop;
+                const eBottom = eTop + tailElem.offsetHeight;
+                if((eBottom) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                    this.showChevronUp = true;
+                } else {
+                    this.showChevronUp = false;
+                }
+            }
+        });
     },
     watch: {
         // When scroll bar is all the way down its hard to see that you can still play on head side. we can improve this
@@ -654,7 +701,7 @@ export default {
                     }, 200);
                 }
             }
-        }
+        },
     },
     components: { Domino },
 }
