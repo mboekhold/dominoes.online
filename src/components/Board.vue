@@ -1,40 +1,42 @@
 <template>
-    <div class="w-screen h-screen rounded-xl mx-auto p-4 pb-32 sm:p-14">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center overflow-auto sm:px-10 sm:pt-10 sm:pb-14 relative"
+    <div class="w-screen h-screen rounded-xl mx-auto p-4">
+        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center relative"
             ref="board">
-            <div ref="playingArea" id="playingArea" class="relative h-full w-full overflow-auto">
-                <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
-                    :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
-                    @click="playDomino(tailPreviewDomino, 0)" :style="getPlacementCoordinates(tailPreviewDomino)">
-                </div>
-                <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute"
-                    :style="getPlacementCoordinates(domino)" :placeHorizontal="!shouldPlaceDominoVertical(domino)"
-                    :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
-                </Domino>
-                <div v-if="headPreviewDomino" class="absolute" ref="headPreview"
-                    :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(headPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(headPreviewDomino) }"
-                    @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
-                </div>
-                <div class="absolute h-10 w-10 -bottom-60">
-
-                </div>
-                <div v-if="showChevronUp"
-                    class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-10 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        class="w-6 h-6 text-black">
-                        <path fill-rule="evenodd"
-                            d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div v-if="showChevronDown"
-                    class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
-                        class="w-6 h-6 text-black">
-                        <path fill-rule="evenodd"
-                            d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
-                            clip-rule="evenodd" />
-                    </svg>
+            <div class="w-full h-full pb-24">
+                <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
+                    <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
+                        :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
+                        @click="playDomino(tailPreviewDomino, 0)" :style="getPlacementCoordinates(tailPreviewDomino)">
+                    </div>
+                    <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute"
+                        :style="getPlacementCoordinates(domino)" :placeHorizontal="!shouldPlaceDominoVertical(domino)"
+                        :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
+                    </Domino>
+                    <div v-if="headPreviewDomino" class="absolute" ref="headPreview"
+                        :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(headPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(headPreviewDomino) }"
+                        @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
+                    </div>
+                    <div class="absolute h-10 w-10 -bottom-60">
+    
+                    </div>
+                    <div v-if="showChevronUp"
+                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-10 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 text-black">
+                            <path fill-rule="evenodd"
+                                d="M11.47 7.72a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 1 1-1.06 1.06L12 9.31l-6.97 6.97a.75.75 0 0 1-1.06-1.06l7.5-7.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div v-if="showChevronDown"
+                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            class="w-6 h-6 text-black">
+                            <path fill-rule="evenodd"
+                                d="M12.53 16.28a.75.75 0 0 1-1.06 0l-7.5-7.5a.75.75 0 0 1 1.06-1.06L12 14.69l6.97-6.97a.75.75 0 1 1 1.06 1.06l-7.5 7.5Z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -713,10 +715,6 @@ export default {
 
 .domino-placeholder-horizontal {
     @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col cursor-pointer;
-}
-
-::-webkit-scrollbar {
-    display: none;
 }
 
 #playingArea {

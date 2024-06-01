@@ -114,9 +114,9 @@ export default {
 }
 
 .playerBox2 {
-    @apply rounded-xl h-24;
+    @apply rounded-bl-xl rounded-tl-xl h-24;
     position: absolute;
-    right: 20px;
+    right: 0px;
     top: 50%;
     transform: translateY(-50%);
     height: 220px;
@@ -132,9 +132,9 @@ export default {
 }
 
 .playerBox3 {
-    @apply rounded-xl h-24;
+    @apply rounded-bl-xl rounded-br-xl h-24;
     position: absolute;
-    top: 20px;
+    top: 0px;
     left: 50%;
     transform: translateX(-50%);
     height: 80px;
@@ -150,10 +150,10 @@ export default {
 }
 
 .playerBox4 {
-    @apply rounded-xl h-24;
+    @apply rounded-tr-xl rounded-br-xl h-24;
     position: absolute;
     top: 50%;
-    left: 20px;
+    left: 0px;
     transform: translateY(-50%);
     height: 220px;
     width: 80px;
