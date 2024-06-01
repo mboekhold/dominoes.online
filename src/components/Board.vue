@@ -2,7 +2,7 @@
     <div class="w-screen h-screen rounded-xl mx-auto p-4">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center relative"
             ref="board">
-            <div class="w-full h-full pb-24">
+            <div class="w-full h-full pb-28 pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
                     <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
                         :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
@@ -655,7 +655,7 @@ export default {
                 const cHeight = this.$refs.playingArea.clientHeight;
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
-                if((eTop) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                if((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
                     this.showChevronDown = true;
                 } else {
                     this.showChevronDown = false;
@@ -667,7 +667,7 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = tailElem.offsetTop;
                 const eBottom = eTop + tailElem.offsetHeight;
-                if((eBottom) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                if((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
                     this.showChevronUp = true;
                 } else {
                     this.showChevronUp = false;
@@ -717,6 +717,9 @@ export default {
     @apply rounded-lg border border-yellow-200 h-14 w-24 px-1 flex justify-between flex-col cursor-pointer;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
 #playingArea {
     scroll-behavior: smooth;
 }
