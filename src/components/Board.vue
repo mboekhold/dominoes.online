@@ -17,7 +17,7 @@
                         @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
                     </div>
                     <div class="absolute h-10 w-10 -bottom-60">
-    
+
                     </div>
                     <div v-if="showChevronUp"
                         class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-10 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
@@ -641,6 +641,33 @@ export default {
                 this.reverseHead = true;
                 return true;
             }
+        },
+        showChevrons() {
+            const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+            const tail = this.dominosOnBoard[0];
+            if (head) {
+                const headElem = document.getElementById(`domino-${head.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = headElem.offsetTop;
+                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                    this.showChevronDown = true;
+                } else {
+                    this.showChevronDown = false;
+                }
+            }
+            if (tail) {
+                const tailElem = document.getElementById(`domino-${tail.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = tailElem.offsetTop;
+                const eBottom = eTop + tailElem.offsetHeight;
+                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                    this.showChevronUp = true;
+                } else {
+                    this.showChevronUp = false;
+                }
+            }
         }
     },
     mounted() {
@@ -655,7 +682,7 @@ export default {
                 const cHeight = this.$refs.playingArea.clientHeight;
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
-                if((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
                     this.showChevronDown = true;
                 } else {
                     this.showChevronDown = false;
@@ -667,7 +694,7 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = tailElem.offsetTop;
                 const eBottom = eTop + tailElem.offsetHeight;
-                if((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
                     this.showChevronUp = true;
                 } else {
                     this.showChevronUp = false;
@@ -680,15 +707,13 @@ export default {
         // By scrolling down
         headPreviewDomino(val) {
             if (val) {
-                if (!this.tailPreviewDomino) {
-                    setTimeout(() => {
-                        const boardView = this.$refs.board.getBoundingClientRect();
-                        const rect = this.$refs.headPreview.getBoundingClientRect();
-                        if (rect.bottom + this.dominoHeight >= boardView.bottom) {
-                            this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
-                        }
-                    }, 200);
-                }
+                setTimeout(() => {
+                    const boardView = this.$refs.board.getBoundingClientRect();
+                    const rect = this.$refs.headPreview.getBoundingClientRect();
+                    if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                        this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
+                    }
+                }, 200);
             }
         },
         tailPreviewDomino(val) {
@@ -704,6 +729,38 @@ export default {
                 }
             }
         },
+        dominosOnBoard: {
+            handler(newVal, oldVal) {
+                setTimeout(() => {
+                    const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+                    const tail = this.dominosOnBoard[0];
+                    if (head) {
+                        const headElem = document.getElementById(`domino-${head.id}`);
+                        const cHeight = this.$refs.playingArea.clientHeight;
+                        const cScrollOffset = this.$refs.playingArea.scrollTop;
+                        const eTop = headElem.offsetTop;
+                        if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                            this.showChevronDown = true;
+                        } else {
+                            this.showChevronDown = false;
+                        }
+                    }
+                    if (tail) {
+                        const tailElem = document.getElementById(`domino-${tail.id}`);
+                        const cHeight = this.$refs.playingArea.clientHeight;
+                        const cScrollOffset = this.$refs.playingArea.scrollTop;
+                        const eTop = tailElem.offsetTop;
+                        const eBottom = eTop + tailElem.offsetHeight;
+                        if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                            this.showChevronUp = true;
+                        } else {
+                            this.showChevronUp = false;
+                        }
+                    }
+                }, 100);
+            },
+            deep: true
+        }
     },
     components: { Domino },
 }
@@ -720,6 +777,7 @@ export default {
 ::-webkit-scrollbar {
     display: none;
 }
+
 #playingArea {
     scroll-behavior: smooth;
 }
