@@ -1,5 +1,5 @@
 <template>
-    <div class="w-screen h-screen rounded-xl mx-auto p-4">
+    <div class="w-screen h-dvh rounded-xl mx-auto p-4">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center relative"
             ref="board">
             <div class="w-full h-full pb-28 pt-12">
@@ -675,31 +675,7 @@ export default {
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
         this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
         this.$refs.playingArea.addEventListener('scroll', () => {
-            const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
-            const tail = this.dominosOnBoard[0];
-            if (head) {
-                const headElem = document.getElementById(`domino-${head.id}`);
-                const cHeight = this.$refs.playingArea.clientHeight;
-                const cScrollOffset = this.$refs.playingArea.scrollTop;
-                const eTop = headElem.offsetTop;
-                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
-                    this.showChevronDown = true;
-                } else {
-                    this.showChevronDown = false;
-                }
-            }
-            if (tail) {
-                const tailElem = document.getElementById(`domino-${tail.id}`);
-                const cHeight = this.$refs.playingArea.clientHeight;
-                const cScrollOffset = this.$refs.playingArea.scrollTop;
-                const eTop = tailElem.offsetTop;
-                const eBottom = eTop + tailElem.offsetHeight;
-                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
-                    this.showChevronUp = true;
-                } else {
-                    this.showChevronUp = false;
-                }
-            }
+            this.showChevrons();
         });
     },
     watch: {
