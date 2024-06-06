@@ -6,12 +6,13 @@
                 {{ player.notification }}
             </div>
         </div>
-        <div v-if="player.id === 1" class="w-screen sm:w-[600px] p-2 items-center sm:p-5 flex justify-center"
-            :class="'playerBox' + player.id">
-            <div v-if="turn" class="absolute bottom-1 rounded-full w-full h-1 bg-orange-400"></div>
-            <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                :playerId="player.id" />
-
+        <div v-if="player.id === 1">
+            <div class="w-screen sm:w-[600px] p-2 items-center sm:p-5 flex justify-center"
+                :class="'playerBox' + player.id">
+                <div v-if="turn" class="absolute bottom-1 rounded-full w-full h-1 bg-orange-400"></div>
+                <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
+                    :playerId="player.id" />
+            </div>
         </div>
         <div :class="'playerBox' + player.id" v-else-if="player.id === 2" class="hidden sm:flex">
             <div v-if="player.notification"

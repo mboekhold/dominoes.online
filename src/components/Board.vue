@@ -581,6 +581,33 @@ export default {
             setTimeout(() => {
                 this.$refs.playingArea.style = `scroll-behavior: smooth;`;
             }, 100);
+        },
+        showChevrons() {
+            const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+            const tail = this.dominosOnBoard[0];
+            if (head) {
+                const headElem = document.getElementById(`domino-${head.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = headElem.offsetTop;
+                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                    this.showChevronDown = true;
+                } else {
+                    this.showChevronDown = false;
+                }
+            }
+            if (tail) {
+                const tailElem = document.getElementById(`domino-${tail.id}`);
+                const cHeight = this.$refs.playingArea.clientHeight;
+                const cScrollOffset = this.$refs.playingArea.scrollTop;
+                const eTop = tailElem.offsetTop;
+                const eBottom = eTop + tailElem.offsetHeight;
+                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                    this.showChevronUp = true;
+                } else {
+                    this.showChevronUp = false;
+                }
+            }
         }
     },
     computed: {
@@ -642,33 +669,6 @@ export default {
                 return true;
             }
         },
-        showChevrons() {
-            const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
-            const tail = this.dominosOnBoard[0];
-            if (head) {
-                const headElem = document.getElementById(`domino-${head.id}`);
-                const cHeight = this.$refs.playingArea.clientHeight;
-                const cScrollOffset = this.$refs.playingArea.scrollTop;
-                const eTop = headElem.offsetTop;
-                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
-                    this.showChevronDown = true;
-                } else {
-                    this.showChevronDown = false;
-                }
-            }
-            if (tail) {
-                const tailElem = document.getElementById(`domino-${tail.id}`);
-                const cHeight = this.$refs.playingArea.clientHeight;
-                const cScrollOffset = this.$refs.playingArea.scrollTop;
-                const eTop = tailElem.offsetTop;
-                const eBottom = eTop + tailElem.offsetHeight;
-                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
-                    this.showChevronUp = true;
-                } else {
-                    this.showChevronUp = false;
-                }
-            }
-        }
     },
     mounted() {
         this.boardWidth = this.$refs.playingArea.clientWidth;
@@ -708,31 +708,7 @@ export default {
         dominosOnBoard: {
             handler(newVal, oldVal) {
                 setTimeout(() => {
-                    const head = this.dominosOnBoard[this.dominosOnBoard.length - 1];
-                    const tail = this.dominosOnBoard[0];
-                    if (head) {
-                        const headElem = document.getElementById(`domino-${head.id}`);
-                        const cHeight = this.$refs.playingArea.clientHeight;
-                        const cScrollOffset = this.$refs.playingArea.scrollTop;
-                        const eTop = headElem.offsetTop;
-                        if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
-                            this.showChevronDown = true;
-                        } else {
-                            this.showChevronDown = false;
-                        }
-                    }
-                    if (tail) {
-                        const tailElem = document.getElementById(`domino-${tail.id}`);
-                        const cHeight = this.$refs.playingArea.clientHeight;
-                        const cScrollOffset = this.$refs.playingArea.scrollTop;
-                        const eTop = tailElem.offsetTop;
-                        const eBottom = eTop + tailElem.offsetHeight;
-                        if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
-                            this.showChevronUp = true;
-                        } else {
-                            this.showChevronUp = false;
-                        }
-                    }
+                    this.showChevrons();
                 }, 100);
             },
             deep: true
