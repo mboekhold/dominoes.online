@@ -2,7 +2,7 @@
     <div class="w-screen h-dvh rounded-xl mx-auto p-4">
         <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center relative"
             ref="board">
-            <div class="w-full h-full pb-[100px] pt-8">
+            <div class="w-full h-full pb-[100px] pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
                     <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
                         :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
@@ -20,7 +20,7 @@
 
                     </div>
                     <div v-if="showChevronUp"
-                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-16 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-[84px] sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
