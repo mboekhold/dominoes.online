@@ -1,37 +1,40 @@
 <template>
     <div>
-        <div v-if="player.notification"
-            class="absolute bg-white rounded-md h-10 w-48 -top-24 notification text-center flex items-center justify-center">
-            <div>
-                {{ player.notification }}
-            </div>
-        </div>
         <div v-if="player.id === 1">
             <div class="w-screen sm:w-[600px] p-2 items-center sm:p-5 flex justify-center"
-                :class="'playerBox' + player.id">
-                <div v-if="turn" class="absolute bottom-1 rounded-full w-full h-1 bg-orange-400"></div>
-                <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
-                    :playerId="player.id" />
-            </div>
-        </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 2" class="hidden sm:flex">
+            :class="'playerBox' + player.id">
             <div v-if="player.notification"
-                class="absolute bg-white rounded-md h-10 w-48 right-8 notification text-center flex items-center justify-center -rotate-90">
+                class="absolute border border-black bg-white rounded-md h-10 w-48 -top-20 notification text-center flex items-center justify-center">
                 <div>
                     {{ player.notification }}
                 </div>
             </div>
-            <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
-
+                <div v-if="turn" class="absolute bottom-1 rounded-full w-full h-1 bg-orange-400"></div>
+                <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
+                    :playerId="player.id" class="flex" />
             </div>
+        </div>
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 2" class="flex">
+            <!-- <img src="@/assets/antigua.svg" class="w-10 self-start" alt="Icon"> -->
+            <div v-if="player.notification"
+            class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
+            <div>
+                {{ player.notification }}
+                </div>
+                </div>
+                <div v-if="turn" class="absolute top-2 rounded-full h-3 w-3 bg-orange-400">
+                    
+                </div>
+         
             <div class="absolute bottom-1 text-white">
                 {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="player.hand" :class="'playerHand' + player.id" :playerId="player.id" />
+            <OpponentPlayerHand class="hidden flex-col sm:flex" :hand="player.hand" :class="'playerHand' + player.id"
+                :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 3" class="hidden sm:flex">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 3" class="flex">
             <div v-if="player.notification"
-                class="absolute bg-white rounded-md h-10 w-48 top-24 notification-reverse text-center flex items-center justify-center">
+                class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
                 <div>
                     {{ player.notification }}
                 </div>
@@ -42,11 +45,12 @@
             <div class="absolute right-5 text-white">
                 {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
+            <OpponentPlayerHand class="hidden sm:flex" :hand="player.hand" :id="'playerHand' + player.id"
+                :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="hidden sm:flex">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="flex">
             <div v-if="player.notification"
-                class="absolute bg-white rounded-md h-10 w-48 left-8 notification text-center flex items-center justify-center rotate-90">
+                class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
                 <div>
                     {{ player.notification }}
                 </div>
@@ -57,12 +61,14 @@
             <div class="absolute bottom-1 text-white">
                 {{ player.hand.length }}
             </div>
-            <OpponentPlayerHand :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
+            <OpponentPlayerHand class="hidden flex-col sm:flex" :hand="player.hand" :id="'playerHand' + player.id"
+                :playerId="player.id" />
         </div>
 
     </div>
 </template>
 <script>
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 import PlayerHand from './PlayerHand.vue';
 import OpponentPlayerHand from './OpponentPlayerHand.vue';
 export default {
@@ -143,7 +149,7 @@ export default {
 }
 
 #playerHand3 {
-    @apply flex items-center flex-row;
+    /* @apply flex items-center flex-row; */
     right: 10px;
 }
 
@@ -161,7 +167,7 @@ export default {
 }
 
 #playerHand4 {
-    @apply flex items-center flex-col;
+    /* @apply flex items-center flex-col; */
     right: 10px;
 }
 
@@ -174,6 +180,9 @@ export default {
     transform: translateX(-50%);
     bottom: -25px;
     color: white;
+    text-shadow: 
+        -1px 1px 0 black,  
+        1px 1px 0 black;
 }
 
 .notification-reverse::after {
@@ -185,6 +194,9 @@ export default {
     transform: translateX(-50%);
     top: -25px;
     color: white;
+    text-shadow: 
+        -1px -1px 0 black,  
+        1px -1px 0 black,  
 }
 
 .progress-bar-container {
@@ -204,5 +216,20 @@ export default {
     /* Smooth filling animation */
     width: 100%;
     /* Initial width: 0% */
+}
+
+@media screen and (max-width: 640px) {
+
+    .playerBox2 {
+        @apply h-16 w-12;
+    }
+
+    .playerBox3 {
+        @apply h-10 w-16;
+    }
+
+    .playerBox4 {
+        @apply h-16 w-10;
+    }
 }
 </style>

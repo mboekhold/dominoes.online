@@ -1,5 +1,5 @@
 <template>
-    <div class="player-hand overflow-auto">
+    <div class="player-hand overflow-auto pt-2">
         <div v-for="domino in hand" @click="selectDomino(domino)">
             <Domino :selected="selectedDomino === domino" :domino="domino" />
         </div>
@@ -38,7 +38,7 @@ export default {
 </script>
 <style scoped>
 .player-hand {
-    display: flex;
+    /* display: flex; */
     /* padding: 4px; */
     gap: 5px;
 }

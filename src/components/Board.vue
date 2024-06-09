@@ -20,7 +20,7 @@
 
                     </div>
                     <div v-if="showChevronUp"
-                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-10 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-16 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
@@ -29,7 +29,7 @@
                         </svg>
                     </div>
                     <div v-if="showChevronDown"
-                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
