@@ -14,7 +14,15 @@
                     :playerId="player.id" class="flex" />
             </div>
         </div>
-        <div :class="'playerBox' + player.id, myTurn" v-else-if="player.id === 2" class="flex flex-col">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 2"
+            class="flex flex-col -right-[80px] sm:right-0">
+            <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer"
+                :class="{ 'rotate-180': openPlayerBoxId === player.id }" @click="togglePlayerBox(player.id)">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="size-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                </svg>
+            </div>
             <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-6">
             <div v-if="player.notification"
                 class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
@@ -31,7 +39,8 @@
             <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
                 :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id, myTurnReverse" v-else-if="player.id === 3" class="flex">
+        <div :class="'playerBox' + player.id, myTurnReverse" v-else-if="player.id === 3"
+            class="flex -top-[100px] sm:top-0">
             <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-4 w-12">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
@@ -44,7 +53,7 @@
             </div>
             <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id, myTurn" v-else-if="player.id === 4" class="flex flex-col">
+        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="flex flex-col -left-[100px] sm:left-0">
             <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
             <div v-if="player.notification"
                 class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
@@ -55,8 +64,8 @@
             <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
 
             </div>
-            <OpponentPlayerHand :class="turn ? 'flex flex-col' : 'hidden'" class="flex-col flex" :hand="player.hand"
-                :id="'playerHand' + player.id" :playerId="player.id" />
+            <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.id"
+                :playerId="player.id" />
         </div>
 
     </div>
@@ -82,33 +91,62 @@ export default {
     },
     data() {
         return {
-            intervalId: null
+            intervalId: null,
+            openPlayerBoxId: null
         }
     },
     methods: {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         },
-    },
-    computed: {
-        myTurn() {
-            if (window.innerWidth < 640) {
-                return {
-                    'animate-slideInFromRight': this.turn,
-                    'flex flex-col': this.turn,
-                    'hidden': !this.turn,
-                }
+        togglePlayerBox(id) {
+            if (this.openPlayerBoxId === id) {
+                this.openPlayerBoxId = null;
+                this.closePlayerBox(id);
+            } else {
+                this.openPlayerBoxId = id;
+                this.openPlayerBox(id);
             }
         },
+        openPlayerBox(id) {
+            let playerBox = document.getElementsByClassName('playerBox' + id)[0];
+            playerBox.classList.add('player' + id + 'Turn');
+            this.openPlayerBoxId = id;
+        },
+        closePlayerBox(id) {
+            let playerBox = document.getElementsByClassName('playerBox' + id)[0];
+            playerBox.classList.remove('player' + id + 'Turn');
+            this.openPlayerBoxId = null;
+        }
+    },
+    computed: {
+        // myTurn() {
+        //     if (window.innerWidth < 640) {
+        //         return {
+        //             ['player' + this.player.id + 'Turn']: this.turn
+        //         }
+        //     }
+        // },
         myTurnReverse() {
             if (window.innerWidth < 640) {
                 return {
-                    'flex flex-row': this.turn,
-                    'hidden': !this.turn
+                    ['player' + this.player.id + 'Turn']: this.turn
                 }
             }
         }
     },
+    watch: {
+        turn() {
+            if (this.turn) {
+                if (this.openPlayerBoxId !== this.playerId) {
+                    this.openPlayerBox(this.player.id);
+                    setTimeout(() => {
+                        this.closePlayerBox(this.player.id);
+                    }, 4000);
+                }
+            }
+        }
+    }
 }
 </script>
 <style scoped>
@@ -133,13 +171,18 @@ export default {
 .playerBox2 {
     @apply rounded-bl-xl rounded-tl-xl h-24;
     position: absolute;
-    right: 0px;
     top: 50%;
     transform: translateY(-50%);
     height: 220px;
     width: 80px;
     align-items: center;
     background-color: #282f3d;
+    transition: 1s;
+}
+
+.player2Turn {
+    transition: 1s;
+    right: 0px;
 }
 
 #playerHand2 {
@@ -150,13 +193,18 @@ export default {
 .playerBox3 {
     @apply rounded-bl-xl rounded-br-xl h-24;
     position: absolute;
-    top: 0px;
     left: 50%;
     transform: translateX(-50%);
     height: 80px;
     width: 220px;
     align-items: center;
     background-color: #282f3d;
+    transition: 1s;
+}
+
+.player3Turn {
+    transition: 1s;
+    top: 0px;
 }
 
 #playerHand3 {
@@ -168,12 +216,17 @@ export default {
     @apply rounded-tr-xl rounded-br-xl h-24;
     position: absolute;
     top: 50%;
-    left: 0px;
     transform: translateY(-50%);
     height: 220px;
     width: 80px;
     align-items: center;
     background-color: #282f3d;
+    transition: 1s;
+}
+
+.player4Turn {
+    transition: 1s;
+    left: 0px;
 }
 
 #playerHand4 {
@@ -226,5 +279,10 @@ export default {
     /* Smooth filling animation */
     width: 100%;
     /* Initial width: 0% */
+}
+
+.open-playerbox {
+    @apply pl-0 p-1 text-white absolute rounded-lg;
+    background-color: #282f3d;
 }
 </style>
