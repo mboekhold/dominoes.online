@@ -14,8 +14,8 @@
                     :playerId="player.id" class="flex" />
             </div>
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 2" class="flex flex-col">
-            <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-2 sm:mb-6">
+        <div :class="'playerBox' + player.id, myTurn" v-else-if="player.id === 2" class="flex flex-col">
+            <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-6">
             <div v-if="player.notification"
                 class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
                 <div>
@@ -28,14 +28,11 @@
 
             <div>
             </div>
-            <div class="bottom-1 block sm:hidden text-white">
-                {{ player.hand.length }}
-            </div>
-            <OpponentPlayerHand class="hidden flex-col sm:flex" :hand="player.hand" :class="'playerHand' + player.id"
+            <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
                 :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 3" class="flex">
-            <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-2 sm:mr-6 w-12">
+        <div :class="'playerBox' + player.id, myTurnReverse" v-else-if="player.id === 3" class="flex">
+            <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-4 w-12">
             <div v-if="player.notification"
                 class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
                 <div>
@@ -45,14 +42,10 @@
             <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
 
             </div>
-            <div class="block sm:hidden right-5 text-white">
-                {{ player.hand.length }}
-            </div>
-            <OpponentPlayerHand class="hidden sm:flex" :hand="player.hand" :id="'playerHand' + player.id"
-                :playerId="player.id" />
+            <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="flex flex-col">
-            <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-2 sm:mb-6 w-12">
+        <div :class="'playerBox' + player.id, myTurn" v-else-if="player.id === 4" class="flex flex-col">
+            <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
             <div v-if="player.notification"
                 class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
                 <div>
@@ -62,11 +55,8 @@
             <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
 
             </div>
-            <div class="block sm:hidden bottom-1 text-white">
-                {{ player.hand.length }}
-            </div>
-            <OpponentPlayerHand class="hidden flex-col sm:flex" :hand="player.hand" :id="'playerHand' + player.id"
-                :playerId="player.id" />
+            <OpponentPlayerHand :class="turn ? 'flex flex-col' : 'hidden'" class="flex-col flex" :hand="player.hand"
+                :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
 
     </div>
@@ -99,7 +89,26 @@ export default {
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         },
-    }
+    },
+    computed: {
+        myTurn() {
+            if (window.innerWidth < 640) {
+                return {
+                    'animate-slideInFromRight': this.turn,
+                    'flex flex-col': this.turn,
+                    'hidden': !this.turn,
+                }
+            }
+        },
+        myTurnReverse() {
+            if (window.innerWidth < 640) {
+                return {
+                    'flex flex-row': this.turn,
+                    'hidden': !this.turn
+                }
+            }
+        }
+    },
 }
 </script>
 <style scoped>
@@ -217,20 +226,5 @@ export default {
     /* Smooth filling animation */
     width: 100%;
     /* Initial width: 0% */
-}
-
-@media screen and (max-width: 640px) {
-
-    .playerBox2 {
-        @apply h-20 w-16;
-    }
-
-    .playerBox3 {
-        @apply h-16 w-20;
-    }
-
-    .playerBox4 {
-        @apply h-20 w-16;
-    }
 }
 </style>
