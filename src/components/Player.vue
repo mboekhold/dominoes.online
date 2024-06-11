@@ -14,30 +14,32 @@
                     :playerId="player.id" class="flex" />
             </div>
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 2"
-            class="flex flex-col -right-[80px] sm:right-0">
-            <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer"
-                :class="{ 'rotate-180': openPlayerBoxId === player.id }" @click="togglePlayerBox(player.id)">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="size-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                </svg>
-            </div>
-            <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-6">
-            <div v-if="player.notification"
-                class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
-                <div>
-                    {{ player.notification }}
+        <div v-else-if="player.id === 2" :class="'playerBoxWrapper' + player.id">
+            <div :class="'playerBox' + player.id"
+                class="flex flex-col -right-[80px] sm:right-0">
+                <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-8 flex items-center"
+                    :class="{ 'rotate-180': openPlayerBoxId === player.id }" @click="togglePlayerBox(player.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                    </svg>
                 </div>
+                <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-6">
+                <div v-if="player.notification"
+                    class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
+                    <div>
+                        {{ player.notification }}
+                    </div>
+                </div>
+                <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
+    
+                </div>
+    
+                <div>
+                </div>
+                <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
+                    :playerId="player.id" />
             </div>
-            <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
-
-            </div>
-
-            <div>
-            </div>
-            <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
-                :playerId="player.id" />
         </div>
         <div :class="'playerBox' + player.id, myTurnReverse" v-else-if="player.id === 3"
             class="flex -top-[100px] sm:top-0">
@@ -142,7 +144,7 @@ export default {
                     this.openPlayerBox(this.player.id);
                     setTimeout(() => {
                         this.closePlayerBox(this.player.id);
-                    }, 4000);
+                    }, 3000);
                 }
             }
         }
@@ -168,13 +170,21 @@ export default {
 
 }
 
-.playerBox2 {
-    @apply rounded-bl-xl rounded-tl-xl h-24;
+.playerBoxWrapper2 {
+    @apply h-24;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    right: 0px;
+    width: 110px;
     height: 220px;
+    overflow: hidden;
+}
+.playerBox2 {
+    @apply rounded-bl-xl rounded-tl-xl h-full;
     width: 80px;
+    margin-left: auto;
+    position: relative;
     align-items: center;
     background-color: #282f3d;
     transition: 1s;
