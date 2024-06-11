@@ -15,12 +15,11 @@
             </div>
         </div>
         <div v-else-if="player.id === 2" :class="'playerBoxWrapper' + player.id">
-            <div :class="'playerBox' + player.id"
-                class="flex flex-col -right-[80px] sm:right-0">
-                <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-8 flex items-center"
-                    :class="{ 'rotate-180': openPlayerBoxId === player.id }" @click="togglePlayerBox(player.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="">
+            <div :class="'playerBox' + player.id" class="flex flex-col -right-[80px] sm:right-0">
+                <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex items-center"
+                    @click="togglePlayerBox(player.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :class="{ 'rotate-180': openPlayerBoxId === player.id }"
+                        stroke="currentColor" class="toggle-icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </div>
@@ -32,42 +31,62 @@
                     </div>
                 </div>
                 <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
-    
+
                 </div>
-    
+
                 <div>
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
                     :playerId="player.id" />
             </div>
         </div>
-        <div :class="'playerBox' + player.id, myTurnReverse" v-else-if="player.id === 3"
-            class="flex -top-[100px] sm:top-0">
-            <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-4 w-12">
-            <div v-if="player.notification"
-                class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
-                <div>
-                    {{ player.notification }}
+        <div v-else-if="player.id === 3" :class="'playerBoxWrapper' + player.id">
+            <div :class="'playerBox' + player.id" class="flex flex-row -top-[80px] sm:top-0">
+                <div class="sm:hidden open-playerbox top-[75px] left-1/2 transform -translate-x-1/2 cursor-pointer w-10 h-8 flex justify-center items-center"
+                    @click="togglePlayerBox(player.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="toggle-icon w-6" :class="{ 'rotate-180': openPlayerBoxId === player.id }">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                         />
+                    </svg>
                 </div>
-            </div>
-            <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
+                <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-6 w-12">
+                <div v-if="player.notification"
+                    class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
+                    <div>
+                        {{ player.notification }}
+                    </div>
+                </div>
+                <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
 
+                </div>
+                <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id"
+                    :playerId="player.id" />
             </div>
-            <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id" :playerId="player.id" />
         </div>
-        <div :class="'playerBox' + player.id" v-else-if="player.id === 4" class="flex flex-col -left-[100px] sm:left-0">
-            <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
-            <div v-if="player.notification"
-                class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
-                <div>
-                    {{ player.notification }}
-                </div>
-            </div>
-            <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
+        <div v-else-if="player.id === 4" :class="'playerBoxWrapper' + player.id">
+            <div :class="'playerBox' + player.id" class="flex flex-col -left-[80px] sm:left-0">
+                <div class="sm:hidden open-playerbox left-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex justify-center items-center"
+                    :class="{ 'rotate-180': openPlayerBoxId === player.id }" @click="togglePlayerBox(player.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                    </svg>
 
+                </div>
+                <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
+                <div v-if="player.notification"
+                    class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
+                    <div>
+                        {{ player.notification }}
+                    </div>
+                </div>
+                <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
+
+                </div>
+                <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.id"
+                    :playerId="player.id" />
             </div>
-            <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.id"
-                :playerId="player.id" />
         </div>
 
     </div>
@@ -180,6 +199,7 @@ export default {
     height: 220px;
     overflow: hidden;
 }
+
 .playerBox2 {
     @apply rounded-bl-xl rounded-tl-xl h-full;
     width: 80px;
@@ -200,13 +220,21 @@ export default {
     bottom: 10px;
 }
 
-.playerBox3 {
-    @apply rounded-bl-xl rounded-br-xl h-24;
+.playerBoxWrapper3 {
+    @apply h-24;
     position: absolute;
     left: 50%;
+    top: 0px;
     transform: translateX(-50%);
-    height: 80px;
+    height: 110px;
     width: 220px;
+    overflow: hidden;
+}
+
+.playerBox3 {
+    @apply rounded-bl-xl rounded-br-xl h-full;
+    position: relative;
+    height: 80px;
     align-items: center;
     background-color: #282f3d;
     transition: 1s;
@@ -222,13 +250,21 @@ export default {
     right: 10px;
 }
 
-.playerBox4 {
-    @apply rounded-tr-xl rounded-br-xl h-24;
+.playerBoxWrapper4 {
+    @apply h-24;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    left: 0px;
+    width: 110px;
     height: 220px;
+    overflow: hidden;
+}
+
+.playerBox4 {
+    @apply rounded-tr-xl rounded-br-xl h-full;
     width: 80px;
+    position: relative;
     align-items: center;
     background-color: #282f3d;
     transition: 1s;
@@ -292,7 +328,10 @@ export default {
 }
 
 .open-playerbox {
-    @apply pl-0 p-1 text-white absolute rounded-lg;
+    @apply p-1 text-white absolute rounded-lg;
     background-color: #282f3d;
+}
+.toggle-icon {
+    transition: 0.5s;
 }
 </style>
