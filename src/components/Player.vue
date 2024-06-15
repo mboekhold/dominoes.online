@@ -14,12 +14,13 @@
                     :playerId="player.id" class="flex" />
             </div>
         </div>
-        <div v-else-if="player.id === 2" :class="'playerBoxWrapper' + player.id">
+        <div v-else-if="player.id === 2" :class="['playerBoxWrapper' + player.id ,openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-col -right-[80px] sm:right-0">
                 <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex items-center"
                     @click="togglePlayerBox(player.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" :class="{ 'rotate-180': openPlayerBoxId === player.id }"
-                        stroke="currentColor" class="toggle-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        :class="{ 'rotate-180': openPlayerBoxId === player.id }" stroke="currentColor"
+                        class="toggle-icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </div>
@@ -31,23 +32,19 @@
                     </div>
                 </div>
                 <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
-
-                </div>
-
-                <div>
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
                     :playerId="player.id" />
             </div>
         </div>
-        <div v-else-if="player.id === 3" :class="'playerBoxWrapper' + player.id">
+        <div v-else-if="player.id === 3" :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-row -top-[80px] sm:top-0">
                 <div class="sm:hidden open-playerbox top-[75px] left-1/2 transform -translate-x-1/2 cursor-pointer w-10 h-8 flex justify-center items-center"
                     @click="togglePlayerBox(player.id)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="toggle-icon w-6" :class="{ 'rotate-180': openPlayerBoxId === player.id }">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5"
-                         />
+                        stroke="currentColor" class="toggle-icon w-6"
+                        :class="{ 'rotate-180': openPlayerBoxId === player.id }">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </div>
                 <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-6 w-12">
@@ -58,21 +55,20 @@
                     </div>
                 </div>
                 <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
-
                 </div>
                 <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id"
                     :playerId="player.id" />
             </div>
         </div>
-        <div v-else-if="player.id === 4" :class="'playerBoxWrapper' + player.id">
+        <div v-else-if="player.id === 4" :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-col -left-[80px] sm:left-0">
                 <div class="sm:hidden open-playerbox left-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex justify-center items-center"
                     @click="togglePlayerBox(player.id)">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" class="toggle-icon"
-                        stroke="currentColor" :class="{ 'rotate-180': openPlayerBoxId === player.id }">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        class="toggle-icon" stroke="currentColor"
+                        :class="{ 'rotate-180': openPlayerBoxId === player.id }">
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
-
                 </div>
                 <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
                 <div v-if="player.notification"
@@ -82,15 +78,20 @@
                     </div>
                 </div>
                 <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
-
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.id"
                     :playerId="player.id" />
             </div>
         </div>
-
+        <div v-if="player.id === 2" :class="'togglePlayerBox' + player.id"  class="absolute z-10 cursor-pointer h-10 w-8 right-0 top-1/2 transform -translate-y-1/2" @click="openPlayerBox(player.id)">
+        </div>
+        <div v-else-if="player.id === 3" :class="'togglePlayerBox' + player.id" class="absolute z-10 cursor-pointer h-8 w-10 top-0 left-1/2 transform -translate-x-1/2" @click="openPlayerBox(player.id)">
+        </div>
+        <div v-else-if="player.id === 4" :class="'togglePlayerBox' + player.id" class="absolute z-10 cursor-pointer h-10 w-8 left-0 top-1/2 transform -translate-y-1/2" @click="openPlayerBox(player.id)">
+        </div>
     </div>
 </template>
+
 <script>
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import PlayerHand from './PlayerHand.vue';
@@ -113,7 +114,7 @@ export default {
     data() {
         return {
             intervalId: null,
-            openPlayerBoxId: null
+            openPlayerBoxId: null,
         }
     },
     methods: {
@@ -138,23 +139,9 @@ export default {
             let playerBox = document.getElementsByClassName('playerBox' + id)[0];
             playerBox.classList.remove('player' + id + 'Turn');
             this.openPlayerBoxId = null;
-        }
+        },
     },
-    computed: {
-        // myTurn() {
-        //     if (window.innerWidth < 640) {
-        //         return {
-        //             ['player' + this.player.id + 'Turn']: this.turn
-        //         }
-        //     }
-        // },
-        myTurnReverse() {
-            if (window.innerWidth < 640) {
-                return {
-                    ['player' + this.player.id + 'Turn']: this.turn
-                }
-            }
-        }
+    mounted() {
     },
     watch: {
         turn() {
@@ -170,6 +157,7 @@ export default {
     }
 }
 </script>
+
 <style scoped>
 .playerBox1 {
     @apply rounded-tl-xl rounded-tr-xl h-24;
@@ -186,7 +174,6 @@ export default {
 #playerHand1 {
     /* position: absolute;
     bottom: 20px; */
-
 }
 
 .playerBoxWrapper2 {
@@ -227,7 +214,7 @@ export default {
     top: 0px;
     transform: translateX(-50%);
     height: 110px;
-    width: 220px;
+    width: 230px;
     overflow: hidden;
 }
 
@@ -331,6 +318,7 @@ export default {
     @apply p-1 text-white absolute rounded-lg;
     background-color: #282f3d;
 }
+
 .toggle-icon {
     transition: 0.5s;
 }
