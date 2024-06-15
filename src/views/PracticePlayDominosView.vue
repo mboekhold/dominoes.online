@@ -34,13 +34,49 @@ export default {
                 { top: 3, bottom: 5 }, { top: 3, bottom: 6 }, { top: 4, bottom: 4 }, { top: 4, bottom: 5 },
                 { top: 4, bottom: 6 }, { top: 5, bottom: 5 }, { top: 5, bottom: 6 }, { top: 6, bottom: 6 }
             ],
+            caribbeanFlag: [
+                '/src/assets/ag.svg',
+                '/src/assets/ai.svg',
+                '/src/assets/an.svg',
+                '/src/assets/aw.svg',
+                '/src/assets/bb.svg',
+                '/src/assets/bl.svg',
+                '/src/assets/bs.svg',
+                '/src/assets/bm.svg',
+                '/src/assets/bq.svg',
+                '/src/assets/cu.svg',
+                '/src/assets/cw.svg',
+                '/src/assets/dm.svg',
+                '/src/assets/do.svg',
+                '/src/assets/gd.svg',
+                '/src/assets/gp.svg',
+                '/src/assets/gt.svg',
+                '/src/assets/hn.svg',
+                '/src/assets/ht.svg',
+                '/src/assets/jm.svg',
+                '/src/assets/kn.svg',
+                '/src/assets/ky.svg',
+                '/src/assets/lc.svg',
+                '/src/assets/mf.svg',
+                '/src/assets/mq.svg',
+                '/src/assets/ms.svg',
+                '/src/assets/ni.svg',
+                '/src/assets/pa.svg',
+                '/src/assets/pr.svg',
+                '/src/assets/sx.svg',
+                '/src/assets/tc.svg',
+                '/src/assets/tt.svg',
+                '/src/assets/vc.svg',
+                '/src/assets/vg.svg',
+                '/src/assets/vi.svg',
+            ],
             gameStarted: false,
             playedDominos: [],
             players: [
-                { id: 1, hand: [], notification: null },
-                { id: 2, hand: [], notification: null },
-                { id: 3, hand: [], notification: null },
-                { id: 4, hand: [], notification: null }
+                { id: 1, flag: null,hand: [], notification: null },
+                { id: 2, flag: null, hand: [], notification: null },
+                { id: 3, flag: null, hand: [], notification: null },
+                { id: 4, flag: null, hand: [], notification: null }
             ],
             selectedDomino: null,
             playableDomino: null,
@@ -63,6 +99,11 @@ export default {
                 for (let j = 0; j < 4; j++) {
                     this.players[j].hand.push(this.dominoSet.pop());
                 }
+            }
+        },
+        giveRandomImages() {
+            for (let i = 0; i < this.players.length; i++) {
+                this.players[i].flag = this.caribbeanFlag[Math.floor(Math.random() * this.caribbeanFlag.length)];
             }
         },
         dealTestHand() {
@@ -127,7 +168,7 @@ export default {
                     const playableDomino = this.players[this.currentPlayerTurn].hand.find(domino => {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
-                    if(!playableDomino) {
+                    if (!playableDomino) {
                         this.showNotification(this.currentPlayerTurn, 'Pass');
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
@@ -150,6 +191,7 @@ export default {
             this.gameStarted = true;
             this.shuffleDominos();
             this.dealHand();
+            this.giveRandomImages();
             this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise

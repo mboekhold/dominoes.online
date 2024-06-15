@@ -24,7 +24,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </div>
-                <img src="@/assets/ag.svg" class="rounded-md w-12 mt-2 mb-6">
+                <img :src="player.flag" class="rounded-md w-12 mt-2 mb-6">
                 <div v-if="player.notification"
                     class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
                     <div>
@@ -47,7 +47,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </div>
-                <img src="@/assets/aw.svg" class="rounded-md ml-2 mr-6 w-12">
+                <img :src="player.flag" class="rounded-md ml-2 mr-6 w-12">
                 <div v-if="player.notification"
                     class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
                     <div>
@@ -70,7 +70,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                 </div>
-                <img src="@/assets/sx.svg" class="rounded-md mt-2 mb-6 w-12">
+                <img :src="player.flag" class="rounded-md mt-2 mb-6 w-12">
                 <div v-if="player.notification"
                     class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
                     <div>
