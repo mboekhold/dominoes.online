@@ -14,7 +14,8 @@
                     :playerId="player.id" class="flex" />
             </div>
         </div>
-        <div v-else-if="player.id === 2" :class="['playerBoxWrapper' + player.id ,openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
+        <div v-else-if="player.id === 2"
+            :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-col -right-[80px] sm:right-0">
                 <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex items-center"
                     @click="togglePlayerBox(player.id)">
@@ -26,7 +27,7 @@
                 </div>
                 <img :src="player.flag" class="rounded-md w-12 mt-2 mb-6">
                 <div v-if="player.notification"
-                    class="absolute border border-black bg-white rounded-md h-10 w-48 -right-4 sm:right-8 notification text-center flex items-center justify-center -rotate-90">
+                    class="absolute border border-black bg-white rounded-md h-10 w-40 right-20 top-2 notificationPlayer2 text-center flex items-center justify-center">
                     <div>
                         {{ player.notification }}
                     </div>
@@ -37,7 +38,8 @@
                     :playerId="player.id" />
             </div>
         </div>
-        <div v-else-if="player.id === 3" :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
+        <div v-else-if="player.id === 3"
+            :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-row -top-[80px] sm:top-0">
                 <div class="sm:hidden open-playerbox top-[75px] left-1/2 transform -translate-x-1/2 cursor-pointer w-10 h-8 flex justify-center items-center"
                     @click="togglePlayerBox(player.id)">
@@ -49,7 +51,7 @@
                 </div>
                 <img :src="player.flag" class="rounded-md ml-2 mr-6 w-12">
                 <div v-if="player.notification"
-                    class="absolute bg-white rounded-md h-10 w-48 top-16 sm:top-24 notification-reverse text-center flex items-center justify-center">
+                    class="absolute bg-white rounded-md h-10 -left-12 w-40 top-20 notificationPlayer3 text-center flex items-center justify-center">
                     <div>
                         {{ player.notification }}
                     </div>
@@ -60,7 +62,8 @@
                     :playerId="player.id" />
             </div>
         </div>
-        <div v-else-if="player.id === 4" :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
+        <div v-else-if="player.id === 4"
+            :class="['playerBoxWrapper' + player.id, openPlayerBoxId === player.id ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.id" class="flex flex-col -left-[80px] sm:left-0">
                 <div class="sm:hidden open-playerbox left-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex justify-center items-center"
                     @click="togglePlayerBox(player.id)">
@@ -72,7 +75,7 @@
                 </div>
                 <img :src="player.flag" class="rounded-md mt-2 mb-6 w-12">
                 <div v-if="player.notification"
-                    class="absolute border border-black bg-white rounded-md h-10 w-48 -left-4 sm:left-8 notification text-center flex items-center justify-center rotate-90">
+                    class="absolute border border-black bg-white rounded-md h-10 w-40 left-20 top-2 notificationPlayer4 text-center flex items-center justify-center">
                     <div>
                         {{ player.notification }}
                     </div>
@@ -83,11 +86,17 @@
                     :playerId="player.id" />
             </div>
         </div>
-        <div v-if="player.id === 2" :class="'togglePlayerBox' + player.id"  class="absolute z-10 cursor-pointer h-10 w-8 right-0 top-1/2 transform -translate-y-1/2" @click="openPlayerBox(player.id)">
+        <div v-if="player.id === 2" :class="'togglePlayerBox' + player.id"
+            class="absolute z-10 cursor-pointer h-10 w-8 right-0 top-1/2 transform -translate-y-1/2"
+            @click="openPlayerBox(player.id)">
         </div>
-        <div v-else-if="player.id === 3" :class="'togglePlayerBox' + player.id" class="absolute z-10 cursor-pointer h-8 w-10 top-0 left-1/2 transform -translate-x-1/2" @click="openPlayerBox(player.id)">
+        <div v-else-if="player.id === 3" :class="'togglePlayerBox' + player.id"
+            class="absolute z-10 cursor-pointer h-8 w-10 top-0 left-1/2 transform -translate-x-1/2"
+            @click="openPlayerBox(player.id)">
         </div>
-        <div v-else-if="player.id === 4" :class="'togglePlayerBox' + player.id" class="absolute z-10 cursor-pointer h-10 w-8 left-0 top-1/2 transform -translate-y-1/2" @click="openPlayerBox(player.id)">
+        <div v-else-if="player.id === 4" :class="'togglePlayerBox' + player.id"
+            class="absolute z-10 cursor-pointer h-10 w-8 left-0 top-1/2 transform -translate-y-1/2"
+            @click="openPlayerBox(player.id)">
         </div>
     </div>
 </template>
@@ -184,7 +193,6 @@ export default {
     right: 0px;
     width: 110px;
     height: 220px;
-    overflow: hidden;
 }
 
 .playerBox2 {
@@ -215,7 +223,6 @@ export default {
     transform: translateX(-50%);
     height: 110px;
     width: 230px;
-    overflow: hidden;
 }
 
 .playerBox3 {
@@ -245,7 +252,6 @@ export default {
     left: 0px;
     width: 110px;
     height: 220px;
-    overflow: hidden;
 }
 
 .playerBox4 {
@@ -267,6 +273,18 @@ export default {
     right: 10px;
 }
 
+.notificationPlayer2::after {
+    content: '▶';
+    font-size: 25px;
+    /* Unicode arrow character */
+    position: absolute;
+    color: white;
+    right: -10px;
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+}
+
 .notification::after {
     content: '▼';
     font-size: 25px;
@@ -281,14 +299,24 @@ export default {
         1px 1px 0 black;
 }
 
-.notification-reverse::after {
+.notificationPlayer3::after {
     content: '▲';
     font-size: 25px;
     /* Unicode arrow character */
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
     top: -25px;
+    color: white;
+    text-shadow:
+        -1px -1px 0 black,
+        1px -1px 0 black,
+}
+
+.notificationPlayer4::after {
+    content: '◀';
+    font-size: 25px;
+    /* Unicode arrow character */
+    position: absolute;
+    left: -10px;
     color: white;
     text-shadow:
         -1px -1px 0 black,

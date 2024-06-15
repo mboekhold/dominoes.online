@@ -37,7 +37,6 @@ export default {
             caribbeanFlag: [
                 `${import.meta.env.VITE_BASE_PATH}/ag.svg`,
                 `${import.meta.env.VITE_BASE_PATH}/ai.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/an.svg`,
                 `${import.meta.env.VITE_BASE_PATH}/aw.svg`,
                 `${import.meta.env.VITE_BASE_PATH}/bb.svg`,
                 `${import.meta.env.VITE_BASE_PATH}/bl.svg`,
@@ -158,7 +157,7 @@ export default {
             this.players[player].notification = message;
             setTimeout(() => {
                 this.players[player].notification = null;
-            }, 5000);
+            }, 3000);
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
