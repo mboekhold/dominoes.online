@@ -27,7 +27,7 @@
                 </div>
                 <img :src="player.flag" class="rounded-md w-12 mt-2 mb-6">
                 <div v-if="player.notification"
-                    class="absolute border border-black bg-white rounded-md h-10 w-40 right-20 top-2 notificationPlayer2 text-center flex items-center justify-center">
+                    class="z-10 absolute border border-black bg-white rounded-md h-10 w-40 right-20 top-2 notificationPlayer2 text-center flex items-center justify-center">
                     <div>
                         {{ player.notification }}
                     </div>
