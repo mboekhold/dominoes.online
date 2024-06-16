@@ -4,9 +4,9 @@
     <div class="p-2 sm:p-10 lg:flex items-center text-white mt-20">
       <div class="w-full lg:w-1/2 mb-20">
         <div class="rounded-xl border border-gray-600 px-4 py-1  w-fit">
-          Releasing multiplayer when we hit 150 votes. <a href="" class="hover:text-blue-400 text-blue-500">Vote now <span aria-hidden="true">&rarr;</span></a>
+          Releasing multiplayer after receiving 150 votes. <a href="" class="hover:text-blue-400 text-blue-500">Vote now <span aria-hidden="true">&rarr;</span></a>
         </div>
-        <div class="font-bold text-6xl mt-10">
+        <div class="font-bold text-5xl lg:text-6xl mt-10">
           Play Dominoes Online
         </div>
         <div class="mt-5">
