@@ -205,6 +205,7 @@ export default {
     },
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
+        document.body.classList.add('overflow-hidden','fixed');
     }
 }
 </script>
