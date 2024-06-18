@@ -14,7 +14,7 @@
         </div>
         <div class="flex items-center mt-10">
           <div>
-            <a href="/practice" class="hover:bg-blue-600 bg-blue-700 text-white px-4 py-2 rounded-lg">Play for free</a>
+            <router-link to="/practice" class="hover:bg-blue-600 bg-blue-700 text-white px-4 py-2 rounded-lg">Play for free</router-link>
           </div>
           <button class="px-4 py-2 flex items-center">
             <div class="mr-2">

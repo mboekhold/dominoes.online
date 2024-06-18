@@ -25,10 +25,10 @@
                             </a>
                         </li> -->
                         <li>
-                            <a href="/practice"
+                            <router-link to="/practice"
                                 class="block py-2 px-6 hover:bg-blue-600 bg-blue-700 rounded-lg text-white"
                                 aria-current="page">Play now
-                            </a>
+                            </router-link>
                         </li>
                     </ul>
                 </div>
