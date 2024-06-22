@@ -26,12 +26,6 @@
                     </svg>
                 </div>
                 <img :src="player.flag" class="rounded-md w-12 mt-2 mb-6">
-                <div v-if="player.notification"
-                    class="z-10 absolute border border-black bg-white rounded-md h-10 w-40 right-20 top-2 notificationPlayer2 text-center flex items-center justify-center">
-                    <div>
-                        {{ player.notification }}
-                    </div>
-                </div>
                 <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.id"
@@ -50,12 +44,6 @@
                     </svg>
                 </div>
                 <img :src="player.flag" class="rounded-md ml-2 mr-6 w-12">
-                <div v-if="player.notification"
-                    class="absolute bg-white rounded-md h-10 -left-12 w-40 top-20 notificationPlayer3 text-center flex items-center justify-center">
-                    <div>
-                        {{ player.notification }}
-                    </div>
-                </div>
                 <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.id"
@@ -74,12 +62,6 @@
                     </svg>
                 </div>
                 <img :src="player.flag" class="rounded-md mt-2 mb-6 w-12">
-                <div v-if="player.notification"
-                    class="absolute border border-black bg-white rounded-md h-10 w-40 left-20 top-2 notificationPlayer4 text-center flex items-center justify-center">
-                    <div>
-                        {{ player.notification }}
-                    </div>
-                </div>
                 <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.id"
@@ -151,6 +133,13 @@ export default {
         },
     },
     mounted() {
+        // Do it once when mounted because watch does not trigger on initial value
+        if (this.turn) {
+            this.openPlayerBox(this.player.id);
+            setTimeout(() => {
+                this.closePlayerBox(this.player.id);
+            }, 3000);
+        }
     },
     watch: {
         turn() {
