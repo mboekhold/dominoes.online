@@ -1,7 +1,7 @@
 <!-- GAME MANAGER -->
 <template>
     <div>
-        <Board ref="board" @on-play-domino="playDomino" />
+        <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
         <div v-if="!gameStarted">
             <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
                 Start game
@@ -13,15 +13,18 @@
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
             <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
         </div>
+        <WinnerNotification v-if="winner" :winner="winner" />
     </div>
 </template>
 <script>
 import Board from '@/components/Board.vue'
 import Player from '@/components/Player.vue'
+import WinnerNotification from '@/components/WinnerNotification.vue';
 export default {
     components: {
         Board,
-        Player
+        Player,
+        WinnerNotification
     },
     data() {
         return {
@@ -72,7 +75,7 @@ export default {
             gameStarted: false,
             playedDominos: [],
             players: [
-                { id: 1, flag: null,hand: [], notification: null },
+                { id: 1, flag: null, hand: [], notification: null },
                 { id: 2, flag: null, hand: [], notification: null },
                 { id: 3, flag: null, hand: [], notification: null },
                 { id: 4, flag: null, hand: [], notification: null }
@@ -83,7 +86,8 @@ export default {
             notification: null,
             currentPlayerTurn: null,
             timeoutId: null,
-            resolve: null
+            resolve: null,
+            winner: null
         }
     },
     methods: {
@@ -120,6 +124,9 @@ export default {
             // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
             const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
+            if(this.players[0].hand.length === 0) {
+                this.winner = this.players[0];
+            }
             this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
             this.resolve();
         },
@@ -135,12 +142,18 @@ export default {
                     this.$refs.board.playDomino(playableDomino, placement);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
+                    if(this.players[player].hand.length === 0) {
+                        this.winner = this.players[player];
+                    }
                 } else {
                     const placement = playableDomino.placement[0];
                     playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
                     this.$refs.board.playDomino(playableDomino, playableDomino.placement[0]);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
+                    if(this.players[player].hand.length === 0) {
+                        this.winner = this.players[player];
+                    }
                 }
             } else {
                 this.showNotification(player, 'Pass');
@@ -198,14 +211,29 @@ export default {
             this.showNotification(this.playerWithDoubleSix, notificationMessage);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
-            while (true) {
+            while (!this.winner) {
                 await this.playRound();
             }
         },
+        gameBlocked() {
+            // Count all players hands and see who has the lowest sum
+            let playerWithLowestSum = { player: null, sum: 100}
+            this.players.forEach(player => {
+                let sum = 0;
+                player.hand.forEach(domino => {
+                    sum += domino.top + domino.bottom;
+                })
+                if (sum < playerWithLowestSum.sum) {
+                    playerWithLowestSum = { player: player, sum: Number.MAX_VALUE }
+                }
+            })
+            this.winner = playerWithLowestSum.player;
+            console.log('Winner');
+        }
     },
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
-        document.body.classList.add('overflow-hidden','fixed');
+        document.body.classList.add('overflow-hidden', 'fixed');
     }
 }
 </script>

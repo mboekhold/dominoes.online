@@ -608,6 +608,19 @@ export default {
                     this.showChevronUp = false;
                 }
             }
+        },
+        checkIfGameIsBlocked() {
+            let headDomino = this.dominosOnBoard[this.dominosOnBoard.length - 1];
+            let tailDomino = this.dominosOnBoard[0];
+            // Count if there are 7 dominos on the board with the value of head bottom
+            let headCount = this.dominosOnBoard.filter(domino => domino.bottom === headDomino.bottom || domino.top === headDomino.bottom).length;
+            let tailCount = this.dominosOnBoard.filter(domino => domino.bottom === tailDomino.top || domino.top === tailDomino.top).length;
+            if (headCount === 7 && tailCount === 7) {
+                console.log("Game is blocked")
+                this.$emit('on-game-blocked');
+            }
+            console.log(headCount)
+            console.log(tailCount)
         }
     },
     computed: {
@@ -668,7 +681,7 @@ export default {
                 this.reverseHead = true;
                 return true;
             }
-        },
+        }
     },
     mounted() {
         this.boardWidth = this.$refs.playingArea.clientWidth;
@@ -710,6 +723,7 @@ export default {
                 setTimeout(() => {
                     this.showChevrons();
                 }, 100);
+                this.checkIfGameIsBlocked();
             },
             deep: true
         }
