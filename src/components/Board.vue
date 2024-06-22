@@ -619,8 +619,6 @@ export default {
                 console.log("Game is blocked")
                 this.$emit('on-game-blocked');
             }
-            console.log(headCount)
-            console.log(tailCount)
         }
     },
     computed: {

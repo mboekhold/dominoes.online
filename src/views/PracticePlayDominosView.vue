@@ -13,7 +13,7 @@
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
             <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
         </div>
-        <WinnerNotification v-if="winner" :winner="winner" />
+        <WinnerNotification v-if="winner"  :winner="winner" @on-rematch="rematch" />
     </div>
 </template>
 <script>
@@ -229,6 +229,9 @@ export default {
             })
             this.winner = playerWithLowestSum.player;
             console.log('Winner');
+        },
+        rematch() {
+            window.location.reload();
         }
     },
     mounted() {
