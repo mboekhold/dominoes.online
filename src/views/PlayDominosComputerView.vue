@@ -2,18 +2,11 @@
 <template>
     <div>
         <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
-        <div v-if="!gameStarted">
-            <button class="start-game-button bg-white px-6 py-2 rounded-md font-bold" @click="startGame()">
-                Start game
-            </button>
-        </div>
-        <div v-else>
-            <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0" />
-            <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
-            <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
-            <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
-        </div>
-        <WinnerNotification v-if="winner"  :winner="winner" @on-rematch="rematch" />
+        <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0" />
+        <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
+        <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
+        <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
+        <WinnerNotification v-if="winner"  :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
     </div>
 </template>
 <script>
@@ -87,7 +80,8 @@ export default {
             currentPlayerTurn: null,
             timeoutId: null,
             resolve: null,
-            winner: null
+            winner: null,
+            gameEnded: false,
         }
     },
     methods: {
@@ -126,6 +120,7 @@ export default {
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
             if(this.players[0].hand.length === 0) {
                 this.winner = this.players[0];
+                this.gameEnded = true;
             }
             this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
             this.resolve();
@@ -144,6 +139,7 @@ export default {
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
                     if(this.players[player].hand.length === 0) {
                         this.winner = this.players[player];
+                        this.gameEnded = true;
                     }
                 } else {
                     const placement = playableDomino.placement[0];
@@ -153,6 +149,7 @@ export default {
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
                     if(this.players[player].hand.length === 0) {
                         this.winner = this.players[player];
+                        this.gameEnded = true;
                     }
                 }
             } else {
@@ -211,7 +208,7 @@ export default {
             this.showNotification(this.playerWithDoubleSix, notificationMessage);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
-            while (!this.winner) {
+            while (!this.gameEnded) {
                 await this.playRound();
             }
         },
@@ -228,15 +225,20 @@ export default {
                 }
             })
             this.winner = playerWithLowestSum.player;
+            this.gameEnded = true;
             console.log('Winner');
         },
         rematch() {
             window.location.reload();
-        }
+        },
+        cancel() {
+            this.winner = null;
+        },
     },
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden', 'fixed');
+        this.startGame();
     }
 }
 </script>

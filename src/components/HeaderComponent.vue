@@ -25,7 +25,7 @@
                             </a>
                         </li> -->
                         <li>
-                            <router-link to="/practice"
+                            <router-link to="/play"
                                 class="block py-2 px-6 hover:bg-blue-600 bg-blue-700 rounded-lg text-white"
                                 aria-current="page">Play now
                             </router-link>

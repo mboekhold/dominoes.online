@@ -38,7 +38,7 @@
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <div class="flex items-center">
-                                    <img :src="winner.flag" class="rounded-lg w-8 h-8 mr-2">
+                                    <img :src="winnerFlag" class="rounded-lg w-8 h-8 mr-2">
                                     <h3 class="text-base font-semibold leading-6 text-white" id="modal-title">
                                         {{ winnerName }}
                                     </h3>
@@ -56,7 +56,7 @@
                         <button type="button"
                             class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto" @click="rematch()">Rematch</button>
                         <button type="button"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">Cancel</button>
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" @click="cancel()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -74,14 +74,24 @@ export default {
     methods: {
         rematch() {
             this.$emit('on-rematch');
+        },
+        cancel() {
+            this.$emit('on-cancel');
         }
     },
     computed: {
         winnerName() {
-            if (this.winner.id === 0) {
+            if (this.winner.id === 1) {
                 return 'You'
             } else {
                 return `Player ${this.winner.id}`
+            }
+        },
+        winnerFlag() {
+            if (this.winner.id === 1) {
+                return "https://avatar.iran.liara.run/public/boy?username=Ash"
+            } else {
+                return this.winner.flag
             }
         }
     }

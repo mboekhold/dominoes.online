@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PracticePlayDominosView from '../views/PracticePlayDominosView.vue'
+import PlayDominosComputerView from '../views/PlayDominosComputerView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -11,9 +11,9 @@ const router = createRouter({
       component: HomeView
     },
     {
-      path: '/practice',
-      name: 'practice',
-      component: PracticePlayDominosView
+      path: '/play/computer',
+      name: 'computer',
+      component: PlayDominosComputerView
     },
   ]
 })
