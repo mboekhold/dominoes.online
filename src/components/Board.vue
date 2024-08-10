@@ -631,7 +631,7 @@ export default {
                 return false;
             }
             if (this.currentTailRow % 2 === 0) {
-                if (lastDomino.location.x - this.dominoWidth <= this.dominoHeight) {
+                if (lastDomino.location.x - this.dominoWidth <= this.dominoHeight + 10) {
                     return true;
                 }
                 return false
@@ -660,7 +660,7 @@ export default {
                 return false;
             }
             if (this.currentHeadRow % 2 === 0) {
-                if (lastDomino.location.x + (this.dominoHeight * 2 + 20) >= this.boardWidth) {
+                if (lastDomino.location.x + (this.dominoHeight * 2 + 40) >= this.boardWidth) {
                     return true;
                 }
                 return false

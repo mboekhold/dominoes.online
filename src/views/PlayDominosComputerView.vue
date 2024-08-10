@@ -6,17 +6,20 @@
         <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
         <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
         <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
-        <WinnerNotification v-if="winner"  :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
+        <Notification :notifications="notifications" />
+        <WinnerNotification v-if="winner" :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
     </div>
 </template>
 <script>
 import Board from '@/components/Board.vue'
 import Player from '@/components/Player.vue'
 import WinnerNotification from '@/components/WinnerNotification.vue';
+import Notification from '@/components/Notification.vue';
 export default {
     components: {
         Board,
         Player,
+        Notification,
         WinnerNotification
     },
     data() {
@@ -76,7 +79,7 @@ export default {
             selectedDomino: null,
             playableDomino: null,
             playerWithDoubleSix: null,
-            notification: null,
+            notifications: null,
             currentPlayerTurn: null,
             timeoutId: null,
             resolve: null,
@@ -118,7 +121,7 @@ export default {
             // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
             const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
-            if(this.players[0].hand.length === 0) {
+            if (this.players[0].hand.length === 0) {
                 this.winner = this.players[0];
                 this.gameEnded = true;
             }
@@ -137,7 +140,7 @@ export default {
                     this.$refs.board.playDomino(playableDomino, placement);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    if(this.players[player].hand.length === 0) {
+                    if (this.players[player].hand.length === 0) {
                         this.winner = this.players[player];
                         this.gameEnded = true;
                     }
@@ -147,7 +150,7 @@ export default {
                     this.$refs.board.playDomino(playableDomino, playableDomino.placement[0]);
                     const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
                     this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    if(this.players[player].hand.length === 0) {
+                    if (this.players[player].hand.length === 0) {
                         this.winner = this.players[player];
                         this.gameEnded = true;
                     }
@@ -214,7 +217,7 @@ export default {
         },
         gameBlocked() {
             // Count all players hands and see who has the lowest sum
-            let playerWithLowestSum = { player: null, sum: 100}
+            let playerWithLowestSum = { player: null, sum: 100 }
             this.players.forEach(player => {
                 let sum = 0;
                 player.hand.forEach(domino => {
@@ -239,6 +242,15 @@ export default {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden', 'fixed');
         this.startGame();
+        this.notifications = [
+            { player: this.players[0], message: 'Player 1 played a domino' },
+            { player: this.players[0], message: 'Player 2 played a domino' },
+            { player: this.players[0], message: 'Player 3 played a domino' },
+            { player: this.players[0], message: 'Player 4 played a domino' },
+        ]
+        setTimeout(() => {
+            this.notifications.push({ player: this.players[0], message: 'Player 1 played a domino' });
+        }, 2000);
     }
 }
 </script>
