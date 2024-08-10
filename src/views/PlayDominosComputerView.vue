@@ -79,7 +79,7 @@ export default {
             selectedDomino: null,
             playableDomino: null,
             playerWithDoubleSix: null,
-            notifications: null,
+            notifications: [],
             currentPlayerTurn: null,
             timeoutId: null,
             resolve: null,
@@ -156,7 +156,7 @@ export default {
                     }
                 }
             } else {
-                this.showNotification(player, 'Pass');
+                this.showNotification(player, `Player ${player + 1} cannot play, pass`);
             }
         },
         findPlayerWithDoubleSix() {
@@ -165,12 +165,6 @@ export default {
                     return i;
                 }
             }
-        },
-        showNotification(player, message) {
-            this.players[player].notification = message;
-            setTimeout(() => {
-                this.players[player].notification = null;
-            }, 3000);
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
@@ -181,7 +175,7 @@ export default {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
                     if (!playableDomino) {
-                        this.showNotification(this.currentPlayerTurn, 'Pass');
+                        this.showNotification(this.currentPlayerTurn, `Player ${this.currentPlayerTurn + 1} cannot play, pass`);
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
                     }
@@ -207,8 +201,7 @@ export default {
             this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            const notificationMessage = `Player ${this.playerWithDoubleSix + 1} starts`;
-            this.showNotification(this.playerWithDoubleSix, notificationMessage);
+            this.showNotification(this.playerWithDoubleSix, `Player ${this.playerWithDoubleSix + 1} starts`);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
             while (!this.gameEnded) {
@@ -237,20 +230,14 @@ export default {
         cancel() {
             this.winner = null;
         },
+        showNotification(player, message) {
+            this.notifications.push({ player: this.players[player], message: message });
+        }
     },
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden', 'fixed');
         this.startGame();
-        this.notifications = [
-            { player: this.players[0], message: 'Player 1 played a domino' },
-            { player: this.players[0], message: 'Player 2 played a domino' },
-            { player: this.players[0], message: 'Player 3 played a domino' },
-            { player: this.players[0], message: 'Player 4 played a domino' },
-        ]
-        setTimeout(() => {
-            this.notifications.push({ player: this.players[0], message: 'Player 1 played a domino' });
-        }, 2000);
     }
 }
 </script>
