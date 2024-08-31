@@ -15,6 +15,9 @@ import Board from '@/components/Board.vue'
 import Player from '@/components/Player.vue'
 import WinnerNotification from '@/components/WinnerNotification.vue';
 import Notification from '@/components/Notification.vue';
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
+
 export default {
     components: {
         Board,
@@ -85,6 +88,8 @@ export default {
             resolve: null,
             winner: null,
             gameEnded: false,
+            driverObj: null,
+            didIntro: false
         }
     },
     methods: {
@@ -115,6 +120,15 @@ export default {
         onSelectedDomino(selectedDomino) {
             if (this.currentPlayerTurn !== 0) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
+            if(!this.didIntro) {
+                if(this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
+                    setTimeout(() => {
+                        this.driverObj.moveNext();
+                    }, 100);
+                }
+
+            }
+            
         },
         playDomino(domino) {
             if (this.currentPlayerTurn !== 0) return;
@@ -126,6 +140,11 @@ export default {
                 this.gameEnded = true;
             }
             this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+            if(!this.didIntro) {
+                this.driverObj.destroy();
+                this.didIntro = true;
+                localStorage.setItem('didIntro', true);
+            }
             this.resolve();
         },
         opponentPlayerPlay(player) {
@@ -178,6 +197,9 @@ export default {
                         this.showNotification(this.currentPlayerTurn, `Player ${this.currentPlayerTurn + 1} cannot play, pass`);
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
+                    }
+                    if (!this.didIntro) {
+                        this.driverObj.drive();
                     }
                 })
             } else {
@@ -238,6 +260,34 @@ export default {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden', 'fixed');
         this.startGame();
+        this.didIntro = localStorage.getItem('didIntro');
+        if (!this.didIntro) {
+            this.driverObj = new driver({
+                onCloseClick: () => {
+                    this.driverObj.destroy();
+                    localStorage.setItem('didIntro', true);
+                },
+                showProgress: true,
+                showButtons: ["close"],
+                steps: [
+                    {
+                        element: document.querySelector('.playerBox1'),
+                        popover: {
+                            title: "It's your turn",
+                            description: "This is your hand. Click on a matching domino to play it.",
+                        }
+                    },
+                    {
+                        element: '.preview',
+                        popover: {
+                            title: "Play Domino",
+                            description: "Possible placements are shown in yellow. Click on a placement to play the domino.",
+                        }
+                    }
+
+                ]
+            });
+        }
     }
 }
 </script>

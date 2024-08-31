@@ -106,6 +106,8 @@ export default {
         return {
             intervalId: null,
             openPlayerBoxId: null,
+            didIntro: false,
+            driverObj: null
         }
     },
     methods: {

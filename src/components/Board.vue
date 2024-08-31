@@ -4,17 +4,19 @@
             ref="board">
             <div class="w-full h-full pb-[100px] sm:pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
-                    <div v-if="tailPreviewDomino" class="absolute" ref="tailPreview"
-                        :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
-                        @click="playDomino(tailPreviewDomino, 0)" :style="getPlacementCoordinates(tailPreviewDomino)">
-                    </div>
-                    <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute"
-                        :style="getPlacementCoordinates(domino)" :placeHorizontal="!shouldPlaceDominoVertical(domino)"
-                        :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
-                    </Domino>
-                    <div v-if="headPreviewDomino" class="absolute" ref="headPreview"
-                        :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(headPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(headPreviewDomino) }"
-                        @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
+                    <div class="w-fit">
+                        <div v-if="tailPreviewDomino" class="absolute preview" id="tailPreview" ref="tailPreview"
+                            :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
+                            @click="playDomino(tailPreviewDomino, 0)" :style="getPlacementCoordinates(tailPreviewDomino)">
+                        </div>
+                        <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute"
+                            :style="getPlacementCoordinates(domino)" :placeHorizontal="!shouldPlaceDominoVertical(domino)"
+                            :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
+                        </Domino>
+                        <div v-if="headPreviewDomino" class="absolute preview" id="headPreview" ref="headPreview"
+                            :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(headPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(headPreviewDomino) }"
+                            @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
+                        </div>
                     </div>
                     <div class="absolute h-10 w-10 -bottom-60">
 
@@ -619,6 +621,9 @@ export default {
                 console.log("Game is blocked")
                 this.$emit('on-game-blocked');
             }
+        },
+        isOnMobile() {
+            return window.innerWidth < 768;
         }
     },
     computed: {
@@ -693,26 +698,30 @@ export default {
         // When scroll bar is all the way down its hard to see that you can still play on head side. we can improve this
         // By scrolling down
         headPreviewDomino(val) {
-            if (val) {
-                setTimeout(() => {
-                    const boardView = this.$refs.board.getBoundingClientRect();
-                    const rect = this.$refs.headPreview.getBoundingClientRect();
-                    if (rect.bottom + this.dominoHeight >= boardView.bottom) {
-                        this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
-                    }
-                }, 200);
+            if (this.isOnMobile()) {
+                if (val) {
+                    setTimeout(() => {
+                        const boardView = this.$refs.board.getBoundingClientRect();
+                        const rect = this.$refs.headPreview.getBoundingClientRect();
+                        if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                            this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
+                        }
+                    }, 200);
+                }
             }
         },
         tailPreviewDomino(val) {
-            if (val) {
-                if (!this.headPreviewDomino) {
-                    setTimeout(() => {
-                        const boardView = this.$refs.board.getBoundingClientRect();
-                        const rect = this.$refs.tailPreview.getBoundingClientRect();
-                        if (rect.top - this.dominoHeight <= boardView.top) {
-                            this.$refs.playingArea.scrollTo(0, 50, "smooth");
-                        }
-                    }, 200);
+            if(this.isOnMobile()) {
+                if (val) {
+                    if (!this.headPreviewDomino) {
+                        setTimeout(() => {
+                            const boardView = this.$refs.board.getBoundingClientRect();
+                            const rect = this.$refs.tailPreview.getBoundingClientRect();
+                            if (rect.top - this.dominoHeight <= boardView.top) {
+                                this.$refs.playingArea.scrollTo(0, 50, "smooth");
+                            }
+                        }, 200);
+                    }
                 }
             }
         },

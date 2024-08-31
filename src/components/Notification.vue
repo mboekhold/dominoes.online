@@ -3,7 +3,7 @@
         <!-- Use transition-group for list animations -->
         <TransitionGroup name="list" tag="div" class="space-y-2">
             <div v-for="notification in notifications" :key="notification"
-                class="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow"
+                class="flex items-center w-full max-w-xs p-4 text-gray-500 bg-white border-black border rounded-lg shadow"
                 role="alert">
 
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8">
