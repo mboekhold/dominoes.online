@@ -16,7 +16,7 @@
           <button disabled class="cursor-not-allowed block text-center bg-blue-600 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
             Play Online (Coming soon)
           </button>
-          <button @click="playComputer()" class="block text-center bg-custom-dark border border-gray-100 hover:bg-custom-dark-3  text-gray-200 p-4 rounded-lg h-16 w-full text-xl mt-5 font-bold">
+          <button @click="playComputer()" class="block text-center bg-custom-dark border border-gray-600 hover:bg-custom-dark-3  text-gray-200 p-4 rounded-lg h-16 w-full text-xl mt-5 font-bold">
             Play Computer
           </button>
         </div>
