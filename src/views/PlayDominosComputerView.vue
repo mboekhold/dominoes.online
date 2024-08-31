@@ -80,6 +80,7 @@ export default {
                 { id: 4, flag: null, hand: [], notification: null }
             ],
             selectedDomino: null,
+            playsDone: 0,
             playableDomino: null,
             playerWithDoubleSix: null,
             notifications: [],
@@ -145,10 +146,19 @@ export default {
                 this.didIntro = true;
                 localStorage.setItem('didIntro', true);
             }
+            this.playsDone++;
             this.resolve();
         },
         opponentPlayerPlay(player) {
-            // First check which domino they can play
+            if(this.playerWithDoubleSix === player && this.playsDone === 0) {
+                const doubleSix = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
+                this.players[player].hand = this.players[player].hand.filter(d => d !== doubleSix);
+                let playableDomino = this.$refs.board.getNextPlacementOptions(doubleSix);
+                playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(doubleSix, doubleSix.placement[0]);
+                this.$refs.board.playDomino(doubleSix, doubleSix.placement[1]);
+                this.playsDone++;
+                return;
+            }
             const playableDomino = this.players[player].hand.find(domino => {
                 return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
             })
@@ -174,6 +184,7 @@ export default {
                         this.gameEnded = true;
                     }
                 }
+                this.playsDone++;
             } else {
                 this.showNotification(player, `Player ${player + 1} cannot play, pass`);
             }
@@ -184,6 +195,9 @@ export default {
                     return i;
                 }
             }
+        },
+        playerWithDoubleSixPlays() {
+
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
@@ -231,20 +245,22 @@ export default {
             }
         },
         gameBlocked() {
-            // Count all players hands and see who has the lowest sum
-            let playerWithLowestSum = { player: null, sum: 100 }
-            this.players.forEach(player => {
-                let sum = 0;
-                player.hand.forEach(domino => {
-                    sum += domino.top + domino.bottom;
+            // Game ended should be triggered if a player won
+            if(!gameEnded) {
+                // Count all players hands and see who has the lowest sum
+                let playerWithLowestSum = { player: null, sum: 100 }
+                this.players.forEach(player => {
+                    let sum = 0;
+                    player.hand.forEach(domino => {
+                        sum += domino.top + domino.bottom;
+                    })
+                    if (sum < playerWithLowestSum.sum) {
+                        playerWithLowestSum = { player: player, sum: sum }
+                    }
                 })
-                if (sum < playerWithLowestSum.sum) {
-                    playerWithLowestSum = { player: player, sum: Number.MAX_VALUE }
-                }
-            })
-            this.winner = playerWithLowestSum.player;
-            this.gameEnded = true;
-            console.log('Winner');
+                this.winner = playerWithLowestSum.player;
+                this.gameEnded = true;
+            }
         },
         rematch() {
             window.location.reload();
@@ -293,10 +309,4 @@ export default {
 </script>
 
 <style>
-.start-game-button {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
 </style>
