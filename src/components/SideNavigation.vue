@@ -1,12 +1,8 @@
 <template>
     <div class="w-20 h-full bg-custom-dark-2 flex flex-col">
         <div>
-            <div class="px-6 pt-6 pb-4 hover:cursor-pointer" @click="goHome()">
-                <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center">
-                    <div class=" text-gray-200 font-bold">
-                        D
-                    </div>
-                </div>
+            <div class="px-4 pt-6 pb-4 hover:cursor-pointer" @click="goHome()">
+                <img src="@/assets/logo.png" alt="logo">
             </div>
             <div class="px-6 py-4 flex items-center justify-center hover:cursor-pointer hover:bg-gray-700" @click="goHome()">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 text-gray-200">
