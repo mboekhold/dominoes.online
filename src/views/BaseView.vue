@@ -1,7 +1,7 @@
 <template>
-    <div class="flex flex-row h-screen">
+    <div>
         <SideNavigation />
-        <div class="h-full">
+        <div class="flex flex-col w-full">
             <router-view />
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="ml-20">
     <div class="p-2 lg:px-20 flex flex-col-reverse lg:flex-row text-white mt-10">
       <div class="w-full mt-10 mb-10 md:mb-0">
         <img src="@/assets/game_screenshotx.png" alt="Game Screenshot" />
@@ -12,7 +12,7 @@
           Be part of the largest growing Dominoes community. Compete in tournaments and climb to the top of the
           leaderboard.
         </div>
-        <div class="mt-10 w-full mx-auto md:w-1/2 lg:w-full">
+        <div class="mt-10 w-full mx-auto md:w-1/2 lg:w-full px-6">
           <button disabled class="cursor-not-allowed block text-center bg-blue-600 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
             Play Online (Coming soon)
           </button>
