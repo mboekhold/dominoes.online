@@ -1,19 +1,22 @@
 <template>
     <div @mouseover="expand = true" @mouseleave="expand = false" :class="{'w-20': !expand, 'w-64': expand}" class="fixed h-full text-gray-400 bg-custom-dark-2 flex flex-col transition-all">
         <div>
-            <div class="px-4 pt-6 pb-4 hover:cursor-pointer flex overflow-clip" @click="goHome()">
+            <div class="px-4 pt-6 pb-4 hover:cursor-pointer flex" @click="goHome()">
                 <div>
                     <img class="min-w-12 w-12" src="@/assets/logo.png" alt="logo">
                 </div>
                 <div>
-                    <div class="ml-1 font-light text-gray-100" :class="{'hidden': !expand }">
+                    <div class="ml-1 font-medium text-gray-100 flex" :class="{'hidden': !expand }">
                         <div>
-                            Dominoes.online
+                            Dominoes
+                        </div>
+                        <div class="font-thin text-base">
+                            .online
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mt-4 px-6 py-4 flex items-center hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goHome()">
+            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goHome()">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 ">
                         <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
