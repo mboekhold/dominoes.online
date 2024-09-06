@@ -1,5 +1,5 @@
 <template>
-    <div @mouseover="expand = true" @mouseleave="expand = false" :class="{'w-20': !expand, 'w-64': expand}" class="fixed h-full text-gray-400 bg-custom-dark-2 flex flex-col transition-all">
+    <div @mouseover="expand = true" @mouseleave="expand = false" :class="{'w-20': !expand, 'w-64': expand}" class="fixed h-full text-gray-400 bg-custom-dark-2 flex flex-col transition-all z-10">
         <div>
             <div class="px-4 pt-6 pb-4 hover:cursor-pointer flex" @click="goHome()">
                 <div>

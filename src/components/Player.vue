@@ -163,7 +163,7 @@ export default {
     @apply rounded-tl-xl rounded-tr-xl h-24;
     @apply bg-custom-dark-3;
     position: absolute;
-    bottom: 0px;
+    bottom: 20px;
     padding-bottom: 50px;
     left: 50%;
     transform: translateX(-50%);
@@ -181,13 +181,13 @@ export default {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 0px;
+    right: 60px;
     width: 110px;
     height: 220px;
 }
 
 .playerBox2 {
-    @apply rounded-bl-xl rounded-tl-xl h-full;
+    @apply rounded-xl h-full;
     width: 80px;
     margin-left: auto;
     position: relative;
@@ -217,7 +217,7 @@ export default {
 }
 
 .playerBox3 {
-    @apply rounded-bl-xl rounded-br-xl h-full;
+    @apply rounded-b-xl h-full;
     position: relative;
     height: 80px;
     align-items: center;
@@ -240,13 +240,13 @@ export default {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: 0px;
+    left: 60px;
     width: 110px;
     height: 220px;
 }
 
 .playerBox4 {
-    @apply rounded-tr-xl rounded-br-xl h-full;
+    @apply rounded-xl h-full;
     width: 80px;
     position: relative;
     align-items: center;

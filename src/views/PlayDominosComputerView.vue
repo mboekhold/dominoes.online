@@ -1,13 +1,15 @@
 <!-- GAME MANAGER -->
 <template>
-    <div>
-        <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
-        <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0" />
-        <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
-        <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
-        <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
-        <Notification :notifications="notifications" />
-        <WinnerNotification v-if="winner" :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
+    <div class="ml-20">
+        <div class="px-20 pt-5 relative">
+            <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
+            <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0" />
+            <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
+            <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
+            <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
+            <Notification :notifications="notifications" />
+            <WinnerNotification v-if="winner" :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
+        </div>
     </div>
 </template>
 <script>
@@ -213,7 +215,14 @@ export default {
                         resolve();
                     }
                     if (!this.didIntro) {
-                        this.driverObj.drive();
+                        // Check if its first play else we need to wait for the driver object to load
+                        if (this.driverObj === null) {
+                            setTimeout(() => {
+                                this.driverObj.drive();
+                            }, 1000);
+                        } else {
+                            this.driverObj.drive();
+                        }
                     }
                 })
             } else {
@@ -270,11 +279,17 @@ export default {
         },
         showNotification(player, message) {
             this.notifications.push({ player: this.players[player], message: message });
+        },
+        handleBeforeUnload(event) {
+            const message = "Are you sure you want to leave?";
+            // Set the returnValue to display a confirmation dialog
+            event.returnValue = message;
+            return message;
         }
     },
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
-        document.body.classList.add('overflow-hidden', 'fixed');
+        document.body.classList.add('overflow-hidden');
         this.startGame();
         this.didIntro = localStorage.getItem('didIntro');
         if (!this.didIntro) {
@@ -304,7 +319,20 @@ export default {
                 ]
             });
         }
-    }
+        window.addEventListener("beforeunload", this.handleBeforeUnload);
+    },
+    beforeDestroy() {
+        window.removeEventListener("beforeunload", this.handleBeforeUnload);
+    },
+    beforeRouteLeave(to, from, next) {
+        const answer = window.confirm("You have an active game in progress! If you leave this page, your game will be lost. Are you sure you want to exit?");
+        if (answer) {
+            window.removeEventListener("beforeunload", this.handleBeforeUnload);
+        next(); // Allow navigation
+        } else {
+        next(false); // Block navigation
+        }
+  }
 }
 </script>
 

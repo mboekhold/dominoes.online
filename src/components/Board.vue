@@ -1,6 +1,6 @@
 <template>
-    <div class="w-screen h-dvh rounded-xl mx-auto p-4">
-        <div class="border border-gray-700 w-full h-full rounded-xl flex items-center justify-center relative"
+    <div class="w-full h-screen rounded-xl mx-auto p-4 relative">
+        <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
             <div class="w-full h-full pb-[100px] sm:pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
