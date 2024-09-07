@@ -8,7 +8,7 @@
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
             <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
             <Notification :notifications="notifications" />
-            <WinnerNotification v-if="winner" :winner="winner" @on-rematch="rematch" @on-cancel="cancel" />
+            <WinnerNotification v-if="winner" :winner="winner" @on-next-game="nextGame" @on-cancel="cancel" />
         </div>
     </div>
 </template>
@@ -93,7 +93,6 @@ export default {
             gameEnded: false,
             driverObj: null,
             didIntro: false,
-            isRematching: false
         }
     },
     methods: {
@@ -104,9 +103,12 @@ export default {
             }
         },
         dealHand() {
+            let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
-                    this.players[j].hand.push(this.dominoSet.pop());
+                    const domino = this.dominoSet[dealtDominos];
+                    this.players[j].hand.push({...domino});
+                    dealtDominos++;
                 }
             }
         },
@@ -127,14 +129,13 @@ export default {
             if (!this.didIntro) {
                 if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
                     setTimeout(() => {
-                        if(this.driverObj !== null) {
+                        if (this.driverObj !== null) {
                             this.driverObj.moveNext();
                         }
                     }, 100);
                 }
 
             }
-
         },
         playDomino(domino) {
             if (this.currentPlayerTurn !== 0) return;
@@ -200,9 +201,6 @@ export default {
                     return i;
                 }
             }
-        },
-        playerWithDoubleSixPlays() {
-
         },
         async playRound() {
             if (this.currentPlayerTurn === 0) {
@@ -274,10 +272,16 @@ export default {
                 this.gameEnded = true;
             }
         },
-        rematch() {
-            window.removeEventListener("beforeunload", this.handleBeforeUnload);
-            window.location.reload();
-            window.addEventListener("beforeunload", this.handleBeforeUnload);
+        nextGame() {
+            // Reset all relevant data properties to their initial values
+            this.gameEnded = false;
+            this.winner = null;
+            this.$refs.board.clearBoard();
+            this.players.forEach(player => {
+                player.hand = [];
+            })
+            // Restart the game
+            this.startGame();
         },
         cancel() {
             this.winner = null;
@@ -333,9 +337,9 @@ export default {
         const answer = window.confirm("You have an active game in progress! If you leave this page, your game will be lost. Are you sure you want to exit?");
         if (answer) {
             window.removeEventListener("beforeunload", this.handleBeforeUnload);
-        next(); // Allow navigation
+            next(); // Allow navigation
         } else {
-        next(false); // Block navigation
+            next(false); // Block navigation
         }
     }
 }

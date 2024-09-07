@@ -265,13 +265,10 @@ export default {
                 this.dominosOnBoard.unshift(domino);
                 if (domino.location.transitionOver) {
                     this.currentTailRow++;
-                    this.moveDominoDown();
-                    this.disableScroll = false;
                 }
             } else {
                 if (domino.location.transitionOver) {
                     this.currentHeadRow++;
-                    this.disableScroll = false;
                 }
                 this.dominosOnBoard.push(domino);
             }
@@ -596,6 +593,9 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
                 if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                    if(this.disableScroll) {
+                        this.disableScroll = false;
+                    }
                     this.showChevronDown = true;
                 } else {
                     this.showChevronDown = false;
@@ -608,7 +608,11 @@ export default {
                 const eTop = tailElem.offsetTop;
                 const eBottom = eTop + tailElem.offsetHeight;
                 if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                    if(this.disableScroll) {
+                        this.disableScroll = false;
+                    }
                     this.showChevronUp = true;
+
                 } else {
                     this.showChevronUp = false;
                 }
@@ -627,6 +631,16 @@ export default {
         },
         isOnMobile() {
             return window.innerWidth < 768;
+        },
+        clearBoard() {
+            this.dominosOnBoard = [];
+            this.disableScroll = true;
+            this.currentHeadRow = 0;
+            this.currentTailRow = 0;
+            this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
+            this.showChevronDown = false;
+            this.showChevronUp = false;
+
         }
     },
     computed: {
