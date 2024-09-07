@@ -92,7 +92,8 @@ export default {
             winner: null,
             gameEnded: false,
             driverObj: null,
-            didIntro: false
+            didIntro: false,
+            isRematching: false
         }
     },
     methods: {
@@ -123,15 +124,17 @@ export default {
         onSelectedDomino(selectedDomino) {
             if (this.currentPlayerTurn !== 0) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
-            if(!this.didIntro) {
-                if(this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
+            if (!this.didIntro) {
+                if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
                     setTimeout(() => {
-                        this.driverObj.moveNext();
+                        if(this.driverObj !== null) {
+                            this.driverObj.moveNext();
+                        }
                     }, 100);
                 }
 
             }
-            
+
         },
         playDomino(domino) {
             if (this.currentPlayerTurn !== 0) return;
@@ -143,7 +146,7 @@ export default {
                 this.gameEnded = true;
             }
             this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
-            if(!this.didIntro) {
+            if (!this.didIntro) {
                 this.driverObj.destroy();
                 this.didIntro = true;
                 localStorage.setItem('didIntro', true);
@@ -152,7 +155,7 @@ export default {
             this.resolve();
         },
         opponentPlayerPlay(player) {
-            if(this.playerWithDoubleSix === player && this.playsDone === 0) {
+            if (this.playerWithDoubleSix === player && this.playsDone === 0) {
                 const doubleSix = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
                 this.players[player].hand = this.players[player].hand.filter(d => d !== doubleSix);
                 let playableDomino = this.$refs.board.getNextPlacementOptions(doubleSix);
@@ -255,7 +258,7 @@ export default {
         },
         gameBlocked() {
             // Game ended should be triggered if a player won
-            if(!gameEnded) {
+            if (!this.gameEnded) {
                 // Count all players hands and see who has the lowest sum
                 let playerWithLowestSum = { player: null, sum: 100 }
                 this.players.forEach(player => {
@@ -272,7 +275,9 @@ export default {
             }
         },
         rematch() {
+            window.removeEventListener("beforeunload", this.handleBeforeUnload);
             window.location.reload();
+            window.addEventListener("beforeunload", this.handleBeforeUnload);
         },
         cancel() {
             this.winner = null;
@@ -332,9 +337,8 @@ export default {
         } else {
         next(false); // Block navigation
         }
-  }
+    }
 }
 </script>
 
-<style>
-</style>
+<style></style>

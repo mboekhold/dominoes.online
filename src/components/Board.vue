@@ -3,7 +3,7 @@
         <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
             <div class="w-full h-full pb-[100px] sm:pt-12">
-                <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24 overflow-auto">
+                <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24" :class="{ 'overflow-hidden': disableScroll, 'overflow-auto': !disableScroll }">
                     <div class="w-fit">
                         <div v-if="tailPreviewDomino" class="absolute preview" id="tailPreview" ref="tailPreview"
                             :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
@@ -67,6 +67,7 @@ export default {
             currentTailRow: 0,
             showChevronDown: false,
             showChevronUp: false,
+            disableScroll: false,
         }
     },
     methods: {
@@ -265,10 +266,12 @@ export default {
                 if (domino.location.transitionOver) {
                     this.currentTailRow++;
                     this.moveDominoDown();
+                    this.disableScroll = false;
                 }
             } else {
                 if (domino.location.transitionOver) {
                     this.currentHeadRow++;
+                    this.disableScroll = false;
                 }
                 this.dominosOnBoard.push(domino);
             }
@@ -687,6 +690,7 @@ export default {
         }
     },
     mounted() {
+        this.disableScroll = true;
         this.boardWidth = this.$refs.playingArea.clientWidth;
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
         this.$refs.playingArea.scrollTo(0, this.dominoWidth, "smooth");
