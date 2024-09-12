@@ -3,26 +3,30 @@
         <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
             <div class="w-full h-full pb-[100px] sm:pt-12">
-                <div ref="playingArea" id="playingArea" class="relative h-full w-full pb-24" :class="{ 'overflow-hidden': disableScroll, 'overflow-auto': !disableScroll }">
+                <div ref="playingArea" id="playingArea" class="relative h-full w-full"
+                    :class="{ 'overflow-hidden': disableScroll, 'overflow-auto': !disableScroll }">
                     <div class="w-fit">
                         <div v-if="tailPreviewDomino" class="absolute preview" id="tailPreview" ref="tailPreview"
                             :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(tailPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(tailPreviewDomino) }"
-                            @click="playDomino(tailPreviewDomino, 0)" :style="getPlacementCoordinates(tailPreviewDomino)">
+                            @click="playDomino(tailPreviewDomino, 0)"
+                            :style="getPlacementCoordinates(tailPreviewDomino)">
                         </div>
                         <Domino v-for="domino in dominosOnBoard" :domino="domino" class="absolute"
-                            :style="getPlacementCoordinates(domino)" :placeHorizontal="!shouldPlaceDominoVertical(domino)"
-                            :id="`domino-${domino.id}`" :ref="`domino-${domino.id}`">
+                            :style="getPlacementCoordinates(domino)"
+                            :placeHorizontal="!shouldPlaceDominoVertical(domino)" :id="`domino-${domino.id}`"
+                            :ref="`domino-${domino.id}`">
                         </Domino>
                         <div v-if="headPreviewDomino" class="absolute preview" id="headPreview" ref="headPreview"
                             :class="{ 'domino-placeholder-horizontal': !shouldPlaceDominoVertical(headPreviewDomino), 'domino-placeholder-vertical': shouldPlaceDominoVertical(headPreviewDomino) }"
-                            @click="playDomino(headPreviewDomino, 1)" :style="getPlacementCoordinates(headPreviewDomino)">
+                            @click="playDomino(headPreviewDomino, 1)"
+                            :style="getPlacementCoordinates(headPreviewDomino)">
                         </div>
                     </div>
                     <div class="absolute h-10 w-10 -bottom-60">
 
                     </div>
                     <div v-if="showChevronUp"
-                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-12 sm:top-32 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-12 sm:top-24 left-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
@@ -31,7 +35,7 @@
                         </svg>
                     </div>
                     <div v-if="showChevronDown"
-                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-28 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
@@ -265,6 +269,9 @@ export default {
                 this.dominosOnBoard.unshift(domino);
                 if (domino.location.transitionOver) {
                     this.currentTailRow++;
+                    if(this.isOnMobile()) {
+                        this.moveDominoDown();
+                    }
                 }
             } else {
                 if (domino.location.transitionOver) {
@@ -592,13 +599,24 @@ export default {
                 const cHeight = this.$refs.playingArea.clientHeight;
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
-                if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
-                    if(this.disableScroll) {
-                        this.disableScroll = false;
+                if (this.shouldPlaceDominoVertical(head)) {
+                    if ((eTop + this.dominoHeight) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                        if (this.disableScroll) {
+                            this.disableScroll = false;
+                        }
+                        this.showChevronDown = true;
+                    } else {
+                        this.showChevronDown = false;
                     }
-                    this.showChevronDown = true;
                 } else {
-                    this.showChevronDown = false;
+                    if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                        if (this.disableScroll) {
+                            this.disableScroll = false;
+                        }
+                        this.showChevronDown = true;
+                    } else {
+                        this.showChevronDown = false;
+                    }
                 }
             }
             if (tail) {
@@ -607,14 +625,25 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = tailElem.offsetTop;
                 const eBottom = eTop + tailElem.offsetHeight;
-                if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
-                    if(this.disableScroll) {
-                        this.disableScroll = false;
+                if(this.shouldPlaceDominoVertical(tail)) {
+                    if ((eBottom - this.dominoHeight) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                        if (this.disableScroll) {
+                            this.disableScroll = false;
+                        }
+                        this.showChevronUp = true;
+                    } else {
+                        this.showChevronUp = false;
                     }
-                    this.showChevronUp = true;
-
                 } else {
-                    this.showChevronUp = false;
+                    if ((eBottom - this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
+                        if (this.disableScroll) {
+                            this.disableScroll = false;
+                        }
+                        this.showChevronUp = true;
+    
+                    } else {
+                        this.showChevronUp = false;
+                    }
                 }
             }
         },
@@ -729,7 +758,7 @@ export default {
             }
         },
         tailPreviewDomino(val) {
-            if(this.isOnMobile()) {
+            if (this.isOnMobile()) {
                 if (val) {
                     if (!this.headPreviewDomino) {
                         setTimeout(() => {

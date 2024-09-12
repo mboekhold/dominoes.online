@@ -38,48 +38,14 @@ export default {
                 { top: 3, bottom: 5 }, { top: 3, bottom: 6 }, { top: 4, bottom: 4 }, { top: 4, bottom: 5 },
                 { top: 4, bottom: 6 }, { top: 5, bottom: 5 }, { top: 5, bottom: 6 }, { top: 6, bottom: 6 }
             ],
-            caribbeanFlag: [
-                `${import.meta.env.VITE_BASE_PATH}/ag.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/ai.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/aw.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/bb.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/bl.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/bs.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/bm.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/bq.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/cu.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/cw.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/dm.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/do.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/gd.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/gp.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/gt.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/hn.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/ht.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/jm.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/kn.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/ky.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/lc.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/mf.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/mq.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/ms.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/ni.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/pa.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/pr.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/sx.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/tc.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/tt.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/vc.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/vg.svg`,
-                `${import.meta.env.VITE_BASE_PATH}/vi.svg`,
-            ],
             gameStarted: false,
             playedDominos: [],
             players: [
-                { id: 1, flag: null, hand: [], notification: null },
-                { id: 2, flag: null, hand: [], notification: null },
-                { id: 3, flag: null, hand: [], notification: null },
-                { id: 4, flag: null, hand: [], notification: null }
+                { id: 1, profile: { username: 'Guest', flag: null, image: null }, hand: [] },
+                { id: 2, profile: { username: 'Johnny' ,flag: null, image: "https://avatar.iran.liara.run/public/19" }, hand: [] },
+                { id: 3, profile: { username: 'Alex', flag: null, image: "https://avatar.iran.liara.run/public/45" }, hand: [] },
+                { id: 4, profile: { username: 'Chelsea', flag: null, image: "https://avatar.iran.liara.run/public/57" }, hand: [] },
+
             ],
             selectedDomino: null,
             playsDone: 0,
@@ -107,14 +73,9 @@ export default {
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
                     const domino = this.dominoSet[dealtDominos];
-                    this.players[j].hand.push({...domino});
+                    this.players[j].hand.push({ ...domino });
                     dealtDominos++;
                 }
-            }
-        },
-        giveRandomImages() {
-            for (let i = 0; i < this.players.length; i++) {
-                this.players[i].flag = this.caribbeanFlag[Math.floor(Math.random() * this.caribbeanFlag.length)];
             }
         },
         dealTestHand() {
@@ -192,7 +153,7 @@ export default {
                 }
                 this.playsDone++;
             } else {
-                this.showNotification(player, `Player ${player + 1} cannot play, pass`);
+                this.showNotification(player, `${this.players[player].profile.username} cannot play, pass`);
             }
         },
         findPlayerWithDoubleSix() {
@@ -211,7 +172,7 @@ export default {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
                     if (!playableDomino) {
-                        this.showNotification(this.currentPlayerTurn, `Player ${this.currentPlayerTurn + 1} cannot play, pass`);
+                        this.showNotification(this.currentPlayerTurn, `${this.players[this.currentPlayerTurn].profile.username} cannot play, pass`);
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
                     }
@@ -243,11 +204,10 @@ export default {
             this.gameStarted = true;
             this.shuffleDominos();
             this.dealHand();
-            this.giveRandomImages();
             this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            this.showNotification(this.playerWithDoubleSix, `Player ${this.playerWithDoubleSix + 1} starts`);
+            this.showNotification(this.playerWithDoubleSix, `${this.players[this.playerWithDoubleSix].profile.username} starts`);
             const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
             this.currentPlayerTurn = playOrder[0];
             while (!this.gameEnded) {
