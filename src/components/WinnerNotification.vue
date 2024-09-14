@@ -38,15 +38,27 @@
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <div class="flex items-center">
-                                    <img :src="winnerFlag" class="rounded-lg w-8 h-8 mr-2">
+                                    <div v-if="winner.profile.image">
+                                        <img :src="winner.profile.image" class="rounded-lg w-8 h-8 mr-2">
+                                    </div>
+                                    <div v-else>
+                                        <div
+                                            class="relative w-10 h-10 rounded-md mr-4  bg-gray-100 text-gray-600 flex items-center justify-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                     <h3 class="text-base font-semibold leading-6 text-white" id="modal-title">
-                                        {{ winnerName }}
+                                        {{ winner.profile.username }}
                                     </h3>
                                 </div>
                                 <div class="mt-2">
 
                                     <p class="text-sm text-white">
-                                        {{ winnerName }} won the game. Congratulations! 🎉
+                                        {{ winner.profile.username }} won the game. Congratulations! 🎉
                                     </p>
                                 </div>
                             </div>
@@ -54,9 +66,11 @@
                     </div>
                     <div class="window px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                         <button type="button"
-                            class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto" @click="nextGame()">Next game</button>
+                            class="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
+                            @click="nextGame()">Next game</button>
                         <button type="button"
-                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto" @click="cancel()">Cancel</button>
+                            class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
+                            @click="cancel()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -79,26 +93,10 @@ export default {
             this.$emit('on-cancel');
         }
     },
-    computed: {
-        winnerName() {
-            if (this.winner.id === 1) {
-                return 'You'
-            } else {
-                return `Player ${this.winner.id}`
-            }
-        },
-        winnerFlag() {
-            if (this.winner.id === 1) {
-                return "https://avatar.iran.liara.run/public/boy?username=Ash"
-            } else {
-                return this.winner.flag
-            }
-        }
-    }
 }
 </script>
 <style>
 .window {
-    background-color:#282f3d;
+    background-color: #282f3d;
 }
 </style>

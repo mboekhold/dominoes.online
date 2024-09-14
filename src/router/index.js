@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import PlayDominosComputerView from '../views/PlayDominosComputerView.vue'
+import PlayDominoesComputerView from '../views/PlayDominoesComputerView.vue'
+import PlayDominoesOnlineView from '../views/PlayDominoesOnlineView.vue'
 import LoginView from '../views/LoginView.vue'
 import BaseView from '../views/BaseView.vue'
 
@@ -24,8 +25,13 @@ const router = createRouter({
         {
           path: '/play/computer',
           name: 'computer',
-          component: PlayDominosComputerView
+          component: PlayDominoesComputerView
         },
+        {
+          path: '/play/online',
+          name: 'online',
+          component: PlayDominoesOnlineView
+        }
       ]
     }
   ]

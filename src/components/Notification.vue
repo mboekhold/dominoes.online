@@ -7,7 +7,19 @@
                 role="alert">
 
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8">
-                    <img class="rounded-sm" :src="notification.player.profile.image">
+                    <div v-if="notification.player.profile.image">
+                        <img class="rounded-sm" :src="notification.player.profile.image">
+                    </div>
+                    <div v-else>
+                        <div
+                            class="relative ml-4 w-10 h-10 rounded-md mr-4 bg-gray-100 text-gray-600 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                            </svg>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="ms-3 text-sm font-normal">{{ notification.message }}</div> <!-- Dynamic message -->
@@ -28,43 +40,43 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            notifications: {
-                type: Array,
-                required: true
-            }
-        },
-        methods: {
-            removeNotification(id) {
-                const index = this.notifications.findIndex(notification => notification.id === id);
-                this.notifications.splice(index, 1);
-            }
-        },
-        watch: {
-            notifications: {
-                handler: function (notifications) {
-                    if (notifications.length > 0) {
-                        setTimeout(() => {
-                            this.notifications.shift();
-                        }, 3000);
-                    }
-                },
-                deep: true
-            }
+export default {
+    props: {
+        notifications: {
+            type: Array,
+            required: true
+        }
+    },
+    methods: {
+        removeNotification(id) {
+            const index = this.notifications.findIndex(notification => notification.id === id);
+            this.notifications.splice(index, 1);
+        }
+    },
+    watch: {
+        notifications: {
+            handler: function (notifications) {
+                if (notifications.length > 0) {
+                    setTimeout(() => {
+                        this.notifications.shift();
+                    }, 3000);
+                }
+            },
+            deep: true
         }
     }
+}
 </script>
 
 <style scoped>
-    /* Add transition classes */
-    .list-enter-active,
-    .list-leave-active {
-        transition: transform 0.5s ease-out;
-    }
+/* Add transition classes */
+.list-enter-active,
+.list-leave-active {
+    transition: transform 0.5s ease-out;
+}
 
-    .list-enter-from,
-    .list-leave-to {
-        transform: translateX(100%);
-    }
+.list-enter-from,
+.list-leave-to {
+    transform: translateX(100%);
+}
 </style>

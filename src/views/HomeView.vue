@@ -13,8 +13,8 @@
           leaderboard.
         </div>
         <div class="mt-10 w-full mx-auto md:w-1/2 lg:w-full px-6">
-          <button disabled class="cursor-not-allowed block text-center bg-blue-600 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
-            Play Online (Coming soon)
+          <button @click="playOnline()" class="block text-center hover:bg-blue-500 bg-blue-600 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
+            Play Online
           </button>
           <button @click="playComputer()" class="block text-center bg-custom-dark border border-gray-600 hover:bg-custom-dark-3  text-gray-200 p-4 rounded-lg h-16 w-full text-xl mt-5 font-bold">
             Play Computer
@@ -30,6 +30,9 @@ export default {
   methods: {
     playComputer() {
       this.$router.push({ name: 'computer' });
+    },
+    playOnline() {
+      this.$router.push({ name: 'online' });
     }
   }
 }
