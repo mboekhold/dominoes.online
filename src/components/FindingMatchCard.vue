@@ -17,7 +17,7 @@
             {{ time_elapsed }}
         </div>
         <div class="mt-5 w-4/5 mx-auto">
-            <img src="@/assets/world_map_bg3.png" alt="Finding match">
+            <img src="@/assets/world_map.png" alt="Finding match">
         </div>
     </div>
 </template>
