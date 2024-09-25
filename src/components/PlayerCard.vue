@@ -39,12 +39,6 @@
 
 <script>
 export default {
-    props: {
-        user: {
-            type: Object,
-            required: true
-        }
-    },
     data() {
         return {
             user: this.$auth0.user,

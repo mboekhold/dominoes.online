@@ -92,6 +92,11 @@ export default {
             }, 200)
         }
     },
+    mounted() {
+        if (!this.isAuthenticated && !this.isLoading) {
+            this.$auth0.loginWithRedirect();
+        }
+    },
     watch: {
         isLoading(newVal, oldVal) {
             if (newVal === false) {
