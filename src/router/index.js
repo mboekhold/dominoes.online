@@ -4,6 +4,7 @@ import PlayDominoesComputerView from '../views/PlayDominoesComputerView.vue'
 import PlayDominoesOnlineView from '../views/PlayDominoesOnlineView.vue'
 import PlayDominoesOnlineGameView from '../views/PlayDominoesOnlineGameView.vue'
 import LoginView from '../views/LoginView.vue'
+import SignupView from '../views/SignupView.vue'
 import BaseView from '../views/BaseView.vue'
 
 const router = createRouter({
@@ -17,11 +18,6 @@ const router = createRouter({
           path: '/',
           name: 'home',
           component: HomeView
-        },
-        {
-          path: '/login',
-          name: 'login',
-          component: LoginView
         },
         {
           path: '/play/computer',
@@ -39,6 +35,16 @@ const router = createRouter({
           component: PlayDominoesOnlineGameView
         }
       ]
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginView
+    },
+    {
+      path: '/signup',
+      name: 'signup',
+      component: SignupView
     }
   ]
 })

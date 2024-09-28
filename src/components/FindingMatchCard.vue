@@ -46,7 +46,7 @@ export default {
         return {
             time_elapsed: '00:00',
             showErrorConnecting: false,
-            socket: null
+            socket: null,
         }
     },
     methods: {
@@ -65,7 +65,7 @@ export default {
         },
         initSocket() {
             // Initialize the Socket.IO client connection
-            this.socket = io('http://localhost:3000'); // Use io() from socket.io-client
+            this.socket = io(import.meta.env.VITE_SOCKET_SERVER); // Use io() from socket.io-client
             // Event when connected
             this.socket.on('connect', () => {
                 console.log('Connected to server');
