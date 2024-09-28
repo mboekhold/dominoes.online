@@ -68,8 +68,8 @@
                         </div>
                     </div>
                     <div class="ml-3" :class="{ 'hidden': !this.showText }">
-                        <div class="text-gray-300">
-                            {{ user.name }}
+                        <div class="text-gray-300 overflow-ellipsis">
+                            {{ user.email }}
                         </div>
                         <div class="text-xs font-thin">
                             View your profile
@@ -99,14 +99,15 @@
     </div>
 </template>
 <script>
+import { supabase } from '../supabase';
 export default {
     data() {
         return {
             expand: false,
             showText: false,
-            user: this.$auth0.user,
-            isAuthenticated: this.$auth0.isAuthenticated,
-            isLoading: this.$auth0.isLoading
+            user: '',
+            isAuthenticated: '',
+            isLoading: ''
         }
     },
     methods: {
@@ -117,8 +118,22 @@ export default {
             this.$router.push({ name: 'login' });
         },
         getUserFirstLetter() {
-            return this.user.name.charAt(0).toUpperCase();
+            return this.user.email.charAt(0).toUpperCase();
         },
+        async getUser() {
+            this.isLoading = true;
+            const user = (await supabase.auth.getSession()).data.session.user;
+            if (user) {
+                this.user = user;
+                this.isAuthenticated = true;
+            } else {
+                this.isAuthenticated = false;
+            }
+            this.isLoading = false;
+        }
+    },
+    mounted() {
+        this.getUser();
     },
     watch: {
         expand(newVal, oldVal) {

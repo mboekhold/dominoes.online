@@ -1,7 +1,7 @@
 <template>
-  <div class="border h-screen bg-white w-full p-5">
+  <div class="border h-full bg-white w-full p-5">
     <div class="mt-10 mx-auto w-[330px] sm:w-[348px]">
-      <div class="w-10 h-10 p-1 bg-black rounded-md flex items-center justify-center">
+      <div @click="goHome()" class="cursor-pointer w-10 h-10 p-1 bg-black rounded-md flex items-center justify-center">
         <img src="../assets/logo.png" alt="logo" class="w-10">
       </div>
       <div class="mt-2 text-3xl">
@@ -11,7 +11,7 @@
         Sign into your account
       </div>
       <div class="mt-10">
-        <button
+        <button @click="continueWithGoogle()"
           class="flex items-center justify-center w-full border p-2 rounded-md text-gray-700 border-gray-300 hover:bg-gray-100">
           <svg class="w-5" version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48"
             xmlns:xlink="http://www.w3.org/1999/xlink" style="display: block;">
@@ -43,14 +43,17 @@
         </div>
       </div>
       <div class="mt-5 w-full">
-        <form action="" class="flex flex-col space-y-3">
+        <div v-if="error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+          <span class="font-medium">{{ error }}</span>
+        </div>
+        <form @submit.prevent="loginUser" class="flex flex-col space-y-3">
           <div class="flex flex-col space-y-3">
             <label for="email" class="text-sm text-gray-700">Email</label>
-            <input type="email" placeholder="you@example.com" class="border border-gray-300 p-2 rounded-md">
+            <input autocomplete="email" v-model="email" required type="email" placeholder="you@example.com" class="border border-gray-300 p-2 rounded-md">
           </div>
           <div class="flex flex-col space-y-3">
             <label for="password" class="text-sm text-gray-700">Password</label>
-            <input type="password" placeholder="••••••••••" class="border border-gray-300 p-2 rounded-md">
+            <input autocomplete="current-password" required v-model="password" type="password" placeholder="••••••••••" class="border border-gray-300 p-2 rounded-md">
           </div>
           <div>
             <a href="#" class="text-gray-500 text-sm">Forgot password?</a>
@@ -70,20 +73,40 @@
   </div>
 </template>
 <script>
-
+import { supabase } from '../supabase';
   export default {
+    data() {
+      return {
+        error: '',
+        email: '',
+        password: '',
+      }
+    },
     methods: {
+      async loginUser() {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: this.email,
+          password: this.password,
+        });
+        if (error) {
+          // Show error message
+          this.error = error.message;
+        } else {
+          this.$router.push('/');
+        }
+      },
+      continueWithGoogle() {
+        supabase.auth.signInWithOAuth({
+          provider: 'google',
+        });
+      },
+      goHome() {
+        this.$router.push('/');
+      },
       goToSignup() {
         this.$router.push('/signup');
       }
-    },
-    mounted() {
-      let gscript = document.createElement('script');
-      gscript.src = 'https://accounts.google.com/gsi/client';
-      gscript.async = true;
-      document.body.appendChild(gscript);
     }
-
   }
 </script>
 
