@@ -1,7 +1,8 @@
 <template>
-    <div class="border h-full bg-white w-full p-5">
+    <div class="h-full bg-white w-full p-5">
         <div class="mt-10 mx-auto w-[330px] sm:w-[348px]">
-            <div @click="goHome()" class="cursor-pointer w-10 h-10 p-1 bg-black rounded-md flex items-center justify-center">
+            <div @click="goHome()"
+                class="cursor-pointer w-10 h-10 p-1 bg-black rounded-md flex items-center justify-center">
                 <img src="../assets/logo.png" alt="logo" class="w-10">
             </div>
             <div class="mt-2 text-3xl">
@@ -43,7 +44,9 @@
                 </div>
             </div>
             <div class="mt-5 w-full">
-                <div v-if="error" class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+                <div v-if="error"
+                    class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400"
+                    role="alert">
                     <span class="font-medium">{{ error }}</span>
                 </div>
                 <div>
@@ -51,16 +54,34 @@
                         <!-- Label -->
                         <div class="flex flex-col space-y-3">
                             <label for="email" class="text-sm text-gray-700">Email</label>
-                            <input autocomplete="email" required v-model="email" type="email" placeholder="you@example.com"
+                            <input autocomplete="email" required v-model="email" type="email"
+                                placeholder="you@example.com" class="border border-gray-300 p-2 rounded-md">
+                        </div>
+                        <div class="flex flex-col space-y-3">
+                            <label for="username" class="text-sm text-gray-700">Username</label>
+                            <input required v-model="username" type="text" placeholder="username"
                                 class="border border-gray-300 p-2 rounded-md">
                         </div>
                         <div class="flex flex-col space-y-3">
                             <label for="password" class="text-sm text-gray-700">Password</label>
-                            <input autocomplete="current-password" required v-model="password" type="password" placeholder="••••••••••"
-                                class="border border-gray-300 p-2 rounded-md">
+                            <input autocomplete="current-password" required v-model="password" type="password"
+                                placeholder="••••••••••" class="border border-gray-300 p-2 rounded-md">
                         </div>
                         <div class="mt-5">
-                            <button class="bg-blue-500 text-white w-full p-2 rounded-md">Sign up</button>
+                            <button type="submit" :disabled="loading"
+                                class="bg-blue-500 text-white w-full p-2 rounded-md flex items-center justify-center">
+                                <svg v-if="loading" class="animate-spin h-5 w-5 text-white"
+                                    xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                        stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                    </path>
+                                </svg>
+                                <div class="ml-2">
+                                    Sign up
+                                </div>
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -79,22 +100,44 @@ import { supabase } from '../supabase';
 export default {
     data() {
         return {
+            loading: false,
             error: '',
             email: '',
+            username: '',
             password: '',
         }
     },
     methods: {
         async signUpuser() {
-            const { data, error } = await supabase.auth.signUp({
-                email: this.email,
-                password: this.password,
-            });
-            if (error) {
-                // Show error message
+            // Check if username exists
+            const { data, error } = await supabase
+                .from('profiles')
+                .select('id')
+                .eq('username', this.username)
+                .single();
+            if (data) {
+                this.error = 'Username already exists';
+                return;
+            }
+            try {
+                this.loading = true;
+                const { data, error } = await supabase.auth.signUp({
+                    email: this.email,
+                    password: this.password,
+                });
+                if (error) throw error;
+                const { err } = await supabase.from('profiles').insert([
+                    { id: data.user.id, username: this.username },
+                ]);
+                if (err) throw error;
+            } catch (error) {
                 this.error = error.message;
-            } else {
-                this.$router.push('/');
+                this.loading = false;
+            } finally {
+                this.loading = false;
+                if (!this.error) {
+                    this.goHome();
+                }
             }
         },
         continueWithGoogle() {
@@ -109,6 +152,14 @@ export default {
             this.$router.push('/login');
         }
     },
+    mounted() {
+        if (!document.body.classList.contains('light-bg')) {
+            document.body.classList.add('light-bg');
+        }
+    },
+    unmounted() {
+        document.body.classList.remove('light-bg');
+    }
 }
 </script>
 

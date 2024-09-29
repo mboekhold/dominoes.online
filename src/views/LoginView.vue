@@ -1,5 +1,5 @@
 <template>
-  <div class="border h-full bg-white w-full p-5">
+  <div class="h-full bg-white w-full p-5">
     <div class="mt-10 mx-auto w-[330px] sm:w-[348px]">
       <div @click="goHome()" class="cursor-pointer w-10 h-10 p-1 bg-black rounded-md flex items-center justify-center">
         <img src="../assets/logo.png" alt="logo" class="w-10">
@@ -59,7 +59,7 @@
             <a href="#" class="text-gray-500 text-sm">Forgot password?</a>
           </div>
           <div class="mt-5">
-            <button class="bg-blue-500 text-white w-full p-2 rounded-md">Sign in</button>
+            <button type="submit" class="bg-blue-500 text-white w-full p-2 rounded-md">Sign in</button>
           </div>
         </form>
         <!-- Forgot password? -->
@@ -106,8 +106,20 @@ import { supabase } from '../supabase';
       goToSignup() {
         this.$router.push('/signup');
       }
-    }
+    },
+    mounted() {
+      if (!document.body.classList.contains('light-bg')) {
+        document.body.classList.add('light-bg');
+      }
+    },
+    unmounted() {
+      document.body.classList.remove('light-bg');
+    },
   }
 </script>
 
-<style></style>
+<style>
+.light-bg {
+  background-color: #fff;
+}
+</style>

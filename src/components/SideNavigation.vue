@@ -60,15 +60,14 @@
                 </div>
             </div>
             <div v-else class="p-6">
-                <div v-if="isAuthenticated" class="flex w-full cursor-pointer hover:text-white" @click="goProfile()">
-                    <div
-                        class="h-10 min-w-10 border border-gray-600 flex text-center rounded-md items-center justify-center">
+                <div v-if="isAuthenticated" class="flex w-full cursor-pointer" @click="goProfile()">
+                    <div class="h-10 min-w-10 border border-gray-600 flex text-center rounded-md items-center justify-center">
                         <div class="text-gray-300">
                             {{ getUserFirstLetter() }}
                         </div>
                     </div>
                     <div class="ml-3" :class="{ 'hidden': !this.showText }">
-                        <div class="text-gray-300 overflow-ellipsis">
+                        <div class="text-gray-300 overflow-ellipsis overflow-hidden w-40">
                             {{ user.email }}
                         </div>
                         <div class="text-xs font-thin">
@@ -117,19 +116,27 @@ export default {
         goLogin() {
             this.$router.push({ name: 'login' });
         },
+        goProfile() {
+            this.$router.push({ name: 'profile' });
+        },
         getUserFirstLetter() {
             return this.user.email.charAt(0).toUpperCase();
         },
         async getUser() {
-            this.isLoading = true;
-            const user = (await supabase.auth.getSession()).data.session.user;
-            if (user) {
-                this.user = user;
-                this.isAuthenticated = true;
-            } else {
-                this.isAuthenticated = false;
+            try {
+                this.isLoading = true;
+                const user = (await supabase.auth.getSession()).data.session.user;
+                if (user) {
+                    this.user = user;
+                    this.isAuthenticated = true;
+                } else {
+                    this.isAuthenticated = false;
+                }
+            } catch (error) {
+                console.log(error);
+            } finally {
+                this.isLoading = false;
             }
-            this.isLoading = false;
         }
     },
     mounted() {
