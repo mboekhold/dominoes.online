@@ -4,13 +4,13 @@
 
         </div>
         <div v-else>
-            <div v-if="isAuthenticated" class="p-5">
+            <div v-if="user" class="p-5">
                     <div class="flex items-center justify-center">
-                        <img :src="user.picture" class="w-12 h-12 rounded-md">
+                        <img :src="user_profile.avatar_url" class="w-12 h-12 rounded-md">
                     </div>
                     <div class="mt-5 text-center">
                         <div class="text-gray-200 font-bold">
-                            {{ user.name }}
+                            {{ user_profile.username }}
                         </div>
                     </div>
                     <div class="text-gray-400 mt-5 flex justify-center">
@@ -39,12 +39,10 @@
 
 <script>
 export default {
-    data() {
-        return {
-            user: this.$auth0.user,
-            isAuthenticated: this.$auth0.isAuthenticated,
-            isLoading: this.$auth0.isLoading,
-        }
+    props: {
+        loading: Boolean,
+        user: Object,
+        user_profile: Object
     },
     methods: {
         findMatch() {

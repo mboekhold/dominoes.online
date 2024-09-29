@@ -49,7 +49,7 @@
                 </div>
                 <div class="w-full h-[600px] bg-custom-dark-3 rounded-lg overflow-hidden">
                     <Transition>
-                        <PlayerCard v-if="showPlayerCard" @find-match="findMatch()" />
+                        <PlayerCard :loading="true" :user="user" :user_profile="user_profile" v-if="showPlayerCard" @find-match="findMatch()" />
                     </Transition>
                     <Transition>
                         <FindingMatchCard v-if="showFindingMatch" @go-back="goBack()" />
@@ -64,6 +64,11 @@ import Board from '@/components/Board.vue';
 import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
 export default {
+    props:{
+        loading: Boolean,
+        user: Object,
+        user_profile: Object
+    },
     components: {
         Board,
         PlayerCard,
@@ -71,8 +76,6 @@ export default {
     },
     data() {
         return {
-            isLoading: this.$auth0.isLoading,
-            isAuthenticated: this.$auth0.isAuthenticated,
             showPlayerCard: true,
             showFindingMatch: false
         }
@@ -93,8 +96,8 @@ export default {
         }
     },
     mounted() {
-        if (!this.isAuthenticated && !this.isLoading) {
-            this.$auth0.loginWithRedirect();
+        if (!this.user && !this.loading) {
+            this.$router.push({ name: 'login' });
         }
     },
     watch: {
