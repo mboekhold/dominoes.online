@@ -1,7 +1,23 @@
 <template>
   <div class="ml-10 px-20 p-10 text-gray-200">
     <div v-if="loading">
-      Loading..
+      <div class="flex items-center space-y-4">
+        <!-- Placeholder for user avatar -->
+        <div class="h-14 w-14 rounded-md bg-gray-700 animate-pulse"></div>
+        <!-- Placeholder for username -->
+        <div class="ml-4 h-10 w-1/3 rounded-md bg-gray-700 animate-pulse"></div>
+        <!-- Placeholder for buttons -->
+        <div class="ml-auto flex space-x-2">
+          <div class="h-14 w-32 rounded-lg bg-gray-700 animate-pulse"></div>
+          <div class="h-14 w-32 rounded-lg bg-gray-700 animate-pulse"></div>
+        </div>
+      </div>
+
+      <!-- Placeholder for the stats section -->
+      <div class="mt-10 w-full">
+        <div class="h-40 w-full rounded-md bg-gray-700 animate-pulse"></div>
+      </div>
+      <div class="h-40 mt-14 rounded-lg bg-gray-700 animate-pulse"></div>
     </div>
     <div v-if="user && !loading">
       <div class="flex items-center">
@@ -10,21 +26,32 @@
             {{ getUserFirstLetter() }}
           </div>
         </div>
-        <div class="ml-4 text-4xl font-medium">
-          {{ user_profile.username }}
+        <div class="ml-4">
+          <div class="text-4xl font-medium">
+            {{ user_profile.username }}
+          </div>
+          <div class="text-sm text-gray-400 underline cursor-pointer">
+            Click to set a country flag
+          </div>
         </div>
         <div class="ml-auto flex items-center">
-          <button class="flex items-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 py-2 px-8 rounded-lg h-14 w-full text-xl font-bold">
+          <button @click="toggleEditProfileModal()"
+            class="flex items-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 py-2 px-8 rounded-lg h-14 w-full text-xl font-bold">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path fill-rule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" clip-rule="evenodd" />
+              <path fill-rule="evenodd"
+                d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z"
+                clip-rule="evenodd" />
             </svg>
             <div class="ml-2">
               Settings
             </div>
           </button>
-          <button @click="signOut()" class="ml-2 flex items-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 py-2 px-8 rounded-lg h-14 w-full text-xl font-bold">
+          <button @click="signOut()"
+            class="ml-2 flex items-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 py-2 px-8 rounded-lg h-14 w-full text-xl font-bold">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-              <path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+              <path fill-rule="evenodd"
+                d="M7.5 3.75A1.5 1.5 0 0 0 6 5.25v13.5a1.5 1.5 0 0 0 1.5 1.5h6a1.5 1.5 0 0 0 1.5-1.5V15a.75.75 0 0 1 1.5 0v3.75a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V5.25a3 3 0 0 1 3-3h6a3 3 0 0 1 3 3V9A.75.75 0 0 1 15 9V5.25a1.5 1.5 0 0 0-1.5-1.5h-6Zm10.72 4.72a.75.75 0 0 1 1.06 0l3 3a.75.75 0 0 1 0 1.06l-3 3a.75.75 0 1 1-1.06-1.06l1.72-1.72H9a.75.75 0 0 1 0-1.5h10.94l-1.72-1.72a.75.75 0 0 1 0-1.06Z"
+                clip-rule="evenodd" />
             </svg>
             <div class="ml-2">
               Sign out
@@ -32,7 +59,7 @@
           </button>
         </div>
       </div>
-      <div class="mt-10 w-full bg-custom-dark-3 p-5 rounded-lg">
+      <div class="mt-10 w-full bg-night-dark-3 p-5 rounded-lg">
         <div class="grid grid-cols-3">
           <div class="flex items-center">
             <div class="h-20 w-20 bg-[#282f3d] text-cyan-600 rounded-lg flex items-center justify-center">
@@ -70,11 +97,11 @@
           </div>
           <div class="flex items-center">
             <div class="h-20 w-20 bg-[#282f3d] rounded-lg flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-12 text-red-700">
-              <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-            </svg>
-
-
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-12 text-red-700">
+                <path fill-rule="evenodd"
+                  d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
+                  clip-rule="evenodd" />
+              </svg>
             </div>
             <div class="ml-4">
               <div class="text-gray-400">
@@ -97,33 +124,42 @@
           </div>
         </div>
       </div>
-      <!-- <form @submit.prevent="updateProfile">
-        <div>
-          <label for="email">Email</label>
-          <input id="email" type="text" :value="user.email" disabled>
+      <div class="mt-10 text-4xl font-medium">
+        Recent games
+      </div>
+      <div class="mt-2 w-full min-h-44 bg-night-dark-3 p-5 rounded-lg">
+        <div v-if="gameHistory.length === 0" class="flex h-full w-full justify-center items-center">
+          <div class="text-2xl font-medium mt-12">
+            No games played yet
+          </div>
         </div>
-        <div>
-          <label for="username">Username</label>
-          <input id="username" type="text" v-model="user_profile.username">
-        </div>
-        <div>
-          <button type="submit" :disabled="loading">
-
-          </button>
-        </div>
-      </form> -->
+      </div>
     </div>
   </div>
+  <EditProfileModal v-if="showEditProfileModal" @close="toggleEditProfileModal" />
 </template>
 <script>
 import { supabase } from '../supabase';
+import EditProfileModal from '../components/EditProfileModal.vue';
 export default {
+  components: {
+    EditProfileModal,
+  },
   props: {
     loading: Boolean,
     user: Object,
     user_profile: Object,
   },
+  data() {
+    return {
+      gameHistory: [],
+      showEditProfileModal: false,
+    }
+  },
   methods: {
+    toggleEditProfileModal() {
+      this.showEditProfileModal = !this.showEditProfileModal;
+    },
     getUserFirstLetter() {
       return this.user.email.charAt(0).toUpperCase();
     },
@@ -134,7 +170,7 @@ export default {
       try {
         const { error } = await supabase.auth.signOut();
         if (error) throw error;
-          this.$router.push('/').then(() => {
+        this.$router.push('/').then(() => {
           window.location.reload();
         });
       } catch (error) {

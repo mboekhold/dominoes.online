@@ -3,7 +3,7 @@
         <!-- Use transition-group for list animations -->
         <TransitionGroup name="list" tag="div" class="space-y-2">
             <div v-for="notification in notifications" :key="notification"
-                class="flex items-center w-full max-w-xs p-4 text-gray-200 bg-custom-dark-3 border-gray-700 border rounded-lg shadow"
+                class="flex items-center w-full max-w-xs p-4 text-gray-200 bg-night-dark-3 border-gray-700 border rounded-lg shadow"
                 role="alert">
 
                 <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8">
@@ -25,7 +25,7 @@
                 <div class="ms-3 text-sm font-normal">{{ notification.message }}</div> <!-- Dynamic message -->
 
                 <button type="button"
-                    class="ms-auto -mx-1.5 -my-1.5 bg-custom-dark-3 text-gray-400 hover:bg-gray-700 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8"
+                    class="ms-auto -mx-1.5 -my-1.5 bg-night-dark-3 text-gray-400 hover:bg-gray-700 rounded-lg p-1.5 inline-flex items-center justify-center h-8 w-8"
                     aria-label="Close" @click="removeNotification(notification.id)">
                     <span class="sr-only">Close</span>
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"

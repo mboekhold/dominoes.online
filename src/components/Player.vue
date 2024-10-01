@@ -173,7 +173,7 @@ export default {
 <style scoped>
 .playerBox1 {
     @apply rounded-tl-xl rounded-tr-xl h-24;
-    @apply bg-custom-dark-3;
+    @apply bg-night-dark-3;
     position: absolute;
     bottom: 20px;
     /* padding-bottom: 50px; */
@@ -203,7 +203,7 @@ export default {
     margin-left: auto;
     position: relative;
     align-items: center;
-    @apply bg-custom-dark-3;
+    @apply bg-night-dark-3;
     transition: 1s;
 }
 
@@ -232,7 +232,7 @@ export default {
     position: relative;
     height: 80px;
     align-items: center;
-    @apply bg-custom-dark-3;
+    @apply bg-night-dark-3;
     transition: 1s;
 }
 
@@ -261,7 +261,7 @@ export default {
     width: 80px;
     position: relative;
     align-items: center;
-    @apply bg-custom-dark-3;
+    @apply bg-night-dark-3;
     transition: 1s;
 }
 

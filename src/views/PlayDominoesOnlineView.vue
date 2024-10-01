@@ -21,7 +21,7 @@
                     <div class="w-full h-[1px] bg-gray-700"></div>
                     <div class="p-5 rounded-full h-[500px]">
                         <table class="w-full rounded-full">
-                            <thead class="border-gray-600 bg-custom-dark-3 text-gray-500">
+                            <thead class="border-gray-600 bg-night-dark-3 text-gray-500">
                                 <tr class="text-sm">
                                     <th scope="col" class="rounded-l-full text-left px-6">Rank</th>
                                     <th scope="col" class="text-left px-6 whitespace-nowrap">Name</th>
@@ -47,7 +47,7 @@
                         </table>
                     </div>
                 </div>
-                <div class="w-full h-[600px] bg-custom-dark-3 rounded-lg overflow-hidden">
+                <div class="w-full h-[600px] bg-night-dark-3 rounded-lg overflow-hidden">
                     <Transition>
                         <PlayerCard :loading="true" :user="user" :user_profile="user_profile" v-if="showPlayerCard" @find-match="findMatch()" />
                     </Transition>

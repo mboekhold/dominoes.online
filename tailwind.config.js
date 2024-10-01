@@ -5,9 +5,12 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'custom-dark': '#16161e',
-        'custom-dark-2': '#1b1b24',
-        'custom-dark-3': '#22222b',
+        // Background
+        'night-dark': '#16161e',
+        // Foreground
+        'night-dark-2': '#1b1b24',
+        // Buttons, Inputs, etc.
+        'night-dark-3': '#22222b',
       }
     },
   },
