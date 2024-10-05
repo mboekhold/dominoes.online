@@ -21,17 +21,23 @@
     </div>
     <div v-if="user && !loading">
       <div class="flex items-center">
-        <div class="h-14 min-w-14 border border-gray-600 flex text-center rounded-md items-center justify-center">
-          <div class="text-gray-300 text-2xl">
-            {{ getUserFirstLetter() }}
-          </div>
+        <div class="border border-gray-600 flex text-center rounded-md items-center justify-center">
+          <img :src=getUserAvatar(user_profile) alt="avatar" class="h-16 w-16 rounded-md">
         </div>
         <div class="ml-4">
           <div class="text-4xl font-medium">
             {{ user_profile.username }}
           </div>
-          <div class="text-sm text-gray-400 underline cursor-pointer">
+          <div v-if="!user_profile.countries" @click="toggleEditProfileModal" class="text-sm text-gray-400 underline cursor-pointer">
             Click to set a country flag
+          </div>
+          <div v-else>
+            <div class="flex items-center">
+              <img :src="user_profile.countries.flag_url" alt="country flag" class="w-8 rounded-sm">
+              <div class="ml-2">
+                {{ user_profile.countries.name }}
+              </div>
+            </div>
           </div>
         </div>
         <div class="ml-auto flex items-center">
@@ -136,10 +142,12 @@
       </div>
     </div>
   </div>
-  <EditProfileModal v-if="showEditProfileModal" @close="toggleEditProfileModal" />
+  <EditProfileModal v-if="showEditProfileModal" :user_profile="user_profile" :user="user"
+    @close="toggleEditProfileModal" />
 </template>
 <script>
 import { supabase } from '../supabase';
+import { getUserAvatar } from '../utils';
 import EditProfileModal from '../components/EditProfileModal.vue';
 export default {
   components: {
@@ -149,14 +157,17 @@ export default {
     loading: Boolean,
     user: Object,
     user_profile: Object,
+    authenticated: Boolean,
   },
   data() {
     return {
       gameHistory: [],
       showEditProfileModal: false,
+      country: null,
     }
   },
   methods: {
+    getUserAvatar,
     toggleEditProfileModal() {
       this.showEditProfileModal = !this.showEditProfileModal;
     },

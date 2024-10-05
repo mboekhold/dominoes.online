@@ -61,10 +61,9 @@
             </div>
             <div v-else class="p-6">
                 <div v-if="authenticated" class="flex w-full cursor-pointer" @click="goProfile()">
-                    <div
-                        class="h-10 min-w-10 border border-gray-600 flex text-center rounded-md items-center justify-center">
-                        <div class="text-gray-300">
-                            {{ getUserFirstLetter() }}
+                    <div class="flex text-center items-center justify-center">
+                        <div class="text-gray-300 flex items-center justify-center border border-gray-600 h-12 w-12 rounded-md">
+                            <img :src="getUserAvatar(user_profile)" class="rounded-md h-11 w-11" >
                         </div>
                     </div>
                     <div class="ml-3" :class="{ 'hidden': !this.showText }">
@@ -99,6 +98,7 @@
     </div>
 </template>
 <script>
+import { getUserAvatar } from '../utils';
 export default {
     props: {
         loading: Boolean,
@@ -112,6 +112,7 @@ export default {
         }
     },
     methods: {
+        getUserAvatar,
         goHome() {
             this.$router.push({ name: 'home' });
         },
@@ -120,10 +121,7 @@ export default {
         },
         goProfile() {
             this.$router.push({ name: 'profile' });
-        },
-        getUserFirstLetter() {
-            return this.user_profile.username.charAt(0).toUpperCase();
-        },
+        }
     },
     watch: {
         expand(newVal, oldVal) {

@@ -36,14 +36,27 @@ export default {
                 this.user = (await supabase.auth.getSession()).data.session.user;
                 const { data, error, status } = await supabase
                     .from('profiles')
-                    .select(`username, avatar_url`)
+                    .select(`id, username, avatar_url,
+                    countries (
+                        id,
+                        name,
+                        flag_url
+                    )`)
                     .eq('id', this.user.id)
                     .single();
 
                 if (error && status !== 406) throw error
-                if (data) {
-                    this.user_profile = data
+                this.user_profile = data;
+
+                if (data.avatar_url) {
+                    let {data: file, error: err} = await supabase.storage.from('avatars').download(data.avatar_url)
+                    if (err) throw err
+                    if (file) {
+                        const url = URL.createObjectURL(file)
+                        this.user_profile.avatar_url = url
+                    }
                 }
+               
             } catch (error) {
                 console.log(error.message)
             } finally {
