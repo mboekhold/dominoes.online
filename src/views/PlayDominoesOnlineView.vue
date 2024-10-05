@@ -49,7 +49,7 @@
                 </div>
                 <div class="w-full h-[600px] bg-night-dark-3 rounded-lg overflow-hidden">
                     <Transition>
-                        <PlayerCard :loading="true" :user="user" :user_profile="user_profile" v-if="showPlayerCard" @find-match="findMatch()" />
+                        <PlayerCard :loading="loading" :user="user" :user_profile="user_profile" v-if="showPlayerCard" @find-match="findMatch()" />
                     </Transition>
                     <Transition>
                         <FindingMatchCard v-if="showFindingMatch" @go-back="goBack()" />
@@ -67,7 +67,8 @@ export default {
     props:{
         loading: Boolean,
         user: Object,
-        user_profile: Object
+        user_profile: Object,
+        authenticated: Boolean
     },
     components: {
         Board,
@@ -95,16 +96,11 @@ export default {
             }, 200)
         }
     },
-    mounted() {
-        if (!this.user && !this.loading) {
-            this.$router.push({ name: 'login' });
-        }
-    },
     watch: {
-        isLoading(newVal, oldVal) {
+        loading(newVal, oldVal) {
             if (newVal === false) {
-                if (!this.isAuthenticated) {
-                    this.$router.push({ name: 'home' });
+                if (!this.authenticated) {
+                    this.$router.push({ name: 'login' });
                 }
             }
         }
