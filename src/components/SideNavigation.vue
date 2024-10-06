@@ -30,7 +30,7 @@
                     Home
                 </div>
             </div>
-            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goHome()">
+            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goLeaderboard()">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7">
                         <path fill-rule="evenodd"
@@ -115,6 +115,9 @@ export default {
         getUserAvatar,
         goHome() {
             this.$router.push({ name: 'home' });
+        },
+        goLeaderboard() {
+            this.$router.push({ name: 'leaderboard' });
         },
         goLogin() {
             this.$router.push({ name: 'login' });

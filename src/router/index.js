@@ -7,6 +7,7 @@ import LoginView from '../views/LoginView.vue'
 import SignupView from '../views/SignupView.vue'
 import BaseView from '../views/BaseView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import LeaderboardView from '../views/LeaderboardView.vue'
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -19,6 +20,11 @@ const router = createRouter({
           path: '/',
           name: 'home',
           component: HomeView
+        },
+        {
+          path: '/leaderboard',
+          name: 'leaderboard',
+          component: LeaderboardView
         },
         {
           path: '/profile',

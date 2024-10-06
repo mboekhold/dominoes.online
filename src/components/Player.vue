@@ -4,7 +4,7 @@
             <div class="w-screen sm:w-[530px] sm:pt-5 pr-5 pb-5 flex"
                 :class="'playerBox' + player.id">
                 <div v-if="turn" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
-                <div v-if="!player.profile.image">
+                <div v-if="!player.profile.avatar_url">
                     <div class="relative ml-4 w-12 h-12 rounded-md mr-4 bg-gray-100 text-gray-600 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
@@ -13,7 +13,7 @@
                 </div>
                 <div v-else>
                     <div class="w-12 h-12 bg-[#f7f5ff] rounded-md mb-6 mt-2">
-                        <img :src="player.profile.image" class="w-12 h-12">
+                        <img :src="player.profile.avatar_url" class="w-12 h-12">
                     </div>
                 </div>
                 <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.id"
