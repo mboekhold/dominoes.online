@@ -4,21 +4,12 @@
             <div class="w-screen sm:w-[530px] sm:pt-5 pr-5 pb-5 flex"
                 :class="'playerBox' + player.nr">
                 <div v-if="turn" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
-                <div v-if="!player.profile.avatar_url">
-                    <div class="relative ml-4 w-12 h-12 rounded-md mr-4 bg-gray-100 text-gray-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                        </svg>
+                <div class="mx-2">
+                    <div>
+                        <img :src="getUserAvatar(player.profile)" class="w-12 h-12 rounded-md border border-gray-700">
                     </div>
-                </div>
-                <div v-else>
-                    <div class="mx-2">
-                        <div>
-                            <img :src="player.profile.avatar_url" class="w-12 h-12 rounded-md border border-gray-700">
-                        </div>
-                        <div v-if="player.profile.flag_url">
-                            <img :src="player.profile.flag_url" class="w-6 rounded-sm mt-1 mx-auto">
-                        </div>
+                    <div v-if="player.profile.flag_url">
+                        <img :src="player.profile.flag_url" class="w-6 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
                 <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.nr"
@@ -104,6 +95,7 @@
 import "/node_modules/flag-icons/css/flag-icons.min.css";
 import PlayerHand from './PlayerHand.vue';
 import OpponentPlayerHand from './OpponentPlayerHand.vue';
+import { getUserAvatar } from "../utils";
 export default {
     components: {
         PlayerHand,
@@ -128,6 +120,7 @@ export default {
         }
     },
     methods: {
+        getUserAvatar,
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
         },

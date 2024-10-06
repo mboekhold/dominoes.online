@@ -21,8 +21,8 @@
     </div>
     <div v-if="user && !loading">
       <div class="flex items-center">
-        <div class="border border-gray-600 flex text-center rounded-md items-center justify-center">
-          <img :src=getUserAvatar(user_profile) alt="avatar" class="h-16 w-16 rounded-md">
+        <div class="flex text-center rounded-md items-center justify-center">
+          <img :src=getUserAvatar(user_profile) alt="avatar" class="h-16 w-16 rounded-md border border-gray-600">
         </div>
         <div class="ml-4">
           <div class="text-4xl font-medium">

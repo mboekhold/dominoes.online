@@ -64,8 +64,8 @@
                 <div v-if="authenticated" class="flex w-full cursor-pointer" @click="goProfile()">
                     <div class="flex text-center items-center justify-center">
                         <div
-                            class="text-gray-300 flex items-center justify-center border border-gray-600 h-12 w-12 rounded-md">
-                            <img :src="getUserAvatar(user_profile)" class="rounded-md h-11 w-11">
+                            class="text-gray-300 flex items-center justify-center  h-12 w-12 rounded-md">
+                            <img :src="getUserAvatar(user_profile)" class=" rounded-md h-11 w-11 border border-gray-600">
                         </div>
                     </div>
                     <div class="ml-3" :class="{ 'hidden': !this.showText }">
@@ -110,6 +110,7 @@ export default {
             authenticated: false,
             loading: true,
             user: null,
+            user_profile: null
         }
     },
     methods: {
