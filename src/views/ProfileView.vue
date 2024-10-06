@@ -28,7 +28,8 @@
           <div class="text-4xl font-medium">
             {{ user_profile.username }}
           </div>
-          <div v-if="!user_profile.countries" @click="toggleEditProfileModal" class="text-sm text-gray-400 underline cursor-pointer">
+          <div v-if="!user_profile.countries" @click="toggleEditProfileModal"
+            class="text-sm text-gray-400 underline cursor-pointer">
             Click to set a country flag
           </div>
           <div v-else>
@@ -153,17 +154,15 @@ export default {
   components: {
     EditProfileModal,
   },
-  props: {
-    loading: Boolean,
-    user: Object,
-    user_profile: Object,
-    authenticated: Boolean,
-  },
   data() {
     return {
       gameHistory: [],
       showEditProfileModal: false,
       country: null,
+      loading: false,
+      user: null,
+      user_profile: null,
+      authenticated: false,
     }
   },
   methods: {
@@ -177,6 +176,42 @@ export default {
     updateProfile() {
       // Update the user profile
     },
+    async getUserProfile() {
+      this.loading = true;
+      try {
+        this.user = (await supabase.auth.getSession()).data.session.user;
+        const { data, error, status } = await supabase
+          .from('profiles')
+          .select(`id, username, avatar_url,
+                    countries (
+                        id,
+                        name,
+                        flag_url
+                    )`)
+          .eq('id', this.user.id)
+          .single();
+
+        if (error && status !== 406) throw error
+        this.user_profile = data;
+
+        if (data.avatar_url) {
+          let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
+          if (err) throw err
+          if (file) {
+            const url = URL.createObjectURL(file)
+            this.user_profile.avatar_url = url
+          }
+        }
+
+      } catch (error) {
+        console.log(error.message)
+      } finally {
+        if (this.user) {
+          this.authenticated = true;
+        }
+        this.loading = false;
+      }
+    },
     async signOut() {
       try {
         const { error } = await supabase.auth.signOut();
@@ -189,6 +224,9 @@ export default {
       }
     }
   },
+  mounted() {
+    this.getUserProfile();
+  }
 }
 </script>
 <style></style>

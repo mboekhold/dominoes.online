@@ -1,6 +1,6 @@
 <template>
   <div class="ml-20">
-    <div class="p-2 lg:px-20 flex flex-col-reverse lg:flex-row text-white mt-10">
+    <div class="p-2 lg:px-20 2xl:px-64 mx-auto flex flex-col-reverse lg:flex-row text-white mt-10">
       <div class="w-full mt-10 mb-10 md:mb-0">
         <img src="@/assets/game_screenshotx.png" alt="Game Screenshot" />
       </div>

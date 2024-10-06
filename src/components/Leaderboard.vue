@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="border rounded-lg border-gray-700">
+        <div class="border rounded-lg border-gray-700 h-[600px]">
             <div class="flex p-5">
                 <div>
                     <div>
@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="w-full h-[1px] bg-gray-700"></div>
-            <div class="p-5 rounded-full h-[500px]">
+            <div class="p-5 rounded-full">
                 <table class="w-full rounded-full">
                     <thead class="border-gray-600 bg-night-dark-3 text-gray-500">
                         <tr class="text-sm">

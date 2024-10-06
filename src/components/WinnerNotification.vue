@@ -38,8 +38,8 @@
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <div class="flex items-center">
-                                    <div v-if="winner.profile.image">
-                                        <img :src="winner.profile.image" class="rounded-lg w-8 h-8 mr-2">
+                                    <div v-if="winner.profile.avatar_url">
+                                        <img :src="winner.profile.avatar_url" class="rounded-lg w-8 h-8 mr-2">
                                     </div>
                                     <div v-else>
                                         <div

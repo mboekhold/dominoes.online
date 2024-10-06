@@ -33,20 +33,23 @@
         </div>
         <div class="p-5 mt-10" @click="goBack()">
             <button
-                class="mt-5 block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
+                class="mt-4 block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                 Cancel
             </button>
         </div>
     </div>
 </template>
 <script>
-import { io } from 'socket.io-client';
+import { supabase } from '../supabase';
 export default {
+    props: {
+        user_profile: Object
+    },
     data() {
         return {
             time_elapsed: '00:00',
             showErrorConnecting: false,
-            socket: null,
+            lobby: null,
         }
     },
     methods: {
@@ -63,36 +66,50 @@ export default {
                 this.time_elapsed = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
             }, 1000)
         },
-        initSocket() {
-            // Initialize the Socket.IO client connection
-            this.socket = io(import.meta.env.VITE_SOCKET_SERVER); // Use io() from socket.io-client
-            // Event when connected
-            this.socket.on('connect', () => {
-                console.log('Connected to server');
-                this.startTimer()
-            });
+        async createOrJoinLobby() {
+            try {
+                let lobby;
+                let { data: openLobby, error } = await supabase
+                    .from('lobbies')
+                    .select('*')
+                    .eq('game_started', false)
+                    .lt('player_count', 4)
+                    .single()
 
-            // Event when receiving a message
-            this.socket.on('start-game', (id) => {
-                console.log('Gaming starting..');
-                this.$router.push({ name: 'online-game', params: { id: id } })
-            });
+                if (!openLobby) {
+                    const { data: newLobby, error: lobbyError } = await supabase
+                        .from('lobbies')
+                        .insert([{ player_count: 1 }])
+                        .select()
+                        .single()
+                    lobby = newLobby
+                } else {
+                    lobby = openLobby
+                    // Increment the player_count in the lobby
+                    const { data: updatedLobby, error: updatedError } = await supabase
+                        .from('lobbies')
+                        .update({ player_count: openLobby.player_count + 1 })
+                        .eq('id', lobby.id)
+                        .select()
+                        .single()
 
-            // Event when disconnected
-            this.socket.on('disconnect', () => {
-                console.log('Disconnected from server');
-            });
+                    lobby = updatedLobby
+                }
+                const { data: updateProfile, error: updatedProfileError } = await supabase
+                    .from('profiles')
+                    .update({ lobby_id: lobby.id })
+                    .eq('id', this.user_profile.id)
+                    .single()
 
-            this.socket.on("connect_error", (error) => {
+            } catch (error) {
+                console.log(error)
                 this.showErrorConnecting = true
-            })
+            }
         }
     },
     mounted() {
-        this.initSocket()
-    },
-    beforeUnmount() {
-        this.socket.close()
+        this.startTimer()
+        this.createOrJoinLobby()
     },
 }
 </script>

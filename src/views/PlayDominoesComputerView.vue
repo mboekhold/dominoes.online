@@ -1,12 +1,19 @@
 <!-- GAME MANAGER -->
 <template>
     <div class="ml-20">
-        <div class="px-20 pt-5 relative">
+        <div v-if="loading">
+            <div>
+                <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 loader"></div>
+            </div>
+        </div>
+        <div v-else class="px-20 pt-5 relative">
             <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
-            <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === 0" />
+            <Player :player="players[0]" :turn="currentPlayerTurn === 0" />
             <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
-            <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
+            <!-- Current player -->
+            <Player v-if="players[3]" :player="players[3]" @on-selected-domino="onSelectedDomino"
+                :turn="currentPlayerTurn === 3" />
             <Notification :notifications="notifications" />
             <WinnerNotification v-if="winner" :winner="winner" @on-next-game="nextGame" @on-cancel="cancel" />
         </div>
@@ -19,6 +26,7 @@ import WinnerNotification from '@/components/WinnerNotification.vue';
 import Notification from '@/components/Notification.vue';
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { supabase } from '../supabase';
 
 export default {
     components: {
@@ -41,11 +49,9 @@ export default {
             gameStarted: false,
             playedDominos: [],
             players: [
-                { id: 1, profile: { username: 'Guest', flag: null, image: null }, hand: [] },
-                { id: 2, profile: { username: 'Johnny', flag: null, image: "https://avatar.iran.liara.run/public/19" }, hand: [] },
-                { id: 3, profile: { username: 'Alex', flag: null, image: "https://avatar.iran.liara.run/public/45" }, hand: [] },
-                { id: 4, profile: { username: 'Chelsea', flag: null, image: "https://avatar.iran.liara.run/public/57" }, hand: [] },
-
+                { nr: 2, profile: { username: 'Johnny', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/19" }, hand: [] },
+                { nr: 3, profile: { username: 'Alex', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/45" }, hand: [] },
+                { nr: 4, profile: { username: 'Chelsea', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/57" }, hand: [] },
             ],
             selectedDomino: null,
             playsDone: 0,
@@ -59,6 +65,7 @@ export default {
             gameEnded: false,
             driverObj: null,
             didIntro: false,
+            loading: true,
         }
     },
     methods: {
@@ -85,7 +92,7 @@ export default {
             }
         },
         onSelectedDomino(selectedDomino) {
-            if (this.currentPlayerTurn !== 0) return;
+            if (this.currentPlayerTurn !== 3) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
             if (!this.didIntro) {
                 if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
@@ -95,16 +102,15 @@ export default {
                         }
                     }, 100);
                 }
-
             }
         },
         playDomino(domino) {
-            if (this.currentPlayerTurn !== 0) return;
+            if (this.currentPlayerTurn !== 3) return;
             // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
-            const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
-            this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
-            if (this.players[0].hand.length === 0) {
-                this.winner = this.players[0];
+            const dominoInHand = this.players[3].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
+            this.players[3].hand = this.players[3].hand.filter(d => d !== dominoInHand);
+            if (this.players[3].hand.length === 0) {
+                this.winner = this.players[3];
                 this.gameEnded = true;
             }
             this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
@@ -163,8 +169,67 @@ export default {
                 }
             }
         },
+        async getUserProfile() {
+            this.loading = true;
+            try {
+                this.user = (await supabase.auth.getSession()).data.session.user;
+                const { data, error, status } = await supabase
+                    .from('profiles')
+                    .select(`id, username, avatar_url,
+                    countries (
+                        id,
+                        name,
+                        flag_url
+                    )`)
+                    .eq('id', this.user.id)
+                    .single();
+
+                if (error && status !== 406) throw error
+                this.user_profile = data;
+
+                if (data.avatar_url) {
+                    let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
+                    if (err) throw err
+                    if (file) {
+                        const url = URL.createObjectURL(file)
+                        this.user_profile.avatar_url = url
+                    }
+                }
+
+            } catch (error) {
+                console.log(error.message)
+            } finally {
+                if (this.user) {
+                    this.authenticated = true;
+                    const player = {
+                        nr: 1,
+                        profile: {
+                            username: this.user_profile.username,
+                            flag_url: this.user_profile.countries.flag_url,
+                            avatar_url: this.user_profile.avatar_url
+                        },
+                        hand: []
+                    }
+                    this.players.push(player);
+                    this.startGame();
+                } else {
+                    const player = {
+                        nr: 1,
+                        profile: {
+                            username: 'Guest',
+                            flag_url: null,
+                            avatar_url: null
+                        },
+                        hand: []
+                    }
+                    this.players.push(player);
+                    this.startGame();
+                }
+                this.loading = false;
+            }
+        },
         async playRound() {
-            if (this.currentPlayerTurn === 0) {
+            if (this.currentPlayerTurn === 3) {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
@@ -286,7 +351,8 @@ export default {
     mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden');
-        this.startGame();
+
+        this.getUserProfile();
         this.didIntro = localStorage.getItem('didIntro');
         if (!this.didIntro) {
             this.initDriver();
@@ -304,7 +370,7 @@ export default {
         } else {
             next(false); // Block navigation
         }
-    }
+    },
 }
 </script>
 

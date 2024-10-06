@@ -153,11 +153,7 @@ export default {
                 const { data, error } = await supabase.from('profiles').update(updates).eq('id', this.user_profile.id);
                 if (error) throw error;
                 this.$router.push({ name: 'profile' }).then(() => {
-                    if (upload) {
-                        this.user_profile.avatar_url = this.copy_profile.avatar_url;
-                    }
-                    this.user_profile.countries = this.selected_country;
-                    this.closeModal();
+                    window.location.reload();
                 })
             } catch (error) {
                 console.log(error);

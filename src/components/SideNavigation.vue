@@ -30,7 +30,8 @@
                     Home
                 </div>
             </div>
-            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goLeaderboard()">
+            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700"
+                @click="goLeaderboard()">
                 <div>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7">
                         <path fill-rule="evenodd"
@@ -62,8 +63,9 @@
             <div v-else class="p-6">
                 <div v-if="authenticated" class="flex w-full cursor-pointer" @click="goProfile()">
                     <div class="flex text-center items-center justify-center">
-                        <div class="text-gray-300 flex items-center justify-center border border-gray-600 h-12 w-12 rounded-md">
-                            <img :src="getUserAvatar(user_profile)" class="rounded-md h-11 w-11" >
+                        <div
+                            class="text-gray-300 flex items-center justify-center border border-gray-600 h-12 w-12 rounded-md">
+                            <img :src="getUserAvatar(user_profile)" class="rounded-md h-11 w-11">
                         </div>
                     </div>
                     <div class="ml-3" :class="{ 'hidden': !this.showText }">
@@ -98,17 +100,16 @@
     </div>
 </template>
 <script>
+import { supabase } from '../supabase';
 import { getUserAvatar } from '../utils';
 export default {
-    props: {
-        loading: Boolean,
-        authenticated: Boolean,
-        user_profile: Object,
-    },
     data() {
         return {
             expand: false,
             showText: false,
+            authenticated: false,
+            loading: true,
+            user: null,
         }
     },
     methods: {
@@ -124,7 +125,52 @@ export default {
         },
         goProfile() {
             this.$router.push({ name: 'profile' });
-        }
+        },
+        async getUserProfile() {
+            // check if there is a session..
+            const session = (await supabase.auth.getSession()).data.session;
+            if (session) {
+                this.user = (await supabase.auth.getSession()).data.session.user;
+                try {
+                    const { data, error, status } = await supabase
+                        .from('profiles')
+                        .select(`id, username, avatar_url,
+                            countries (
+                                id,
+                                name,
+                                flag_url
+                            )`)
+                        .eq('id', this.user.id)
+                        .single();
+    
+                    if (error && status !== 406) throw error
+                    this.user_profile = data;
+    
+                    if (data.avatar_url) {
+                        let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
+                        if (err) throw err
+                        if (file) {
+                            const url = URL.createObjectURL(file)
+                            this.user_profile.avatar_url = url
+                        }
+                    }
+                } catch (error) {
+                    console.log(error.message)
+                } finally {
+                    if (this.user) {
+                        this.authenticated = true;
+                    }
+                    this.loading = false;
+                }
+            } else {
+                this.authenticated = false;
+                this.loading = false;
+            }
+
+        },
+    },
+    mounted() {
+        this.getUserProfile();
     },
     watch: {
         expand(newVal, oldVal) {
