@@ -49,7 +49,7 @@
 
             </div>
             <div v-if="loading">
-                <div class="p-6 flex w-fit">
+                <div class="p-4 flex w-fit">
                     <div
                         class="animate-pulse bg-gray-500 h-10 min-w-10 flex text-center rounded-md items-center justify-center">
                     </div>
