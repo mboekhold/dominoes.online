@@ -47,7 +47,7 @@ export default {
 .loader {
     width: 85px;
     height: 50px;
-    --g1: conic-gradient(from 90deg at left 3px top 3px, #0000 90deg, #fff 0);
+    --g1: conic-gradient(from 90deg at left 3px top 3px, #ffffff 90deg, #fff 0);
     --g2: conic-gradient(from -90deg at bottom 3px right 3px, #0000 90deg, #fff 0);
     background: var(--g1), var(--g1), var(--g1), var(--g2), var(--g2), var(--g2);
     background-position: left, center, right;

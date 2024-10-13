@@ -29,7 +29,7 @@
         <div class="text-3xl font-bold">
           Beat the top players
         </div>
-        <div class="mt-5">
+        <div class="mt-5" v-if="leaderBoard.length > 0">
           <div class="w-full flex items-center p-2 lg:p-10 bg-night-dark-3 rounded-md">
             <div class="h-16 w-12 rounded-md bg-[#3b2c2e] text-3xl flex items-center justify-center text-orange-500">
               1
@@ -40,34 +40,29 @@
             </div>
             <div class="ml-5">
               <div class="text-xl lg:text-3xl uppercase">
-                Assad Asimeier
+                {{ leaderBoard[0].player ? leaderBoard[0] : '---' }}
               </div>
               <div class="w-fit relative">
                 <div class="flex items-center text-sm mt-2">
-                  <div class="text-blue-400">61%</div>
+                  <div class="text-blue-400">{{ leaderBoard[0].player ? leaderBoard[0] : '----' }}</div>
                   <div class="text-xs ml-1 text-gray-500"> / </div>
-                  <div class="ml-1"> 121 games</div>
+                  <div class="ml-1"> {{ leaderBoard[0].player ? leaderBoard[0] : '----' }}</div>
                 </div>
                 <div class="w-full h-1 bg-blue-400 rounded-md" style="background-color: rgba(96, 165, 250, 0.2);">
-                  <div class="w-1/2 rounded-md bg-blue-400 h-1 z-10"></div>
+                  <div :class="[`w-${getWinPercentage(leaderBoard[0])}`]"
+                    class="rounded-md bg-blue-400 h-1 z-10"></div>
                 </div>
-
               </div>
             </div>
           </div>
         </div>
         <div class="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="h-44 bg-night-dark-3 rounded-md">
-
-          </div>
-          <div class="h-44 bg-night-dark-3 rounded-md">
-
-          </div>
-          <div class="h-44 bg-night-dark-3 rounded-md">
-
-          </div>
-          <div class="h-44 bg-night-dark-3 rounded-md">
-
+          <div v-for="rank in leaderBoard.slice(1)">
+            <div class="h-44 bg-night-dark-3 rounded-md">
+              <div class="h-16 w-12 rounded-md bg-[#2c2e3b] text-3xl flex items-center justify-center text-blue-500">
+              {{ rank.nr }}
+            </div>
+            </div>
           </div>
         </div>
       </div>
@@ -88,7 +83,28 @@ export default {
     },
     playOnline() {
       this.$router.push({ name: 'online' });
+    },
+    loadLeaderBoard() {
+      for (let i = 0; i < 5; i++) {
+        const rank = {
+          nr: i + 1,
+          player: false
+        }
+        console.log(rank)
+        this.leaderBoard.push(rank)
+      }
+    },
+    getWinPercentage(player) {
+      if(player) {
+        // return data
+      } else {
+        return 0
+      }
     }
+
+  },
+  mounted() {
+    this.loadLeaderBoard()
   }
 }
 </script>
