@@ -1,6 +1,7 @@
 <template>
     <div>
-        <SideNavigation />
+        <MobileNavigation v-if="isMobile" />
+        <SideNavigation v-else />
         <div class="flex flex-col">
             <router-view />
         </div>
@@ -8,9 +9,11 @@
 </template>
 <script>
 import SideNavigation from '@/components/SideNavigation.vue'
+import MobileNavigation from '../components/MobileNavigation.vue';
 export default {
     components: {
         SideNavigation,
+        MobileNavigation
     },
     data() {
         return {
@@ -23,8 +26,13 @@ export default {
         handleResize() {
             if (window.innerWidth < 768) {
                 this.isMobile = true
+            } else {
+                this.isMobile = false
             }
         },
+    },
+    mounted() {
+        this.isMobile = window.innerWidth < 768
     },
     created() {
         window.addEventListener("resize", this.handleResize);

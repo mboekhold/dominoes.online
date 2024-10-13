@@ -3,7 +3,7 @@
     <div class="p-2 lg:px-20 2xl:px-64 mx-auto text-white mt-10">
       <div class="flex flex-col-reverse lg:flex-row">
         <div class="w-full mt-10 mb-10 md:mb-0">
-          <img src="@/assets/test_a.png" alt="Game Screenshot" />
+          <img src="@/assets/game_screenshot.png" alt="Game Screenshot" />
         </div>
         <div class="lg:ml-10 w-full p-6 lg:p-10 mb-20">
           <div class="font-bold text-5xl md:text-6xl text-center">
