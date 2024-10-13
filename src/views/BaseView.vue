@@ -1,7 +1,7 @@
 <template>
     <div>
-        <MobileNavigation v-if="isMobile" />
-        <SideNavigation v-else />
+        <MobileNavigation v-if="isMobile" ref="mobileNavigation" />
+        <SideNavigation v-else :expand="setSidebarOpen"  @mouseover="setSidebarOpen = true" @mouseleave="setSidebarOpen = false" />
         <div class="flex flex-col">
             <router-view />
         </div>
@@ -30,6 +30,9 @@ export default {
                 this.isMobile = false
             }
         },
+        onToggleSideBar() {
+            this.setSidebarOpen = !this.setSidebarOpen
+        }
     },
     mounted() {
         this.isMobile = window.innerWidth < 768

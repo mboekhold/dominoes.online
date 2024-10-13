@@ -1,15 +1,15 @@
 <template>
-  <div class="ml-20">
+  <div class="lg:ml-20">
     <div class="p-2 lg:px-20 2xl:px-64 mx-auto text-white mt-10">
       <div class="flex flex-col-reverse lg:flex-row">
         <div class="w-full mt-10 mb-10 md:mb-0">
           <img src="@/assets/game_screenshot.png" alt="Game Screenshot" />
         </div>
-        <div class="lg:ml-10 w-full p-6 lg:p-10 mb-20">
+        <div class="lg:ml-10 w-full lg:p-10 mb-20">
           <div class="font-bold text-5xl md:text-6xl text-center">
             Play Dominoes Online
           </div>
-          <div class="mt-10 text-2xl text-center">
+          <div class="mt-10 text-xl lg:text-2xl text-center">
             Be part of the largest growing Dominoes community. Compete in tournaments and climb to the top of the
             leaderboard.
           </div>
@@ -30,7 +30,7 @@
           Beat the top players
         </div>
         <div class="mt-5">
-          <div class="w-full flex items-center p-10 bg-night-dark-3 rounded-md">
+          <div class="w-full flex items-center p-2 lg:p-10 bg-night-dark-3 rounded-md">
             <div class="h-16 w-12 rounded-md bg-[#3b2c2e] text-3xl flex items-center justify-center text-orange-500">
               1
             </div>
@@ -39,7 +39,7 @@
                 class="ml-5 w-20 h-20 rounded-md border-yellow-500 border-2">
             </div>
             <div class="ml-5">
-              <div class="text-3xl uppercase">
+              <div class="text-xl lg:text-3xl uppercase">
                 Assad Asimeier
               </div>
               <div class="w-fit relative">
@@ -56,7 +56,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-5 grid grid-cols-4 gap-5">
+        <div class="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-5">
           <div class="h-44 bg-night-dark-3 rounded-md">
 
           </div>
@@ -77,6 +77,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      leaderBoard: []
+    }
+  },
   methods: {
     playComputer() {
       this.$router.push({ name: 'computer' });
