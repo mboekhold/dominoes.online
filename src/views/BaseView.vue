@@ -24,7 +24,7 @@ export default {
     },
     methods: {
         handleResize() {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 this.isMobile = true
             } else {
                 this.isMobile = false
@@ -35,7 +35,7 @@ export default {
         }
     },
     mounted() {
-        this.isMobile = window.innerWidth < 768
+        this.isMobile = window.innerWidth < 1024
     },
     created() {
         window.addEventListener("resize", this.handleResize);

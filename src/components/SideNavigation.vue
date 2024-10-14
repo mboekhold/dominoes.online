@@ -60,7 +60,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="p-6">
+            <div v-else class="p-4">
                 <div v-if="authenticated" class="flex w-full cursor-pointer" @click="goProfile()">
                     <div class="flex text-center items-center justify-center">
                         <div

@@ -3,9 +3,6 @@
     <div class="ml-20">
         <div class="px-2 lg:px-20 2xl:px-64 pt-5 relative text-gray-200">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="h-[600px] w-full">
-                    <Leaderboard class="w-full" />
-                </div>
                 <div class="w-full h-[600px] bg-night-dark-3 rounded-lg overflow-hidden">
                     <Transition>
                         <PlayerCard :loading="loading" :user="user" :user_profile="user_profile" v-if="showPlayerCard"
@@ -23,14 +20,12 @@
 import Board from '@/components/Board.vue';
 import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
-import Leaderboard from '@/components/Leaderboard.vue';
 import { supabase } from '../supabase';
 export default {
     components: {
         Board,
         PlayerCard,
         FindingMatchCard,
-        Leaderboard
     },
     data() {
         return {

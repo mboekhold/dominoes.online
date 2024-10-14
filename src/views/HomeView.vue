@@ -58,7 +58,7 @@
             </div>
           </div>
         </div>
-        <div class="mt-5 grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-5">
+        <div class="mt-3 grid grid-cols-1 lg:grid-cols-4 gap-3">
           <div v-for="rank in leaderBoard.slice(1)">
             <div class="bg-night-dark-3 rounded-md p-2 relative lg:h-32">
               <div class="flex">
@@ -116,7 +116,6 @@ export default {
           nr: i + 1,
           player: false
         }
-        console.log(rank)
         this.leaderBoard.push(rank)
       }
     },
