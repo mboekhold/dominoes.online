@@ -92,7 +92,6 @@
 </template>
 
 <script>
-import "/node_modules/flag-icons/css/flag-icons.min.css";
 import PlayerHand from './PlayerHand.vue';
 import OpponentPlayerHand from './OpponentPlayerHand.vue';
 import { getUserAvatar } from "../utils";

@@ -112,15 +112,20 @@
     </div>
 </template>
 <script>
+import { supabase } from '../supabase';
+import { getUserAvatar } from '../utils';
 export default {
     data() {
         return {
             sideBarOpen: false,
             loading: false,
             authenticated: false,
+            user: null,
+            user_profile: null
         }
     },
     methods: {
+        getUserAvatar,
         toggleSideBar() {
             this.sideBarOpen = !this.sideBarOpen
             event.stopPropagation();
@@ -148,10 +153,53 @@ export default {
             if (sidebar && !sidebar.contains(event.target)) {
                 this.sideBarOpen = false;
             }
-        }
+        },
+        async getUserProfile() {
+            // check if there is a session..
+            const session = (await supabase.auth.getSession()).data.session;
+            if (session) {
+                this.user = (await supabase.auth.getSession()).data.session.user;
+                try {
+                    const { data, error, status } = await supabase
+                        .from('profiles')
+                        .select(`id, username, avatar_url,
+                            countries (
+                                id,
+                                name,
+                                flag_url
+                            )`)
+                        .eq('id', this.user.id)
+                        .single();
+    
+                    if (error && status !== 406) throw error
+                    this.user_profile = data;
+    
+                    if (data.avatar_url) {
+                        let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
+                        if (err) throw err
+                        if (file) {
+                            const url = URL.createObjectURL(file)
+                            this.user_profile.avatar_url = url
+                        }
+                    }
+                } catch (error) {
+                    console.log(error.message)
+                } finally {
+                    if (this.user) {
+                        this.authenticated = true;
+                    }
+                    this.loading = false;
+                }
+            } else {
+                this.authenticated = false;
+                this.loading = false;
+            }
+
+        },
     },
     mounted() {
         window.addEventListener("click", this.handleClickOutside);
+        this.getUserProfile();
     },
     beforeDestroy() {
         window.removeEventListener("click", this.handleClickOutside);

@@ -314,12 +314,6 @@ export default {
         showNotification(player, message) {
             this.notifications.push({ player: this.players[player], message: message });
         },
-        handleBeforeUnload(event) {
-            const message = "Are you sure you want to leave?";
-            // Set the returnValue to display a confirmation dialog
-            event.returnValue = message;
-            return message;
-        },
         initDriver() {
             this.driverObj = new driver({
                 onCloseClick: () => {
@@ -357,19 +351,9 @@ export default {
         if (!this.didIntro) {
             this.initDriver();
         }
-        window.addEventListener("beforeunload", this.handleBeforeUnload);
     },
     beforeDestroy() {
-        window.removeEventListener("beforeunload", this.handleBeforeUnload);
-    },
-    beforeRouteLeave(to, from, next) {
-        const answer = window.confirm("You have an active game in progress! If you leave this page, your game will be lost. Are you sure you want to exit?");
-        if (answer) {
-            window.removeEventListener("beforeunload", this.handleBeforeUnload);
-            next(); // Allow navigation
-        } else {
-            next(false); // Block navigation
-        }
+        document.body.classList.remove('overflow-hidden');
     },
 }
 </script>

@@ -10,37 +10,12 @@
     </div>
 </template>
 <script>
-import { io } from 'socket.io-client';
 export default {
     data() {
         return {
-            socket: null,
             loading: true
         }
     },
-    methods: {
-        initSocket() {
-            this.socket = io(
-                import.meta.env.VITE_SOCKET_SERVER,
-                { query: 
-                    { 
-                        room: this.$route.params.id 
-                    }
-                }
-            );
-            this.socket.on('connect', () => {
-                console.log('Connected to server');
-            });
-            this.socket.on('disconnect', () => {
-                console.log('Disconnected from server');
-            });
-            this.socket.on("connect_error", (error) => {
-            })
-        }
-    },
-    mounted() {
-        this.initSocket();
-    }
 }
 </script>
 <style>
