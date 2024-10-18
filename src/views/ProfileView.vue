@@ -1,15 +1,15 @@
 <template>
   <div class="p-2 pt-10 lg:ml-10 lg:px-20 lg:py-10  text-gray-200">
     <div v-if="loading">
-      <div class="flex items-center space-y-4">
+      <div class="flex flex-col lg:flex-row items-center space-y-4">
         <!-- Placeholder for user avatar -->
         <div class="h-14 w-14 rounded-md bg-gray-700 animate-pulse"></div>
         <!-- Placeholder for username -->
         <div class="ml-4 h-10 w-1/3 rounded-md bg-gray-700 animate-pulse"></div>
         <!-- Placeholder for buttons -->
-        <div class="ml-auto flex space-x-2">
-          <div class="h-14 w-32 rounded-lg bg-gray-700 animate-pulse"></div>
-          <div class="h-14 w-32 rounded-lg bg-gray-700 animate-pulse"></div>
+        <div class="ml-auto w-full lg:w-fit gap-5 flex flex-col lg:flex-row lg:space-x-2">
+          <div class="h-14 w-full lg:w-32 rounded-lg bg-gray-700 animate-pulse"></div>
+          <div class="h-14 w-full lg:w-32 rounded-lg bg-gray-700 animate-pulse"></div>
         </div>
       </div>
 
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="mt-10 w-full bg-night-dark-3 p-5 rounded-lg">
-        <div class="grid grid-cols-3">
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
           <div class="flex items-center">
             <div class="h-20 w-20 bg-[#282f3d] text-cyan-600 rounded-lg flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-12">
