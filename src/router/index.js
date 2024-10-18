@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PlayDominoesComputerView from '../views/PlayDominoesComputerView.vue'
 import PlayDominoesOnlineView from '../views/PlayDominoesOnlineView.vue'
@@ -8,14 +8,16 @@ import SignupView from '../views/SignupView.vue'
 import BaseView from '../views/BaseView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import LeaderboardView from '../views/LeaderboardView.vue'
+import CallbackView from '../views/CallbackView.vue'
+import SetUsernameView from '../views/SetUsernameView.vue'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       component: BaseView,
-      children:[
+      children: [
         {
           path: '/',
           name: 'home',
@@ -51,12 +53,22 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: LoginView
+      component: LoginView,
     },
     {
       path: '/signup',
       name: 'signup',
       component: SignupView
+    },
+    {
+      path: '/callback',
+      name: 'callback',
+      component: CallbackView
+    }, 
+    {
+      path: '/set-username',
+      name: 'set-username',
+      component: SetUsernameView
     }
   ]
 })
