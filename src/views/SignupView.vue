@@ -129,7 +129,7 @@ export default {
                 const { err } = await supabase.from('profiles').insert([
                     { id: data.user.id, username: this.username },
                 ]);
-                if (err) throw error;
+                if (err) throw err;
             } catch (error) {
                 this.error = error.message;
                 this.loading = false;
@@ -143,6 +143,9 @@ export default {
         continueWithGoogle() {
             supabase.auth.signInWithOAuth({
                 provider: 'google',
+                options: {
+                    redirectTo: `${window.location.origin}/callback`,
+                }
             });
         },
         goHome() {
