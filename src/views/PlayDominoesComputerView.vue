@@ -7,7 +7,7 @@
             </div>
         </div>
         <div v-else class="px-20 pt-5 relative">
-            <Board ref="board" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
+            <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
             <Player :player="players[0]" :turn="currentPlayerTurn === 0" />
             <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
@@ -66,7 +66,7 @@ export default {
             driverObj: null,
             didIntro: false,
             loading: true,
-            dealingDominoes: true,
+            dealingDominoes: false,
         }
     },
     methods: {
@@ -77,15 +77,17 @@ export default {
             }
         },
         async dealHand() {
+            this.dealingDominoes = true
             let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
                     const domino = this.dominoSet[dealtDominos];
                     this.players[j].hand.push({ ...domino });
                     dealtDominos++;
-                    await new Promise(resolve => setTimeout(resolve, 100))
+                    await new Promise(resolve => setTimeout(resolve, 200))
                 }
             }
+            this.dealingDominoes = false;
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
@@ -347,11 +349,11 @@ export default {
         document.body.classList.add('overflow-hidden');
 
         await this.getUserProfile();
-        await this.startGame();
         this.didIntro = localStorage.getItem('didIntro');
         if (!this.didIntro) {
             this.initDriver();
         }
+        await this.startGame();
     },
     beforeDestroy() {
         document.body.classList.remove('overflow-hidden');
