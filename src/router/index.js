@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import PlayDominoesComputerView from '../views/PlayDominoesComputerView.vue'
 import PlayDominoesOnlineView from '../views/PlayDominoesOnlineView.vue'
@@ -12,7 +12,7 @@ import CallbackView from '../views/CallbackView.vue'
 import SetUsernameView from '../views/SetUsernameView.vue'
 
 const router = createRouter({
-  history: createWebHashHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
