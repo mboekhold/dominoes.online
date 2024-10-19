@@ -2,7 +2,7 @@
     <div class="cursor-pointer p-4 text-gray-200 sticky top-0 border-b border-gray-700 z-10 bg-night-dark">
         <div class="flex items-center">
             <div class="flex-1">
-                <div @click="toggleSideBar()">
+                <div @click="toggleSideBar()" class="w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
