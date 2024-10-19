@@ -66,6 +66,7 @@ export default {
             driverObj: null,
             didIntro: false,
             loading: true,
+            dealingDominoes: true,
         }
     },
     methods: {
@@ -75,13 +76,14 @@ export default {
                 [this.dominoSet[i], this.dominoSet[j]] = [this.dominoSet[j], this.dominoSet[i]];
             }
         },
-        dealHand() {
+        async dealHand() {
             let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
                     const domino = this.dominoSet[dealtDominos];
                     this.players[j].hand.push({ ...domino });
                     dealtDominos++;
+                    await new Promise(resolve => setTimeout(resolve, 100))
                 }
             }
         },
@@ -211,7 +213,6 @@ export default {
                         hand: []
                     }
                     this.players.push(player);
-                    this.startGame();
                 } else {
                     const player = {
                         nr: 1,
@@ -223,7 +224,6 @@ export default {
                         hand: []
                     }
                     this.players.push(player);
-                    this.startGame();
                 }
                 this.loading = false;
             }
@@ -268,7 +268,7 @@ export default {
         async startGame() {
             this.gameStarted = true;
             this.shuffleDominos();
-            this.dealHand();
+            await this.dealHand();
             this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
@@ -342,11 +342,12 @@ export default {
             });
         }
     },
-    mounted() {
+    async mounted() {
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden');
 
-        this.getUserProfile();
+        await this.getUserProfile();
+        await this.startGame();
         this.didIntro = localStorage.getItem('didIntro');
         if (!this.didIntro) {
             this.initDriver();
