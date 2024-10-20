@@ -32,7 +32,7 @@
                 </div>
                 <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
                 </div>
-                <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :class="'playerHand' + player.nr"
+                <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
             </div>
         </div>

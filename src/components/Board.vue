@@ -44,10 +44,10 @@
                         </svg>
                     </div>
                 </div>
-                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-all" :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing}">
+                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform" :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing}">
                     <div  class="absolute top-10 left-1/2 -translate-x-1/2 flex justify-center items-center gap-1">
-                        <div v-for="i in 20" class="bg-white rounded-md h-14 w-7">
-
+                        <div v-for="(domino, index) in dominoSet" class="bg-white rounded-md h-14 w-7" :ref="`dealDomino${index}`">
+                            
                         </div>
                     </div>
                 </div>

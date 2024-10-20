@@ -7,7 +7,8 @@
             </div>
         </div>
         <div v-else class="px-20 pt-5 relative">
-            <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino" @on-game-blocked="gameBlocked" />
+            <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino"
+                @on-game-blocked="gameBlocked" />
             <Player :player="players[0]" :turn="currentPlayerTurn === 0" />
             <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
             <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
@@ -81,13 +82,26 @@ export default {
             let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
-                    const domino = this.dominoSet[dealtDominos];
-                    this.players[j].hand.push({ ...domino });
+                    const domino = this.dominoSet.pop()
+                    this.players[j].hand.push(domino);
+                    this.animateDominoFromDeckToPlayer(dealtDominos, this.players[j])
                     dealtDominos++;
                     await new Promise(resolve => setTimeout(resolve, 200))
                 }
             }
             this.dealingDominoes = false;
+        },
+        async animateDominoFromDeckToPlayer(index, player) {
+            const domino = this.$refs.board.$refs[`dealDomino${index}`][0];
+            const playerHand = document.getElementById(`playerHand${player.nr}`);
+
+            const startPos = domino.getBoundingClientRect();
+            const endPos = playerHand.getBoundingClientRect();
+
+            const translateX = endPos.left - startPos.left;
+            const translateY = endPos.top - startPos.top;
+            domino.style.transform = `translate(${translateX}px, ${translateY}px)`;
+            domino.style.transition = 'transform 0.5s ease-in-out';
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
