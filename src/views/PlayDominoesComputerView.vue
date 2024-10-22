@@ -79,15 +79,17 @@ export default {
         },
         async dealHand() {
             this.dealingDominoes = true
+            let indexOptions = this.generateRandomIndexOptions();
             // We have to add this because the animation to show the dealing dominoes tray takes 300ms
             await new Promise(resolve => setTimeout(resolve, 300))
-            let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
-                    const domino = this.dominoSet.pop()
+                    const randomIndex = indexOptions.pop();
+                    console.log(randomIndex)
+                    const domino = this.dominoSet[randomIndex];
+                    console.log(domino)
                     this.players[j].hand.push(domino);
-                    this.animateDominoFromDeckToPlayer(dealtDominos, this.players[j]);
-                    dealtDominos++;
+                    this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
                     await new Promise(resolve => setTimeout(resolve, 200))
                 }
             }
@@ -107,6 +109,14 @@ export default {
             setTimeout(() => {
                 domino.remove()
             }, 410);
+        },
+        generateRandomIndexOptions() {
+            let indexOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+            for (let i = indexOptions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1)); // Get a random index
+                [indexOptions[i], indexOptions[j]] = [indexOptions[j], indexOptions[i]]; // Swap the elements
+            }
+            return indexOptions;
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
