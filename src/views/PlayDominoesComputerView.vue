@@ -79,12 +79,14 @@ export default {
         },
         async dealHand() {
             this.dealingDominoes = true
+            // We have to add this because the animation to show the dealing dominoes tray takes 300ms
+            await new Promise(resolve => setTimeout(resolve, 300))
             let dealtDominos = 0;
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
                     const domino = this.dominoSet.pop()
                     this.players[j].hand.push(domino);
-                    this.animateDominoFromDeckToPlayer(dealtDominos, this.players[j])
+                    this.animateDominoFromDeckToPlayer(dealtDominos, this.players[j]);
                     dealtDominos++;
                     await new Promise(resolve => setTimeout(resolve, 200))
                 }
@@ -102,6 +104,9 @@ export default {
             const translateY = endPos.top - startPos.top;
             domino.style.transform = `translate(${translateX}px, ${translateY}px)`;
             domino.style.transition = 'transform 0.5s ease-in-out';
+            setTimeout(() => {
+                domino.remove()
+            }, 410);
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
