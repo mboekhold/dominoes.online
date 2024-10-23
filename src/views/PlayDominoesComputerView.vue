@@ -1,12 +1,12 @@
 <!-- GAME MANAGER -->
 <template>
-    <div class="ml-20">
+    <div class="lg:ml-20">
         <div v-if="loading">
             <div>
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 loader"></div>
             </div>
         </div>
-        <div v-else class="px-20 pt-5 relative">
+        <div v-else class="lg:px-20 pt-5 relative">
             <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino"
                 @on-game-blocked="gameBlocked" />
             <Player :player="players[0]" :turn="currentPlayerTurn === 0" />
@@ -384,7 +384,7 @@ export default {
         }
         await this.startGame();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         document.body.classList.remove('overflow-hidden');
     },
 }
