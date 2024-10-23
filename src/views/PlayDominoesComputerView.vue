@@ -85,10 +85,8 @@ export default {
             for (let i = 0; i < 7; i++) {
                 for (let j = 0; j < 4; j++) {
                     const randomIndex = indexOptions.pop();
-                    console.log(randomIndex)
                     const domino = this.dominoSet[randomIndex];
-                    console.log(domino)
-                    this.players[j].hand.push(domino);
+                    this.players[j].hand.push({...domino});
                     this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
                     await new Promise(resolve => setTimeout(resolve, 200))
                 }
@@ -330,14 +328,7 @@ export default {
         },
         nextGame() {
             // Reset all relevant data properties to their initial values
-            this.gameEnded = false;
-            this.winner = null;
-            this.$refs.board.clearBoard();
-            this.players.forEach(player => {
-                player.hand = [];
-            })
-            // Restart the game
-            this.startGame();
+            window.location.reload();
         },
         cancel() {
             this.winner = null;
