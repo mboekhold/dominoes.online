@@ -52,7 +52,9 @@
                     </div>
                 </div>
             </div>
-           
+            <div class="slider">
+                <input id="size-slider" type="range" min="50" max="100" value="100" v-model="rangedata" @input="changeSize()">
+            </div>
         </div>
     </div>
 </template>
@@ -85,9 +87,15 @@ export default {
             showChevronUp: false,
             disableScroll: false,
             dominoSetLength: this.dominoSet.length,
+            rangedata: 100
         }
     },
     methods: {
+        changeSize() {
+            const root = document.documentElement
+            const percent = Number(this.rangedata/100).toLocaleString(undefined,{style: 'percent', minimumFractionDigits:0});
+            root.style.setProperty('font-size', percent)
+        },
         playDomino(domino, selectedPosition) {
             const id = this.dominosOnBoard.length;
             domino.id = id;
@@ -799,6 +807,12 @@ export default {
 }
 </script>
 <style scoped>
+.slider {
+    position: absolute;
+    bottom: 5%;
+    right: 1%;
+}
+
 .domino-placeholder-vertical {
     @apply rounded-lg border border-yellow-200 h-24 w-14 px-1 flex justify-between flex-col cursor-pointer;
 }
