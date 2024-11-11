@@ -3,16 +3,7 @@
     <div class="lg:ml-20 p-2 mt-10 lg:px-48 py-5">
         <div class="relative text-gray-200">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="w-full h-[600px] relative">
-                    <div class="w-full h-full bg-night-dark-3 rounded-lg">
-                        <div v-if="gameHistory.length === 0" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div class="text-2xl font-medium">
-                                No games played yet
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="w-full h-[600px] bg-night-dark-3 rounded-lg overflow-hidden">
+                <div class="w-full h-[500px] bg-night-dark-3 rounded-lg overflow-hidden">
                     <Transition>
                         <PlayerCard :loading="loading" :user="user" :user_profile="user_profile" v-if="showPlayerCard"
                             @find-match="findMatch()" />
@@ -20,6 +11,15 @@
                     <Transition>
                         <FindingMatchCard :user_profile="user_profile" v-if="showFindingMatch" @go-back="goBack()" />
                     </Transition>
+                </div>
+                <div class="w-full h-[500px] relative">
+                    <div class="w-full h-full border-gray-700 border rounded-lg">
+                        <div v-if="gameHistory.length === 0" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <div class="text-2xl font-medium">
+                                No games played yet
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -28,10 +28,10 @@
                 {{ time_elapsed }}
             </div>
         </div>
-        <div class="mt-5 w-4/5 mx-auto">
-            <img src="@/assets/world_map.png" alt="Finding match" class="w-[450px] mx-auto">
+        <div class="mt-5 max-w-[375px] mx-auto">
+            <img src="@/assets/world_map.png" alt="Finding match" class="mx-auto">
         </div>
-        <div class="p-5 mt-10" @click="goBack()">
+        <div class="p-5" @click="goBack()">
             <button
                 class="mt-4 block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                 Cancel
@@ -47,13 +47,14 @@ export default {
     },
     data() {
         return {
+            loading: false,
             time_elapsed: '00:00',
             showErrorConnecting: false,
-            lobby: null,
+            room: null,
         }
     },
     methods: {
-        goBack() {
+        async goBack() {
             this.$emit("go-back")
         },
         startTimer() {
@@ -66,51 +67,76 @@ export default {
                 this.time_elapsed = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
             }, 1000)
         },
-        async createOrJoinLobby() {
-            try {
-                let lobby;
-                let { data: openLobby, error } = await supabase
-                    .from('lobbies')
-                    .select('*')
-                    .eq('game_started', false)
-                    .lt('player_count', 4)
-                    .single()
-
-                if (!openLobby) {
-                    const { data: newLobby, error: lobbyError } = await supabase
-                        .from('lobbies')
-                        .insert([{ player_count: 1 }])
-                        .select()
-                        .single()
-                    lobby = newLobby
-                } else {
-                    lobby = openLobby
-                    // Increment the player_count in the lobby
-                    const { data: updatedLobby, error: updatedError } = await supabase
-                        .from('lobbies')
-                        .update({ player_count: openLobby.player_count + 1 })
-                        .eq('id', lobby.id)
-                        .select()
-                        .single()
-
-                    lobby = updatedLobby
-                }
-                const { data: updateProfile, error: updatedProfileError } = await supabase
-                    .from('profiles')
-                    .update({ lobby_id: lobby.id })
-                    .eq('id', this.user_profile.id)
-                    .single()
-
-            } catch (error) {
-                console.log(error)
+        async getNextRoomId() {
+            const { data, error } = await supabase
+                .from('rooms')
+                .select('*')
+                .lt('player_count', 4)
+                
+            if (error) {
                 this.showErrorConnecting = true
             }
+            else if (data.length > 0) {
+                return data[0].id
+            }
+            return null
+        },
+        async initPresence() {
+            this.loading = true
+            const nextRoomId = await this.getNextRoomId()
+            const channel = nextRoomId ? `room_${nextRoomId}` : 'room_01'
+            this.room = supabase.channel(channel)
+            this.room
+                .on('presence', { event: 'sync' }, () => {
+                    const newState = this.room.presenceState()
+                    this.checkandCreateGame(newState)
+                })
+                .on('presence', { event: 'join' }, ({ key, newPresences }) => {
+                    console.log('join', key, newPresences)
+                })
+                .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
+                    console.log('leave')
+                    console.log('leave', key, leftPresences)
+                })
+                .subscribe()
+            
+            const joinedRoom = {
+                user_id: this.user_profile.id,
+            }
+            const presentTrackStatus = await this.room.track(joinedRoom)
+            if (presentTrackStatus.error) {
+                this.showErrorConnecting = true
+            } else {
+                this.startTimer()
+            }
+            this.loading = false
+        },
+        async untrackPresence() {
+            const presenceUntrackStatus = await this.room.untrack()
+            console.log(presenceUntrackStatus)
+        },
+        async checkandCreateGame(presenceState) {
+            const userCount = Object.keys(presenceState).length
+            if (userCount === 4) {
+                await this.createGame(presenceState)
+            }
+        },
+        async createGame(presenceState) {
+            let { data, error } = await supabase
+            .from('games')
+
+        },
+        beforeUnloadHandler(event) {
+            event.preventDefault()
+            event.returnValue = ''
         }
     },
     mounted() {
-        this.startTimer()
-        this.createOrJoinLobby()
+        this.initPresence()
     },
+    async beforeUnmount() {
+        await this.untrackPresence()
+    }
 }
 </script>
 <style lang="">

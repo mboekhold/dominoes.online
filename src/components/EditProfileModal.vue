@@ -65,7 +65,7 @@
                                             </div>
                                             <div>
                                                 <select
-                                                    class="border bg-transparent focus:ring-0 focus:ring-offset-0 bg-gray-800 border-gray-600 p-2 rounded-md w-full"
+                                                    class="border focus:ring-0 focus:ring-offset-0 bg-night-dark-3 border-gray-600 p-2 rounded-md w-full"
                                                     v-model="selected_country">
                                                     <option v-for="country in countries" :value="country">
                                                         {{ country.name }}
