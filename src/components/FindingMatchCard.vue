@@ -51,6 +51,7 @@ export default {
             time_elapsed: '00:00',
             showErrorConnecting: false,
             room: null,
+            roomId: null
         }
     },
     methods: {
@@ -67,7 +68,7 @@ export default {
                 this.time_elapsed = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
             }, 1000)
         },
-        async getNextRoomId() {
+        async getRoomId() {
             const { data, error } = await supabase
                 .from('rooms')
                 .select('*')
@@ -83,9 +84,9 @@ export default {
         },
         async initPresence() {
             this.loading = true
-            const nextRoomId = await this.getNextRoomId()
-            const channel = nextRoomId ? `room_${nextRoomId}` : 'room_01'
-            this.room = supabase.channel(channel)
+            const roomId = await this.getRoomId()
+            this.roomId = roomId
+            this.room = supabase.channel(roomId)
             this.room
                 .on('presence', { event: 'sync' }, () => {
                     const newState = this.room.presenceState()
@@ -107,13 +108,29 @@ export default {
             if (presentTrackStatus.error) {
                 this.showErrorConnecting = true
             } else {
+                await this.increasePlayerCount(roomId)
                 this.startTimer()
             }
             this.loading = false
         },
         async untrackPresence() {
+            await this.decreasePlayerCount()
             const presenceUntrackStatus = await this.room.untrack()
-            console.log(presenceUntrackStatus)
+        },
+        async increasePlayerCount(roomId) {
+            let { data, error } = await supabase
+            .rpc("IncrementRoomPlayerCount", {
+                row_id: roomId
+            })
+            if (error) {
+                this.showErrorConnecting = true
+            }
+        },
+        async decreasePlayerCount() {
+            let { data, error } = supabase
+            .rpc("DecrementRoomPlayerCount", {
+                row_id: this.roomId
+            })
         },
         async checkandCreateGame(presenceState) {
             const userCount = Object.keys(presenceState).length
