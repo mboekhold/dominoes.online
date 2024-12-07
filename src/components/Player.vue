@@ -6,10 +6,10 @@
                 <div v-if="turn" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
                     <div>
-                        <img :src="getUserAvatar(player.profile)" class="w-12 h-12 rounded-md border border-gray-700">
+                        <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
                     </div>
-                    <div v-if="player.profile.flag_url">
-                        <img :src="player.profile.flag_url" class="w-6 rounded-sm mt-1 mx-auto">
+                    <div v-if="player.flag_url">
+                        <img :src="player.flag_url" class="w-6 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
                 <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.nr"
@@ -27,8 +27,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </div>
-                <div class="w-12 h-12 bg-[#f7f5ff] rounded-md mb-6 mt-2">
-                    <img :src="player.profile.avatar_url" class="w-12 h-12">
+                <div class="mb-6 mt-2">
+                    <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
                 </div>
                 <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
                 </div>
@@ -47,8 +47,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </div>
-                <div class="w-12 h-12 ml-2 mr-6 rounded-md bg-[#edddd6]">
-                    <img :src="player.profile.avatar_url" class="h-12 w-12">
+                <div class="ml-2 mr-6">
+                    <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                 </div>
                 <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
                 </div>
@@ -67,8 +67,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                 </div>
-                <div class="rounded-md mt-2 mb-6 w-12 h-12 bg-[#f7f5ff]">
-                    <img :src="player.profile.avatar_url" class="w-12 h-12">
+                <div class="rounded-md mt-2 mb-6">
+                    <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                 </div>
                 <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
                 </div>

@@ -38,8 +38,8 @@
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <div class="flex items-center">
-                                    <div v-if="winner.profile.avatar_url">
-                                        <img :src="winner.profile.avatar_url" class="rounded-lg w-8 h-8 mr-2">
+                                    <div v-if="winner.avatar_url">
+                                        <img :src="winner.avatar_url" class="rounded-lg w-8 h-8 mr-2">
                                     </div>
                                     <div v-else>
                                         <div
@@ -52,13 +52,13 @@
                                         </div>
                                     </div>
                                     <h3 class="text-base font-semibold leading-6 text-white" id="modal-title">
-                                        {{ winner.profile.username }}
+                                        {{ winner.username }}
                                     </h3>
                                 </div>
                                 <div class="mt-2">
 
                                     <p class="text-sm text-white">
-                                        {{ winner.profile.username }} won the game. Congratulations! 🎉
+                                        {{ winner.username }} won the game. Congratulations! 🎉
                                     </p>
                                 </div>
                             </div>

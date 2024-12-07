@@ -40,7 +40,7 @@
     </div>
 </template>
 <script>
-import { supabase } from '../supabase';
+import { io } from 'socket.io-client'
 export default {
     props: {
         user_profile: Object
@@ -50,8 +50,7 @@ export default {
             loading: false,
             time_elapsed: '00:00',
             showErrorConnecting: false,
-            room: null,
-            roomId: null
+            socket: null,
         }
     },
     methods: {
@@ -68,91 +67,45 @@ export default {
                 this.time_elapsed = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
             }, 1000)
         },
-        async getRoomId() {
-            const { data, error } = await supabase
-                .from('rooms')
-                .select('*')
-                .lt('player_count', 4)
-                
-            if (error) {
-                this.showErrorConnecting = true
-            }
-            else if (data.length > 0) {
-                return data[0].id
-            }
-            return null
-        },
         async initPresence() {
-            this.loading = true
-            const roomId = await this.getRoomId()
-            this.roomId = roomId
-            this.room = supabase.channel(roomId)
-            this.room
-                .on('presence', { event: 'sync' }, () => {
-                    const newState = this.room.presenceState()
-                    this.checkandCreateGame(newState)
+            try {
+                this.loading = true
+                this.socket = io(import.meta.env.VITE_WSS_URL, {
+                    query: {
+                        user_id: this.user_profile.id,
+                    }
                 })
-                .on('presence', { event: 'join' }, ({ key, newPresences }) => {
-                    console.log('join', key, newPresences)
+                this.socket.on('connect', async () => {
+                    console.log('Connected to server')
+                    this.startTimer()
                 })
-                .on('presence', { event: 'leave' }, ({ key, leftPresences }) => {
-                    console.log('leave')
-                    console.log('leave', key, leftPresences)
+                this.socket.on('disconnect', async () => {
+                    console.log('Disconnected from server')
+                    this.showErrorConnecting = true
                 })
-                .subscribe()
-            
-            const joinedRoom = {
-                user_id: this.user_profile.id,
-            }
-            const presentTrackStatus = await this.room.track(joinedRoom)
-            if (presentTrackStatus.error) {
-                this.showErrorConnecting = true
-            } else {
-                await this.increasePlayerCount(roomId)
-                this.startTimer()
-            }
-            this.loading = false
-        },
-        async untrackPresence() {
-            await this.decreasePlayerCount()
-            const presenceUntrackStatus = await this.room.untrack()
-        },
-        async increasePlayerCount(roomId) {
-            let { data, error } = await supabase
-            .rpc("IncrementRoomPlayerCount", {
-                row_id: roomId
-            })
-            if (error) {
-                this.showErrorConnecting = true
-            }
-        },
-        async decreasePlayerCount() {
-            let { data, error } = supabase
-            .rpc("DecrementRoomPlayerCount", {
-                row_id: this.roomId
-            })
-        },
-        async checkandCreateGame(presenceState) {
-            const userCount = Object.keys(presenceState).length
-            if (userCount === 4) {
-                await this.createGame(presenceState)
-            }
-        },
-        async createGame(presenceState) {
-            let { data, error } = await supabase
-            .from('games')
+                this.socket.on('start-game', async (gameId) => {
+                    console.log('Start game')
+                    console.log(gameId)
+                    this.$router.push({
+                        name: 'online-game',
+                        params: {
+                            id: gameId
+                        }
+                    })
+                })
 
+            } finally {
+                this.loading = false
+            }
         },
-        beforeUnloadHandler(event) {
-            event.preventDefault()
-            event.returnValue = ''
-        }
     },
     mounted() {
         this.initPresence()
     },
     async beforeUnmount() {
-        await this.untrackPresence()
+        if (this.socket) {
+            this.socket.disconnect()
+        }
     }
 }
 </script>

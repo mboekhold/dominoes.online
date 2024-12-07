@@ -7,7 +7,7 @@
                 role="alert">
 
                 <div class="inline-flex items-center justify-center flex-shrink-0">
-                    <img class="rounded-md w-8 h-8" :src="getUserAvatar(notification.player.profile)">
+                    <img class="rounded-md w-8 h-8" :src="getUserAvatar(notification.player)">
                 </div>
 
                 <div class="ms-3 text-sm font-normal">{{ notification.message }}</div> <!-- Dynamic message -->
