@@ -60,7 +60,6 @@
 import Domino from './Domino.vue';
 export default {
     props: {
-        dominoSet: Array,
         dealing: Boolean
     },
     data() {
@@ -84,7 +83,7 @@ export default {
             showChevronDown: false,
             showChevronUp: false,
             disableScroll: false,
-            dominoSetLength: this.dominoSet.length,
+            dominoSetLength: 27,
         }
     },
     methods: {

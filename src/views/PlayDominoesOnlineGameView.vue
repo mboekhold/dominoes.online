@@ -6,33 +6,38 @@
       </div>
     </div>
     <div v-else class="px-20 pt-5 relative text-gray-200">
-      <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" />
-      <Player v-if="players[0]" :player="players[0]"
-        :turn="currentPlayerTurn === 0" />
+      <Board ref="board" :dealing="dealingDominoes" />
+      <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === 0" />
       <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
       <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
       <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
-      <!-- Current player -->
-      
+
+      <Notification :notifications="notifications" />
     </div>
   </div>
 </template>
 <script>
+import { io } from 'socket.io-client'
 import { supabase } from '../supabase';
 import Board from '../components/Board.vue'
 import Player from '../components/Player.vue'
+import Notification from '../components/Notification.vue'
 export default {
   components: {
-    Board, Player
+    Board, Player, Notification
   },
   data() {
     return {
       loading: true,
       game: null,
       players: [],
-      dominoSet: [],
+      socket: null,
+      dominoLength: 17,
       dealingDominoes: false,
-      currentPlayerTurn: 0,
+      currentPlayerTurn: null,
+      user: null,
+      hand: [],
+      notifications: [],
     }
   },
   methods: {
@@ -72,11 +77,44 @@ export default {
           this.loadUser(user[0])
         }
         await this.assignPlayerIds()
+        await this.initPresence()
       } catch (error) {
         console.error(error)
       } finally {
         this.loading = false
       }
+    },
+    async initPresence() {
+      const gameId = this.$route.params.id
+      if (gameId == null) {
+        return
+      }
+      this.socket = io(import.meta.env.VITE_WSS_URL, {
+        query: {
+          game_id: gameId,
+          user_id: (await supabase.auth.getSession()).data.session.user.id,
+        }
+      })
+      this.socket.on('disconnect', async () => {
+        console.log('Disconnected from server')
+      })
+      this.socket.on('dealingHands', async () => {
+        await this.dealHands()
+      })
+      this.socket.on('hand', async (hand) => {
+        this.hand = hand
+      })
+      this.socket.on('startingPlayer', async (playerId) => {
+        const player = this.players.find(p => p.id === playerId)
+        const playerIndex = this.players.indexOf(player)
+        this.currentPlayerTurn = playerIndex
+        const message = `Double 6 pose, ${player.username} starts`
+        const notification = {
+          player: player,
+          message
+        }
+        this.notifications.push(notification)
+      })
     },
     async assignPlayerIds() {
       // First put the current user at the bottom of the list
@@ -91,66 +129,61 @@ export default {
       }
       console.log(this.players)
     },
-    async getUserProfile() {
-      this.loading = true;
-      try {
-        this.user = (await supabase.auth.getSession()).data.session.user;
-        const { data, error, status } = await supabase
-          .from('profiles')
-          .select(`id, username, avatar_url,
-                    countries (
-                        id,
-                        name,
-                        flag_url
-                    )`)
-          .eq('id', this.user.id)
-          .single();
-
-        if (error && status !== 406) throw error
-        this.user_profile = data;
-
-        if (data.avatar_url) {
-          let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
-          if (err) throw err
-          if (file) {
-            const url = URL.createObjectURL(file)
-            this.user_profile.avatar_url = url
-          }
-        }
-
-      } catch (error) {
-        console.log(error.message)
-      } finally {
-        if (this.user) {
-          this.authenticated = true;
-          const player = {
-            nr: 1,
-            profile: {
-              username: this.user_profile.username,
-              flag_url: this.user_profile.countries.flag_url,
-              avatar_url: this.user_profile.avatar_url
-            },
-            hand: []
-          }
-          this.players.push(player);
-        } else {
-          const player = {
-            nr: 1,
-            profile: {
-              username: 'Guest',
-              flag_url: null,
-              avatar_url: null
-            },
-            hand: []
-          }
-          this.players.push(player);
-        }
-        this.loading = false;
-      }
-    },
     loadUser(user) {
       user.hand = []
       this.players.push(user)
+    },
+    shuffleDominoes() {
+      for (let i = this.dominoSet.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [this.dominoSet[i], this.dominoSet[j]] = [this.dominoSet[j], this.dominoSet[i]];
+      }
+    },
+    generateRandomIndexOptions() {
+      let indexOptions = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27];
+      for (let i = indexOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1)); // Get a random index
+        [indexOptions[i], indexOptions[j]] = [indexOptions[j], indexOptions[i]]; // Swap the elements
+      }
+      return indexOptions;
+    },
+    async animateDominoFromDeckToPlayer(index, player) {
+      const domino = this.$refs.board.$refs[`dealDomino${index}`][0];
+      const playerHand = document.getElementById(`playerHand${player.nr}`);
+
+      const startPos = domino.getBoundingClientRect();
+      const endPos = playerHand.getBoundingClientRect();
+
+      const translateX = endPos.left - startPos.left;
+      const translateY = endPos.top - startPos.top;
+      domino.style.transform = `translate(${translateX}px, ${translateY}px)`;
+      domino.style.transition = 'transform 0.5s ease-in-out';
+      setTimeout(() => {
+        domino.remove()
+      }, 410);
+    },
+    async dealHands() {
+      this.dealingDominoes = true
+      let indexOptions = this.generateRandomIndexOptions();
+      // We have to add this because the animation to show the dealing dominoes tray takes 300ms
+      await new Promise(resolve => setTimeout(resolve, 300))
+      for (let i = 0; i < 7; i++) {
+        for (let j = 0; j < 4; j++) {
+          const user = (await supabase.auth.getSession()).data.session.user;
+          if (this.players[j].id === user.id) {
+            const randomIndex = indexOptions.pop();
+            this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
+            const domino = this.hand.pop();
+            this.players[j].hand.push(domino);
+          } else {
+            const randomIndex = indexOptions.pop();
+            this.players[j].hand.push(randomIndex);
+            this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
+          }
+          await new Promise(resolve => setTimeout(resolve, 200))
+        }
+      }
+      this.dealingDominoes = false;
     }
   },
   async mounted() {

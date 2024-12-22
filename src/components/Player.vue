@@ -1,9 +1,8 @@
 <template>
     <div>
         <div v-if="player.nr === 1">
-            <div class="w-screen sm:w-[530px] sm:pt-5 pr-5 pb-5 flex"
-                :class="'playerBox' + player.nr">
-                <div v-if="turn" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
+            <div class="w-screen sm:w-[530px] sm:pt-5 pr-5 pb-5 flex" :class="'playerBox' + player.nr">
+                <div :class="turn ? 'block': 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
                     <div>
                         <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
@@ -115,7 +114,9 @@ export default {
             intervalId: null,
             openPlayerBoxId: null,
             didIntro: false,
-            driverObj: null
+            driverObj: null,
+            // 30 seconds
+            timerDuration: 30000
         }
     },
     methods: {
@@ -142,10 +143,25 @@ export default {
             playerBox.classList.remove('player' + id + 'Turn');
             this.openPlayerBoxId = null;
         },
+        startTimer(player) {
+            const timer = this.$refs['turn' + player.nr];
+            const totalDuration = 30 * 1000;
+            const intervalDuration = 50;
+            const steps = totalDuration / intervalDuration;
+            let width = 100;
+            const decrement = 100 / steps;
+            setInterval(() => {
+                if (width > 0) {
+                    width -= decrement;
+                    timer.style.width = `${Math.max(width, 0)}%`;
+                }
+            }, intervalDuration);
+        }
     },
     mounted() {
         // Do it once when mounted because watch does not trigger on initial value
         if (this.turn) {
+            this.startTimer(this.player);
             this.openPlayerBox(this.player.nr);
             setTimeout(() => {
                 this.closePlayerBox(this.player.nr);
@@ -153,14 +169,17 @@ export default {
         }
     },
     watch: {
-        turn() {
-            if (this.turn) {
-                if (this.openPlayerBoxId !== this.playerId) {
-                    this.openPlayerBox(this.player.nr);
-                    setTimeout(() => {
-                        this.closePlayerBox(this.player.nr);
-                    }, 3000);
-                }
+        turn(newVal, oldVal) {
+            console.log('turn', newVal);
+            if (newVal) {
+                console.log(this.player)
+                this.startTimer(this.player);
+            }
+            if (this.openPlayerBoxId !== this.playerId) {
+                this.openPlayerBox(this.player.nr);
+                setTimeout(() => {
+                    this.closePlayerBox(this.player.nr);
+                }, 3000);
             }
         }
     }
@@ -191,7 +210,7 @@ export default {
     transform: translateY(-50%);
     right: 60px;
     width: 110px;
-    height: 220px;
+    height: 230px;
 }
 
 .playerBox2 {
@@ -250,7 +269,7 @@ export default {
     transform: translateY(-50%);
     left: 60px;
     width: 110px;
-    height: 220px;
+    height: 230px;
 }
 
 .playerBox4 {

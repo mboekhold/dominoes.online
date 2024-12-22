@@ -49,7 +49,6 @@ export default {
                 { top: 3, bottom: 5 }, { top: 3, bottom: 6 }, { top: 4, bottom: 4 }, { top: 4, bottom: 5 },
                 { top: 4, bottom: 6 }, { top: 5, bottom: 5 }, { top: 5, bottom: 6 }, { top: 6, bottom: 6 }
             ],
-            gameStarted: false,
             playedDominos: [],
             players: [
                 { nr: 2, username: 'Johnny', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/19", hand: [] },
@@ -294,7 +293,6 @@ export default {
             this.$refs.board.addToBoard(domino, placement);
         },
         async startGame() {
-            this.gameStarted = true;
             this.shuffleDominos();
             await this.dealHand();
             this.currentPlayerTurn === 0;
