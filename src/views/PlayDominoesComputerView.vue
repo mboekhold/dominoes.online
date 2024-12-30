@@ -10,11 +10,11 @@
             <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino"
                 @on-game-blocked="gameBlocked" />
             <!-- Current player -->
-            <Player v-if="players[0]" :player="players[0]" @on-selected-domino="onSelectedDomino"
-                :turn="currentPlayerTurn === 0" />
-            <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
-            <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
-            <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
+            <Player :player="players[0]" @on-selected-domino="onSelectedDomino"
+                :turn="currentPlayerTurn === players[0]" />
+            <Player :player="players[1]" :turn="currentPlayerTurn === players[1]" />
+            <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
+            <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
 
 
             <Notification :notifications="notifications" />
@@ -51,9 +51,9 @@ export default {
             ],
             playedDominos: [],
             players: [
-                { nr: 2, username: 'Johnny', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/19", hand: [] },
-                { nr: 3, username: 'Alex', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/45", hand: [] },
-                { nr: 4, username: 'Chelsea', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/57", hand: [] },
+                { id: 1, nr: 2, username: 'Johnny', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/19", hand: [] },
+                { id: 2, nr: 3, username: 'Alex', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/45", hand: [] },
+                { id: 3, nr: 4, username: 'Chelsea', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/57", hand: [] },
             ],
             selectedDomino: null,
             playsDone: 0,
@@ -95,6 +95,7 @@ export default {
             this.dealingDominoes = false;
         },
         async animateDominoFromDeckToPlayer(index, player) {
+            console.log(index);
             const domino = this.$refs.board.$refs[`dealDomino${index}`][0];
             const playerHand = document.getElementById(`playerHand${player.nr}`);
 
@@ -119,12 +120,12 @@ export default {
         },
         dealTestHand() {
             // this.players[0].hand.push(this.dominoSet.find(x => x.top === 1 && x.bottom === 1))
-            for (let i = 0; i < 27; i++) {
+            for (let i = 0; i < 28; i++) {
                 this.players[0].hand.push(this.dominoSet.pop());
             }
         },
         onSelectedDomino(selectedDomino) {
-            if (this.currentPlayerTurn !== 0) return;
+            if (this.currentPlayerTurn !== this.players[0]) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
             if (!this.didIntro) {
                 if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
@@ -137,7 +138,7 @@ export default {
             }
         },
         playDomino(domino) {
-            if (this.currentPlayerTurn !== 0) return;
+            if (this.currentPlayerTurn !== this.players[0]) return;
             // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
             const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
             this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
@@ -145,7 +146,9 @@ export default {
                 this.winner = this.players[0];
                 this.gameEnded = true;
             }
-            this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+            this.currentPlayerIndex = this.players.findIndex(x => x === this.currentPlayerTurn);
+            this.currentPlayerTurn = (this.currentPlayerIndex + 1) % 4;
+            this.currentPlayerTurn = this.players[this.currentPlayerTurn];
             if (!this.didIntro) {
                 this.driverObj.destroy();
                 this.didIntro = true;
@@ -197,7 +200,7 @@ export default {
         findPlayerWithDoubleSix() {
             for (let i = 0; i < this.players.length; i++) {
                 if (this.players[i].hand.find(x => x.top === 6 && x.bottom === 6)) {
-                    return i;
+                    return this.players[i];
                 }
             }
         },
@@ -233,6 +236,7 @@ export default {
                 if (this.user) {
                     this.authenticated = true;
                     const player = {
+                        id: this.user.id,
                         nr: 1,
                         username: this.user_profile.username,
                         flag_url: this.user_profile.countries?.flag_url,
@@ -242,6 +246,7 @@ export default {
                     this.players.unshift(player);
                 } else {
                     const player = {
+                        id: 0,
                         nr: 1,
                         username: 'Guest',
                         flag_url: null,
@@ -254,16 +259,15 @@ export default {
             }
         },
         async playRound() {
-            console.log(this.currentPlayerTurn)
-            if (this.currentPlayerTurn === 0) {
+            if (this.currentPlayerTurn === this.players[0]) {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
-                    const playableDomino = this.players[this.currentPlayerTurn].hand.find(domino => {
+                    const playableDomino = this.currentPlayerTurn.hand.find(domino => {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
                     if (!playableDomino) {
-                        this.showNotification(this.currentPlayerTurn, `${this.players[this.currentPlayerTurn].username} cannot play, pass`);
+                        this.showNotification(this.currentPlayerTurn, `${this.currentPlayerTurn.username} cannot play, pass`);
                         this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
                         resolve();
                     }
@@ -282,7 +286,7 @@ export default {
                 await new Promise(resolve => {
                     setTimeout(() => {
                         this.opponentPlayerPlay(this.currentPlayerTurn);
-                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        this.nextPlayerTurn();
                         resolve();
                     }, 3000);
                 })
@@ -294,11 +298,10 @@ export default {
         async startGame() {
             this.shuffleDominos();
             await this.dealHand();
-            this.currentPlayerTurn === 0;
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            this.showNotification(this.playerWithDoubleSix, `${this.players[this.playerWithDoubleSix].username} starts`);
-            const playOrder = [this.playerWithDoubleSix, (this.playerWithDoubleSix + 1) % 4, (this.playerWithDoubleSix + 2) % 4, (this.playerWithDoubleSix + 3) % 4];
+            this.showNotification(this.playerWithDoubleSix, `${this.playerWithDoubleSix.username} starts`);
+            const playOrder = this.getPlayOrder(this.players, this.playerWithDoubleSix);
             this.currentPlayerTurn = playOrder[0];
             while (!this.gameEnded) {
                 await this.playRound();
@@ -322,6 +325,21 @@ export default {
                 this.gameEnded = true;
             }
         },
+        nextPlayerTurn() {
+            const currentPlayerIndex = this.players.findIndex(x => x === this.currentPlayerTurn);
+            const nextPlayerIndex = (currentPlayerIndex + 1) % 4;
+            this.currentPlayerTurn = this.players[nextPlayerIndex];
+        },
+        getPlayOrder(players, playerWithDoubleSix) {
+            const playerWithDoubleSixIndex = players.findIndex(x => x === playerWithDoubleSix);
+            const playOrder = [
+                players[playerWithDoubleSixIndex],                    // Starting player
+                players[(playerWithDoubleSixIndex + 1) % players.length],  // Next player
+                players[(playerWithDoubleSixIndex + 2) % players.length],  // Next next player
+                players[(playerWithDoubleSixIndex + 3) % players.length]   // Last player
+            ];
+            return playOrder;
+        },
         nextGame() {
             // Reset all relevant data properties to their initial values
             window.location.reload();
@@ -330,7 +348,7 @@ export default {
             this.winner = null;
         },
         showNotification(player, message) {
-            this.notifications.push({ player: this.players[player], message: message });
+            this.notifications.push({ player: player, message: message });
         },
         initDriver() {
             this.driverObj = new driver({

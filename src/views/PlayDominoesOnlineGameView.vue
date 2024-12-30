@@ -123,7 +123,6 @@ export default {
         this.$refs.board.placeDomino(domino, position)
       })
       this.socket.on('nextPlayerTurn', async (nextPlayerTurnIndex) => {
-        console.log('Next player turn ' + nextPlayerTurnIndex)
         this.currentPlayerTurn = nextPlayerTurnIndex
       })
     },
@@ -138,7 +137,6 @@ export default {
       for (let i = 0; i < this.players.length; i++) {
         this.players[i].nr = i + 1
       }
-      console.log(this.players)
     },
     loadUser(user) {
       user.hand = []

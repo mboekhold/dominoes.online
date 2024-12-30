@@ -85,7 +85,6 @@ export default {
                 })
                 this.socket.on('start-game', async (gameId) => {
                     console.log('Start game')
-                    console.log(gameId)
                     this.$router.push({
                         name: 'online-game',
                         params: {

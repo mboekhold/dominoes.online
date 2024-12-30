@@ -83,7 +83,7 @@ export default {
             showChevronDown: false,
             showChevronUp: false,
             disableScroll: false,
-            dominoSetLength: 27,
+            dominoSetLength: 28,
         }
     },
     methods: {
@@ -683,7 +683,6 @@ export default {
             let headCount = this.dominosOnBoard.filter(domino => domino.bottom === headDomino.bottom || domino.top === headDomino.bottom).length;
             let tailCount = this.dominosOnBoard.filter(domino => domino.bottom === tailDomino.top || domino.top === tailDomino.top).length;
             if (headCount === 7 && tailCount === 7) {
-                console.log("Game is blocked")
                 this.$emit('on-game-blocked');
             }
         },

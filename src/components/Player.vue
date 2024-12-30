@@ -170,9 +170,7 @@ export default {
     },
     watch: {
         turn(newVal, oldVal) {
-            console.log('turn', newVal);
             if (newVal) {
-                console.log(this.player)
                 this.startTimer(this.player);
             }
             if (this.openPlayerBoxId !== this.playerId) {
