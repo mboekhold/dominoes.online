@@ -144,18 +144,18 @@ export default {
             this.openPlayerBoxId = null;
         },
         startTimer(player) {
-            const timer = this.$refs['turn' + player.nr];
-            const totalDuration = 30 * 1000;
-            const intervalDuration = 50;
-            const steps = totalDuration / intervalDuration;
-            let width = 100;
-            const decrement = 100 / steps;
-            setInterval(() => {
-                if (width > 0) {
-                    width -= decrement;
-                    timer.style.width = `${Math.max(width, 0)}%`;
-                }
-            }, intervalDuration);
+            // const timer = this.$refs['turn' + player.nr];
+            // const totalDuration = 30 * 1000;
+            // const intervalDuration = 50;
+            // const steps = totalDuration / intervalDuration;
+            // let width = 100;
+            // const decrement = 100 / steps;
+            // setInterval(() => {
+            //     if (width > 0) {
+            //         width -= decrement;
+            //         timer.style.width = `${Math.max(width, 0)}%`;
+            //     }
+            // }, intervalDuration);
         }
     },
     mounted() {

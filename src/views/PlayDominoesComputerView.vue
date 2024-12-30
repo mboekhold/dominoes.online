@@ -227,7 +227,6 @@ export default {
                         this.user_profile.avatar_url = url
                     }
                 }
-
             } catch (error) {
                 console.log(error.message)
             } finally {
@@ -236,7 +235,7 @@ export default {
                     const player = {
                         nr: 1,
                         username: this.user_profile.username,
-                        flag_url: this.user_profile.countries.flag_url,
+                        flag_url: this.user_profile.countries?.flag_url,
                         avatar_url: this.user_profile.avatar_url,
                         hand: []
                     }

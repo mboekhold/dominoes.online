@@ -6,8 +6,9 @@
       </div>
     </div>
     <div v-else class="px-20 pt-5 relative text-gray-200">
-      <Board ref="board" :dealing="dealingDominoes" />
-      <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === 0" />
+      <Board ref="board" :dealing="dealingDominoes" @on-play-domino="playDomino" />
+      <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === 0"
+        @on-selected-domino="onSelectedDomino" />
       <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
       <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
       <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
@@ -99,7 +100,7 @@ export default {
         console.log('Disconnected from server')
       })
       this.socket.on('dealingHands', async () => {
-        await this.dealHands()
+        await this.animateDealHands()
       })
       this.socket.on('hand', async (hand) => {
         this.hand = hand
@@ -114,6 +115,16 @@ export default {
           message
         }
         this.notifications.push(notification)
+      })
+      this.socket.on('dominoPlayed', async (data) => {
+        console.log('Domino played')
+        const domino = data.domino
+        const position = data.position
+        this.$refs.board.placeDomino(domino, position)
+      })
+      this.socket.on('nextPlayerTurn', async (nextPlayerTurnIndex) => {
+        console.log('Next player turn ' + nextPlayerTurnIndex)
+        this.currentPlayerTurn = nextPlayerTurnIndex
       })
     },
     async assignPlayerIds() {
@@ -162,7 +173,7 @@ export default {
         domino.remove()
       }, 410);
     },
-    async dealHands() {
+    async animateDealHands() {
       this.dealingDominoes = true
       let indexOptions = this.generateRandomIndexOptions();
       // We have to add this because the animation to show the dealing dominoes tray takes 300ms
@@ -184,7 +195,38 @@ export default {
         }
       }
       this.dealingDominoes = false;
-    }
+    },
+    onSelectedDomino(selectedDomino) {
+      if (this.currentPlayerTurn !== 0) return;
+      this.$refs.board.previewDominoPlacement(selectedDomino);
+      if (!this.didIntro) {
+        if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
+          setTimeout(() => {
+            if (this.driverObj !== null) {
+              this.driverObj.moveNext();
+            }
+          }, 100);
+        }
+      }
+    },
+    playDomino(domino, selectedPosition) {
+      if (this.currentPlayerTurn !== 0) return;
+      // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
+      const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
+      this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
+      // Send the domino to the server
+      console.log(selectedPosition)
+      const data = {
+        domino: dominoInHand,
+        position: selectedPosition
+      }
+      this.socket.emit('playDomino', data);
+      if (!this.didIntro) {
+        this.driverObj.destroy();
+        this.didIntro = true;
+        localStorage.setItem('didIntro', true);
+      }
+    },
   },
   async mounted() {
     document.body.classList.add('overflow-hidden');

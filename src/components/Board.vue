@@ -104,10 +104,27 @@ export default {
                     const dominoRef = this.$refs[`domino-${domino.id}`];
                 }, 100);
             }
-            // }
-            this.$emit('on-play-domino', domino);
+            this.$emit('on-play-domino', domino, selectedPosition);
             this.tailPreviewDomino = null;
             this.headPreviewDomino = null;
+        },
+        placeDomino(domino, selectedPosition) {
+            const dominoPlacement = this.getNextPlacementOptions(domino);
+            dominoPlacement.location = this.getNextDominoPlacementLocation(domino, selectedPosition);
+            // this.getPlacementCoordinates(domino);
+            const id = this.dominosOnBoard.length;
+            dominoPlacement.id = id;
+            if (selectedPosition === 0) {
+                if (dominoPlacement.rotate0) {
+                    this.rotateDomino(dominoPlacement);
+                }
+                this.addToBoard(dominoPlacement, 0);
+            } else {
+                if (dominoPlacement.rotate1) {
+                    this.rotateDomino(dominoPlacement);
+                }
+                this.addToBoard(dominoPlacement, 1);
+            }
         },
         shouldPlaceDominoVertical(domino) {
             if (domino.location) {
