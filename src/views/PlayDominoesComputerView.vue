@@ -51,9 +51,9 @@ export default {
             ],
             playedDominos: [],
             players: [
-                { id: 1, nr: 2, username: 'Johnny', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/19", hand: [] },
-                { id: 2, nr: 3, username: 'Alex', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/45", hand: [] },
-                { id: 3, nr: 4, username: 'Chelsea', flag_url: null, avatar_url: "https://avatar.iran.liara.run/public/57", hand: [] },
+                { id: 1, nr: 2, username: 'Johnny', flag_url: null, avatar_url: null, hand: [] },
+                { id: 2, nr: 3, username: 'Alex', flag_url: null, avatar_url: null, hand: [] },
+                { id: 3, nr: 4, username: 'Chelsea', flag_url: null, avatar_url: null, hand: [] },
             ],
             selectedDomino: null,
             playsDone: 0,
