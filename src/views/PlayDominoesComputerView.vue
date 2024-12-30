@@ -95,7 +95,6 @@ export default {
             this.dealingDominoes = false;
         },
         async animateDominoFromDeckToPlayer(index, player) {
-            console.log(index);
             const domino = this.$refs.board.$refs[`dealDomino${index}`][0];
             const playerHand = document.getElementById(`playerHand${player.nr}`);
 
@@ -159,15 +158,15 @@ export default {
         },
         opponentPlayerPlay(player) {
             if (this.playerWithDoubleSix === player && this.playsDone === 0) {
-                const doubleSix = this.players[player].hand.find(x => x.top === 6 && x.bottom === 6);
-                this.players[player].hand = this.players[player].hand.filter(d => d !== doubleSix);
+                const doubleSix = player.hand.find(x => x.top === 6 && x.bottom === 6);
+                player.hand = player.hand.filter(d => d !== doubleSix);
                 let playableDomino = this.$refs.board.getNextPlacementOptions(doubleSix);
                 playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(doubleSix, doubleSix.placement[0]);
                 this.$refs.board.playDomino(doubleSix, doubleSix.placement[1]);
                 this.playsDone++;
                 return;
             }
-            const playableDomino = this.players[player].hand.find(domino => {
+            const playableDomino = player.hand.find(domino => {
                 return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
             })
             if (playableDomino) {
@@ -175,26 +174,26 @@ export default {
                     const placement = Math.round(Math.random() * (1 - 0) + 0);
                     playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
                     this.$refs.board.playDomino(playableDomino, placement);
-                    const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
-                    this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    if (this.players[player].hand.length === 0) {
-                        this.winner = this.players[player];
+                    const dominoInHand = player.hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
+                    player.hand = player.hand.filter(d => d !== dominoInHand);
+                    if (player.hand.length === 0) {
+                        this.winner = player;
                         this.gameEnded = true;
                     }
                 } else {
                     const placement = playableDomino.placement[0];
                     playableDomino.location = this.$refs.board.getNextDominoPlacementLocation(playableDomino, placement);
                     this.$refs.board.playDomino(playableDomino, playableDomino.placement[0]);
-                    const dominoInHand = this.players[player].hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
-                    this.players[player].hand = this.players[player].hand.filter(d => d !== dominoInHand);
-                    if (this.players[player].hand.length === 0) {
-                        this.winner = this.players[player];
+                    const dominoInHand = player.hand.find(x => x.top === playableDomino.top && x.bottom === playableDomino.bottom || x.top === playableDomino.bottom && x.bottom === playableDomino.top);
+                    player.hand = player.hand.filter(d => d !== dominoInHand);
+                    if (player.hand.length === 0) {
+                        this.winner = player;
                         this.gameEnded = true;
                     }
                 }
                 this.playsDone++;
             } else {
-                this.showNotification(player, `${this.players[player].username} cannot play, pass`);
+                this.showNotification(player, `${player.username} cannot play, pass`);
             }
         },
         findPlayerWithDoubleSix() {
