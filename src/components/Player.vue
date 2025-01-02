@@ -2,7 +2,8 @@
     <div>
         <div v-if="player.nr === 1">
             <div class="w-screen sm:w-[530px] sm:pt-5 pr-5 pb-5 flex" :class="'playerBox' + player.nr">
-                <div :class="turn ? 'block': 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
+                    class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
                     <div>
                         <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
@@ -17,7 +18,7 @@
         </div>
         <div v-else-if="player.nr === 2"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-col -right-[80px] sm:right-0">
+            <div :class="'playerBox' + player.nr" class="flex flex-col -right-[80px] sm:right-0 overflow-hidden">
                 <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex items-center"
                     @click="togglePlayerBox(player.nr)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -29,7 +30,7 @@
                 <div class="mb-6 mt-2">
                     <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
                 </div>
-                <div v-if="turn" class="left-[2px] absolute rounded-tl-full rounded-bl-full h-full w-1 bg-orange-400">
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="left-[2px] absolute h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -37,7 +38,7 @@
         </div>
         <div v-else-if="player.nr === 3"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-row -top-[80px] sm:top-0">
+            <div :class="'playerBox' + player.nr" class="flex flex-row -top-[80px] sm:top-0 overflow-hidden">
                 <div class="sm:hidden open-playerbox top-[75px] left-1/2 transform -translate-x-1/2 cursor-pointer w-10 h-8 flex justify-center items-center"
                     @click="togglePlayerBox(player.nr)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -49,7 +50,7 @@
                 <div class="ml-2 mr-6">
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                 </div>
-                <div v-if="turn" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -57,7 +58,7 @@
         </div>
         <div v-else-if="player.nr === 4"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-col -left-[80px] sm:left-0">
+            <div :class="'playerBox' + player.nr" class="flex flex-col -left-[80px] sm:left-0 overflow-hidden">
                 <div class="sm:hidden open-playerbox left-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex justify-center items-center"
                     @click="togglePlayerBox(player.nr)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -69,7 +70,7 @@
                 <div class="rounded-md mt-2 mb-6">
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                 </div>
-                <div v-if="turn" class="absolute right-[1px] rounded-tr-full rounded-br-full h-full w-1 bg-orange-400">
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute right-[1px] h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -144,29 +145,31 @@ export default {
             this.openPlayerBoxId = null;
         },
         startTimer(player) {
-            // const timer = this.$refs['turn' + player.nr];
-            // const totalDuration = 30 * 1000;
-            // const intervalDuration = 50;
-            // const steps = totalDuration / intervalDuration;
-            // let width = 100;
-            // const decrement = 100 / steps;
-            // setInterval(() => {
-            //     if (width > 0) {
-            //         width -= decrement;
-            //         timer.style.width = `${Math.max(width, 0)}%`;
-            //     }
-            // }, intervalDuration);
-        }
-    },
-    mounted() {
-        // Do it once when mounted because watch does not trigger on initial value
-        if (this.turn) {
-            this.startTimer(this.player);
-            this.openPlayerBox(this.player.nr);
-            setTimeout(() => {
-                this.closePlayerBox(this.player.nr);
-            }, 3000);
-        }
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+            }
+            const timer = this.$refs['turn' + player.nr];
+            const totalDuration = 30 * 1000;
+            const intervalDuration = 50;
+            const steps = totalDuration / intervalDuration;
+            const decrement = 100 / steps;
+            let bar = 100;
+            if (player.nr % 2 === 0) {
+                this.intervalId = setInterval(() => {
+                    if (bar > 0) {
+                        bar -= decrement;
+                        timer.style.height = `${Math.max(bar, 0)}%`;
+                    }
+                }, intervalDuration);
+            } else {
+                this.intervalId = setInterval(() => {
+                    if (bar > 0) {
+                        bar -= decrement;
+                        timer.style.width = `${Math.max(bar, 0)}%`;
+                    }
+                }, intervalDuration);
+            }
+        },
     },
     watch: {
         turn(newVal, oldVal) {

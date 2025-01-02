@@ -46,7 +46,6 @@ export default {
     watch: {
         notifications: {
             handler: function (notifications) {
-                console.log(notifications);
                 if (notifications.length > 0) {
                     setTimeout(() => {
                         this.notifications.shift();

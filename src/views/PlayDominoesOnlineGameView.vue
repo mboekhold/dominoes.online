@@ -7,11 +7,11 @@
     </div>
     <div v-else class="px-20 pt-5 relative text-gray-200">
       <Board ref="board" :dealing="dealingDominoes" @on-play-domino="playDomino" />
-      <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === 0"
+      <Player :player="players[0]" :turn="currentPlayerTurn === players[0]"
         @on-selected-domino="onSelectedDomino" />
-      <Player :player="players[1]" :turn="currentPlayerTurn === 1" />
-      <Player :player="players[2]" :turn="currentPlayerTurn === 2" />
-      <Player :player="players[3]" :turn="currentPlayerTurn === 3" />
+      <Player :player="players[1]" :turn="currentPlayerTurn === players[1]" />
+      <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
+      <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
 
       <Notification :notifications="notifications" />
     </div>
@@ -107,8 +107,7 @@ export default {
       })
       this.socket.on('startingPlayer', async (playerId) => {
         const player = this.players.find(p => p.id === playerId)
-        const playerIndex = this.players.indexOf(player)
-        this.currentPlayerTurn = playerIndex
+        this.currentPlayerTurn = player
         const message = `Double 6 pose, ${player.username} starts`
         const notification = {
           player: player,
@@ -117,13 +116,24 @@ export default {
         this.notifications.push(notification)
       })
       this.socket.on('dominoPlayed', async (data) => {
-        console.log('Domino played')
+        const player = data.player
         const domino = data.domino
         const position = data.position
+        this.players.find(p => p.id === player).hand.pop()
         this.$refs.board.placeDomino(domino, position)
       })
-      this.socket.on('nextPlayerTurn', async (nextPlayerTurnIndex) => {
-        this.currentPlayerTurn = nextPlayerTurnIndex
+      this.socket.on('nextPlayerTurn', async (playerId) => {
+        const player = this.players.find(p => p.id === playerId)
+        this.currentPlayerTurn = player
+      })
+      this.socket.on('playerIntervalPassed', async (playerId) => {
+        const player = this.players.find(p => p.id === playerId)
+        const message = `${player.username} took too long and has passed their turn.`
+        const notification = {
+          player: player,
+          message
+        }
+        this.notifications.push(notification)
       })
     },
     async assignPlayerIds() {
@@ -131,11 +141,14 @@ export default {
       const user = (await supabase.auth.getSession()).data.session.user;
       const player = this.players.find(p => p.id === user.id)
       if (player) {
-        this.players.splice(this.players.indexOf(player), 1)
-        this.players.unshift(player)
-      }
-      for (let i = 0; i < this.players.length; i++) {
-        this.players[i].nr = i + 1
+        const playerIndex = this.players.indexOf(player)
+        // Perform a rotation of the players array
+        console.log(this.players)
+        this.players = [...this.players.slice(playerIndex), ...this.players.slice(0, playerIndex)];
+        console.log(this.players)
+        for (let i = 0; i < this.players.length; i++) {
+          this.players[i].nr = i + 1
+        }
       }
     },
     loadUser(user) {
@@ -195,20 +208,20 @@ export default {
       this.dealingDominoes = false;
     },
     onSelectedDomino(selectedDomino) {
-      if (this.currentPlayerTurn !== 0) return;
+      if (this.currentPlayerTurn !== this.players[0]) return;
       this.$refs.board.previewDominoPlacement(selectedDomino);
-      if (!this.didIntro) {
-        if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
-          setTimeout(() => {
-            if (this.driverObj !== null) {
-              this.driverObj.moveNext();
-            }
-          }, 100);
-        }
-      }
+      // if (!this.didIntro) {
+      //   if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
+      //     setTimeout(() => {
+      //       if (this.driverObj !== null) {
+      //         this.driverObj.moveNext();
+      //       }
+      //     }, 100);
+      //   }
+      // }
     },
     playDomino(domino, selectedPosition) {
-      if (this.currentPlayerTurn !== 0) return;
+      if (this.currentPlayerTurn !== this.players[0]) return;
       // Retrieve the domino from the player's hand, it can be that the domino was rotated so we need to find the correct domino
       const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
       this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
@@ -219,19 +232,22 @@ export default {
         position: selectedPosition
       }
       this.socket.emit('playDomino', data);
-      if (!this.didIntro) {
-        this.driverObj.destroy();
-        this.didIntro = true;
-        localStorage.setItem('didIntro', true);
-      }
+      // if (!this.didIntro) {
+      //   this.driverObj.destroy();
+      //   this.didIntro = true;
+      //   localStorage.setItem('didIntro', true);
+      // }
     },
   },
   async mounted() {
     document.body.classList.add('overflow-hidden');
     await this.loadGameData()
   },
-  beforeUnmount() {
+  async beforeUnmount() {
     document.body.classList.remove('overflow-hidden');
+    if (this.socket) {
+      this.socket.disconnect()
+    }
   },
 }
 </script>
