@@ -11,7 +11,7 @@
                 @on-game-blocked="gameBlocked" />
             <!-- Current player -->
             <Player :player="players[0]" @on-selected-domino="onSelectedDomino"
-                :turn="currentPlayerTurn === players[0]" />
+                :turn="currentPlayerTurn === players[0]" @on-player-turn-timeout="turnTimeOut" />
             <Player :player="players[1]" :turn="currentPlayerTurn === players[1]" />
             <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
             <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
@@ -375,6 +375,11 @@ export default {
 
                 ]
             });
+        },
+        turnTimeOut(player) {
+            console.log('Timeout');
+            this.showNotification(player, `${player.username} took too long, pass`);
+            this.nextPlayerTurn();
         }
     },
     async mounted() {

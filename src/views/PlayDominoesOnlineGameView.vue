@@ -70,7 +70,7 @@ export default {
         for (let i = 0; i < data.length; i++) {
           let { data: user, error: profileErr } = await supabase
             .from('profiles')
-            .select('*')
+            .select('*, countries (name, flag_url)')
             .eq('id', data[i].user_id)
           if (profileErr) {
             throw profileErr
@@ -143,7 +143,6 @@ export default {
       if (player) {
         const playerIndex = this.players.indexOf(player)
         // Perform a rotation of the players array
-        console.log(this.players)
         this.players = [...this.players.slice(playerIndex), ...this.players.slice(0, playerIndex)];
         console.log(this.players)
         for (let i = 0; i < this.players.length; i++) {
@@ -152,8 +151,15 @@ export default {
       }
     },
     loadUser(user) {
-      user.hand = []
-      this.players.push(user)
+      const player = {
+        id: user.id,
+        username: user.username,
+        flag_url: user.countries?.flag_url,
+        country_name: user.countries?.name,
+        avatar_url: user.avatar_url,
+        hand: [],
+      }
+      this.players.push(player)
     },
     shuffleDominoes() {
       for (let i = this.dominoSet.length - 1; i > 0; i--) {

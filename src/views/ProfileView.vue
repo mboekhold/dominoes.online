@@ -25,7 +25,7 @@
           <img :src=getUserAvatar(user_profile) alt="avatar" class="h-16 w-16 rounded-md border border-gray-600">
         </div>
         <div class="ml-4">
-          <div class="text-4xl font-medium">
+          <div class="text-4xl mb-1 font-medium">
             {{ user_profile.username }}
           </div>
           <div v-if="!user_profile.countries" @click="toggleEditProfileModal"
@@ -34,7 +34,7 @@
           </div>
           <div v-else>
             <div class="flex items-center">
-              <img :src="user_profile.countries.flag_url" alt="country flag" class="w-8 rounded-sm">
+              <img :src="user_profile.countries.flag_url" alt="country flag" class="w-8 h-5 rounded-sm">
               <div class="ml-2">
                 {{ user_profile.countries.name }}
               </div>

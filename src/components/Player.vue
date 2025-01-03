@@ -9,7 +9,7 @@
                         <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
                     </div>
                     <div v-if="player.flag_url">
-                        <img :src="player.flag_url" class="w-6 rounded-sm mt-1 mx-auto">
+                        <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
                 <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.nr"
@@ -29,7 +29,11 @@
                 </div>
                 <div class="mb-6 mt-2">
                     <img :src="getUserAvatar(player)" class="w-12 h-12 rounded-md border border-gray-700">
+                    <div v-if="player.flag_url">
+                        <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
+                    </div>
                 </div>
+                
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="left-[2px] absolute h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
@@ -49,6 +53,9 @@
                 </div>
                 <div class="ml-2 mr-6">
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
+                    <div v-if="player.flag_url">
+                        <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
+                    </div>
                 </div>
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
                 </div>
@@ -67,9 +74,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                     </svg>
                 </div>
-                <div class="rounded-md mt-2 mb-6">
+                <div class="rounded-md mt-2 mb-5">
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
+                    <div v-if="player.flag_url">
+                        <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
+                    </div>
                 </div>
+                
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute right-[1px] h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
@@ -159,6 +170,8 @@ export default {
                     if (bar > 0) {
                         bar -= decrement;
                         timer.style.height = `${Math.max(bar, 0)}%`;
+                    } else if (bar === 0) {
+                        this.$emit('on-player-turn-timeout', player);
                     }
                 }, intervalDuration);
             } else {
@@ -166,6 +179,8 @@ export default {
                     if (bar > 0) {
                         bar -= decrement;
                         timer.style.width = `${Math.max(bar, 0)}%`;
+                    } else if (bar === 0) {
+                        this.$emit('on-player-turn-timeout', player);
                     }
                 }, intervalDuration);
             }
