@@ -51,13 +51,13 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                     </svg>
                 </div>
-                <div class="ml-2 mr-6">
+                <div class="ml-2 mr-6 mb-1">
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                     <div v-if="player.flag_url">
                         <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
-                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-[2px] rounded-br-full rounded-bl-full w-full h-1 bg-orange-400">
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-[2px] w-full h-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />

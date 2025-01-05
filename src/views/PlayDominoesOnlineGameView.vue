@@ -99,6 +99,15 @@ export default {
       this.socket.on('disconnect', async () => {
         console.log('Disconnected from server')
       })
+      this.socket.on('playerDisconnected', async (playerId) => {
+        const player = this.players.find(p => p.id === playerId)
+        const message = `${player.username} has disconnected from the game.`
+        const notification = {
+          player: player,
+          message
+        }
+        this.notifications.push(notification)
+      })
       this.socket.on('dealingHands', async () => {
         await this.animateDealHands()
       })
