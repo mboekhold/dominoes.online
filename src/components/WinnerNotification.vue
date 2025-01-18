@@ -27,7 +27,7 @@
                 <div
                     class="relative transform overflow-hidden rounded-lg window text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-96">
                     <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                        <div class="sm:flex sm:items-start">
+                        <div class="flex items-center">
                             <div
                                 class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -38,30 +38,17 @@
                             </div>
                             <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                                 <div class="flex items-center">
-                                    <div v-if="winner.avatar_url">
-                                        <img :src="winner.avatar_url" class="rounded-lg w-8 h-8 mr-2">
-                                    </div>
-                                    <div v-else>
-                                        <div
-                                            class="relative w-10 h-10 rounded-md mr-4  bg-gray-100 text-gray-600 flex items-center justify-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
-                                            </svg>
-                                        </div>
-                                    </div>
+                                    <img :src="getUserAvatar(winner)" class="rounded-lg w-8 h-8 mr-2">
                                     <h3 class="text-base font-semibold leading-6 text-white" id="modal-title">
-                                        {{ winner.username }}
+                                        {{ winner.username }} won the game
                                     </h3>
                                 </div>
-                                <div class="mt-2">
-
-                                    <p class="text-sm text-white">
-                                        {{ winner.username }} won the game. Congratulations! 🎉
-                                    </p>
-                                </div>
                             </div>
+                        </div>
+                        <div class="mt-5">
+                            <p class="text-sm text-white">
+                                {{ winner.username }} won the game. Congratulations! 🎉
+                            </p>
                         </div>
                     </div>
                     <div class="window px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
@@ -78,6 +65,7 @@
     </div>
 </template>
 <script>
+import { getUserAvatar } from '../utils';
 export default {
     props: {
         winner: {
@@ -86,6 +74,7 @@ export default {
         }
     },
     methods: {
+        getUserAvatar,
         nextGame() {
             this.$emit('on-next-game');
         },

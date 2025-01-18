@@ -15,7 +15,8 @@
 
       <PNotification :notifications="pnotifications" />
       <GNotification :notifications="gnotifications" />
-      <GameBlockedNotification v-if="winner" :winner="winner" :players="players" />
+      <WinnerNotification v-if="winner" :winner="winner" />
+      <GameBlockedNotification v-if="winner && gameBlocked" :winner="winner" :players="players" />
     </div>
   </div>
 </template>
@@ -26,10 +27,11 @@ import Board from '../components/Board.vue'
 import Player from '../components/Player.vue'
 import PNotification from '../components/PlayerNotification.vue'
 import GNotification from '../components/GameNotification.vue'
+import WinnerNotification from '../components/WinnerNotification.vue'
 import GameBlockedNotification from '../components/GameBlockedNotification.vue';
 export default {
   components: {
-    Board, Player, PNotification, GNotification, GameBlockedNotification
+    Board, Player, PNotification, GNotification, GameBlockedNotification, WinnerNotification
   },
   data() {
     return {
@@ -45,6 +47,7 @@ export default {
       pnotifications: [],
       gnotifications: [],
       winner: null,
+      gameBlocked: false,
     }
   },
   methods: {
@@ -166,6 +169,12 @@ export default {
           player.hand = data.players[i].hand
         }
         this.winner = winner
+        this.gameBlocked = true
+      })
+      this.socket.on('playerWon', async(player) => {
+        const winner = this.players.find(p => p.id === player)
+        this.winner = winner;
+        console.log('Player won', winner)
       })
     },
     async assignPlayerIds() {
