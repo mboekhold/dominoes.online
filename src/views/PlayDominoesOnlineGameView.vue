@@ -13,7 +13,9 @@
       <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
       <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
 
-      <Notification :notifications="notifications" />
+      <PNotification :notifications="pnotifications" />
+      <GNotification :notifications="gnotifications" />
+      <GameBlockedNotification v-if="winner" :winner="winner" :players="players" />
     </div>
   </div>
 </template>
@@ -22,10 +24,12 @@ import { io } from 'socket.io-client'
 import { supabase } from '../supabase';
 import Board from '../components/Board.vue'
 import Player from '../components/Player.vue'
-import Notification from '../components/Notification.vue'
+import PNotification from '../components/PlayerNotification.vue'
+import GNotification from '../components/GameNotification.vue'
+import GameBlockedNotification from '../components/GameBlockedNotification.vue';
 export default {
   components: {
-    Board, Player, Notification
+    Board, Player, PNotification, GNotification, GameBlockedNotification
   },
   data() {
     return {
@@ -38,7 +42,9 @@ export default {
       currentPlayerTurn: null,
       user: null,
       hand: [],
-      notifications: [],
+      pnotifications: [],
+      gnotifications: [],
+      winner: null,
     }
   },
   methods: {
@@ -106,7 +112,7 @@ export default {
           player: player,
           message
         }
-        this.notifications.push(notification)
+        this.pnotifications.push(notification)
       })
       this.socket.on('dealingHands', async () => {
         await this.animateDealHands()
@@ -122,7 +128,7 @@ export default {
           player: player,
           message
         }
-        this.notifications.push(notification)
+        this.pnotifications.push(notification)
       })
       this.socket.on('dominoPlayed', async (data) => {
         const player = data.player
@@ -142,7 +148,24 @@ export default {
           player: player,
           message
         }
-        this.notifications.push(notification)
+        this.pnotifications.push(notification)
+      })
+      this.socket.on('playerCannotPlay', async (playerId) => {
+        const player = this.players.find(p => p.id === playerId)
+        const message = `${player.username} cannot play and has passed their turn.`
+        const notification = {
+          player: player,
+          message
+        }
+        this.pnotifications.push(notification)
+      })
+      this.socket.on('gameBlocked', async (data) => {
+        const winner = this.players.find(p => p.id === data.winner)
+        for(let i = 0; i < data.players.length; i++) {
+          const player = this.players.find(p => p.id === data.players[i].id)
+          player.hand = data.players[i].hand
+        }
+        this.winner = winner
       })
     },
     async assignPlayerIds() {

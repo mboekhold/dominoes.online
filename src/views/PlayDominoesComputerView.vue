@@ -17,7 +17,7 @@
             <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
 
 
-            <Notification :notifications="notifications" />
+            <PNotification :notifications="notifications" />
             <WinnerNotification v-if="winner" :winner="winner" @on-next-game="nextGame" @on-cancel="cancel" />
         </div>
     </div>
@@ -26,7 +26,7 @@
 import Board from '@/components/Board.vue'
 import Player from '@/components/Player.vue'
 import WinnerNotification from '@/components/WinnerNotification.vue';
-import Notification from '@/components/Notification.vue';
+import PNotification from '@/components/PlayerNotification.vue';
 import { driver } from "driver.js";
 import "driver.js/dist/driver.css";
 import { supabase } from '../supabase';
@@ -35,7 +35,7 @@ export default {
     components: {
         Board,
         Player,
-        Notification,
+        PNotification,
         WinnerNotification
     },
     data() {

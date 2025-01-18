@@ -33,8 +33,9 @@
                         <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
-                
-                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="left-[2px] absolute h-full w-1 bg-orange-400">
+
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
+                    class="left-[2px] absolute h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -57,7 +58,8 @@
                         <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
-                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute bottom-[2px] w-full h-1 bg-orange-400">
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
+                    class="absolute bottom-[2px] w-full h-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -80,8 +82,9 @@
                         <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
-                
-                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr" class="absolute right-[1px] h-full w-1 bg-orange-400">
+
+                <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
+                    class="absolute right-[1px] h-full w-1 bg-orange-400">
                 </div>
                 <OpponentPlayerHand class="flex-col flex" :hand="player.hand" :id="'playerHand' + player.nr"
                     :playerId="player.nr" />
@@ -106,6 +109,7 @@
 import PlayerHand from './PlayerHand.vue';
 import OpponentPlayerHand from './OpponentPlayerHand.vue';
 import { getUserAvatar } from "../utils";
+
 export default {
     components: {
         PlayerHand,
@@ -119,7 +123,7 @@ export default {
         turn: {
             type: Boolean,
             required: true
-        }
+        },
     },
     data() {
         return {
