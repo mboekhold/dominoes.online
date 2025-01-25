@@ -7,7 +7,7 @@
     </div>
     <div v-else class="px-20 pt-5 relative text-gray-200">
       <Board ref="board" :dealing="dealingDominoes" @on-play-domino="playDomino" />
-      <Player :player="players[0]" :turn="currentPlayerTurn === players[0]"
+      <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === players[0]"
         @on-selected-domino="onSelectedDomino" />
       <Player :player="players[1]" :turn="currentPlayerTurn === players[1]" />
       <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
@@ -15,8 +15,8 @@
 
       <PNotification :notifications="pnotifications" />
       <GNotification :notifications="gnotifications" />
-      <WinnerNotification v-if="winner" :winner="winner" />
-      <GameBlockedNotification v-if="winner && gameBlocked" :winner="winner" :players="players" />
+      <WinnerNotification v-if="showWinnerModal" :winner="winner" @on-cancel="showWinnerModal = false" />
+      <GameBlockedNotification v-if="showGameBlockedModal" :winner="winner" :players="players" @on-cancel="showGameBlockedModal = false" />
     </div>
   </div>
 </template>
@@ -48,6 +48,8 @@ export default {
       gnotifications: [],
       winner: null,
       gameBlocked: false,
+      showGameBlockedModal: false,
+      showWinnerModal: false,
     }
   },
   methods: {
@@ -170,11 +172,12 @@ export default {
         }
         this.winner = winner
         this.gameBlocked = true
+        this.showGameBlockedModal = true
       })
       this.socket.on('playerWon', async(player) => {
         const winner = this.players.find(p => p.id === player)
         this.winner = winner;
-        console.log('Player won', winner)
+        this.showWinnerModal = true;
       })
     },
     async assignPlayerIds() {

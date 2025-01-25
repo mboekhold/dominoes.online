@@ -1,22 +1,40 @@
 <!-- GAME MANAGER -->
 <template>
-    <div class="lg:ml-20 p-2 mt-10 lg:px-48 py-5">
+    <div class="lg:ml-20 p-2 mt-10 lg:px-48 xl:px-64 py-5">
         <div class="relative text-gray-200">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="w-full h-[500px] bg-night-dark-3 rounded-lg overflow-hidden">
+                <div class="w-full max-w-96 h-[500px] bg-night-dark-2 rounded-lg overflow-hidden">
                     <Transition>
-                        <PlayerCard :loading="loading" :user="user" :user_profile="user_profile" v-if="showPlayerCard"
-                            @find-match="findMatch()" />
+                        <PlayerCard :loading="profileLoading" :user="user" :user_profile="user_profile"
+                            v-if="showPlayerCard" @find-match="findMatch()" />
                     </Transition>
                     <Transition>
                         <FindingMatchCard :user_profile="user_profile" v-if="showFindingMatch" @go-back="goBack()" />
                     </Transition>
                 </div>
-                <div class="w-full h-[500px] relative">
-                    <div class="w-full h-full border-gray-700 border rounded-lg">
-                        <div v-if="gameHistory.length === 0" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div class="text-2xl font-medium">
-                                No games played yet
+                <div class="w-full max-w-[800px] min-h-[500px] relative">
+                    <div class="w-full h-full bg-night-dark-2 rounded-lg">
+                        <div v-if="gameHistoryLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <svg class="animate-spin h-8 w-8 text-white mr-2 "
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                                </circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div v-else>
+                            <div v-if="gameHistory.length === 0"
+                                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                                <div class="text-2xl font-medium">
+                                    No games played yet
+                                </div>
+                            </div>
+                            <div v-else class="p-4">
+                                <div v-for="game in gameHistory" :key="game.id" class="mb-2">
+                                    <GameCard :game="game" :user="user_profile" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -29,18 +47,21 @@
 import Board from '@/components/Board.vue';
 import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
+import GameCard from '@/components/GameCard.vue';
 import { supabase } from '../supabase';
 export default {
     components: {
         Board,
         PlayerCard,
         FindingMatchCard,
+        GameCard
     },
     data() {
         return {
             showPlayerCard: true,
             showFindingMatch: false,
-            loading: false,
+            profileLoading: false,
+            gameHistoryLoading: false,
             user: null,
             user_profile: null,
             authenticated: false,
@@ -62,7 +83,8 @@ export default {
             }, 200)
         },
         async getUserProfile() {
-            this.loading = true;
+            this.profileLoading = true;
+            this.gameHistoryLoading = true;
             try {
                 this.user = (await supabase.auth.getSession()).data.session.user;
                 const { data, error, status } = await supabase
@@ -94,12 +116,65 @@ export default {
                 if (this.user) {
                     this.authenticated = true;
                 }
-                this.loading = false;
+                this.profileLoading = false;
             }
         },
+        async getGameHistory() {
+            try {
+                const { data, error } = await supabase
+                    .from('user_game')
+                    .select(`game_id, created_at, 
+                        games (winner)
+                    `)
+                    .eq('user_id', this.user.id)
+                    .eq('games.completed', true)
+                    .order('created_at', { ascending: false })
+
+                if (error) throw error
+                this.gameHistory = data;
+            } catch (error) {
+                console.log(error.message)
+            }
+        },
+        async getPlayersInGame() {
+            try {
+                for (const game of this.gameHistory) {
+                    const { data, error } = await supabase
+                        .from('user_game')
+                        .select('user_id')
+                        .eq('game_id', game.game_id)
+                    if (error) {
+                        throw error;
+                    }
+                    for (let i = 0; i < data.length; i++) {
+                        const { data: userData, error: userError } = await supabase
+                            .from('profiles')
+                            .select('id, username, avatar_url')
+                            .eq('id', data[i].user_id)
+                            .single();
+                        if (userError) {
+                            throw userError;
+                        }
+                        if (!game.players) {
+                            game['players'] = [];
+                            game.players.push(userData);
+                        } else {
+                            game.players.push(userData);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error getting other players in game', error);
+            } {
+                this.gameHistoryLoading = false;
+            }
+        }
     },
-    mounted() {
-        this.getUserProfile();
+    async mounted() {
+        await this.getUserProfile();
+        await this.getGameHistory();
+        await this.getPlayersInGame();
+        // console.log(this.gameHistory)
     },
     watch: {
         loading(newVal, oldVal) {

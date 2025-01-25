@@ -83,7 +83,7 @@
                             @click="nextGame()">Play again</button>
                         <button type="button"
                             class="mt-3 inline-flex w-full justify-center rounded-md bg-transparent px-3 py-2 text-sm font-semibold text-white shadow-sm ring-1 ring-inset ring-gray-600 sm:mt-0 sm:w-auto"
-                            @click="cancel()">Back to home</button>
+                            @click="cancel()">Cancel</button>
                     </div>
                 </div>
             </div>
@@ -107,37 +107,10 @@ export default {
             required: true
         }
     },
-    data() {
-        return {
-            dominos: [
-                { top: 1, bottom: 1 },
-                { top: 1, bottom: 2 },
-                { top: 1, bottom: 3 },
-                { top: 1, bottom: 4 },
-                { top: 1, bottom: 5 },
-                { top: 1, bottom: 6 },
-                { top: 2, bottom: 2 },
-                { top: 2, bottom: 3 },
-                { top: 2, bottom: 4 },
-                { top: 2, bottom: 5 },
-                { top: 2, bottom: 6 },
-                { top: 3, bottom: 3 },
-                { top: 3, bottom: 4 },
-                { top: 3, bottom: 5 },
-                { top: 3, bottom: 6 },
-                { top: 4, bottom: 4 },
-                { top: 4, bottom: 5 },
-                { top: 4, bottom: 6 },
-                { top: 5, bottom: 5 },
-                { top: 5, bottom: 6 },
-                { top: 6, bottom: 6 }
-            ]
-        }
-    },
     methods: {
         getUserAvatar,
         nextGame() {
-            this.$emit('on-next-game');
+            this.$router.push({ name: 'online' });
         },
         cancel() {
             this.$emit('on-cancel');
