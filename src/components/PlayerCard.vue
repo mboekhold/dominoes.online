@@ -23,10 +23,10 @@
                     </div>
                     <div class="text-gray-400 mt-10 w-fit mx-auto">
                         <div>
-                            25% win rate
+                            {{ getWinRate() }}% win rate
                         </div>
                         <div>
-                            4W 5L
+                            {{ user_profile.wins }}W {{ user_profile.games_played - user_profile.wins  }}L
                         </div>
                     </div>
                     <div class="mt-auto">
@@ -61,6 +61,9 @@ export default {
         backToMainMenu() {
             this.showMainMenu = true;
             this.showFindingMatch = false;
+        },
+        getWinRate() {
+            return ((this.user_profile.wins / this.user_profile.games_played) * 100).toFixed(1)
         }
     }
 }

@@ -89,7 +89,7 @@ export default {
                 this.user = (await supabase.auth.getSession()).data.session.user;
                 const { data, error, status } = await supabase
                     .from('profiles')
-                    .select(`id, username, avatar_url,
+                    .select(`id, username, avatar_url, wins, games_played,
                     countries (
                         id,
                         name,
@@ -141,27 +141,12 @@ export default {
                 for (const game of this.gameHistory) {
                     const { data, error } = await supabase
                         .from('user_game')
-                        .select('user_id')
+                        .select('user_id, profiles (username, avatar_url)')
                         .eq('game_id', game.game_id)
                     if (error) {
                         throw error;
                     }
-                    for (let i = 0; i < data.length; i++) {
-                        const { data: userData, error: userError } = await supabase
-                            .from('profiles')
-                            .select('id, username, avatar_url')
-                            .eq('id', data[i].user_id)
-                            .single();
-                        if (userError) {
-                            throw userError;
-                        }
-                        if (!game.players) {
-                            game['players'] = [];
-                            game.players.push(userData);
-                        } else {
-                            game.players.push(userData);
-                        }
-                    }
+                    game.players = data;
                 }
             } catch (error) {
                 console.error('Error getting other players in game', error);

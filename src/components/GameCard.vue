@@ -19,8 +19,8 @@
             <div class="flex items-center gap-2 ml-auto">
                 <div class="w-28 overflow-hidden text-ellipsis">
                     <div v-for="player in game.players.slice(0, 2)" :key="player.id" class="flex items-center mt-2">
-                        <img :src="getUserAvatar(player)" class="rounded-lg w-6 h-6 mr-1">
-                        <div v-if="player.id === game.games.winner" class="text-xs text-gray-300">
+                        <img :src="getUserAvatar(player.profiles)" class="rounded-lg w-6 h-6 mr-1">
+                        <div v-if="player.user_id === game.games.winner" class="text-xs text-gray-300">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-4 h-4 text-yellow-500 mr-1">
                                 <path fill-rule="evenodd"
@@ -29,14 +29,14 @@
                             </svg>
                         </div>
                         <div class="text-xs text-gray-300 truncate">
-                            {{ player.username }}
+                            {{ player.profiles.username }}
                         </div>
                     </div>
                 </div>
                 <div class="w-28 overflow-hidden text-ellipsis">
                     <div v-for="player in game.players.slice(2, 4)" :key="player.id" class="flex items-center mt-2 mr-5">
-                        <img :src="getUserAvatar(player)" class="rounded-lg w-6 h-6 mr-1">
-                        <div v-if="player.id === game.games.winner" class="text-xs text-gray-300">
+                        <img :src="getUserAvatar(player.profiles)" class="rounded-lg w-6 h-6 mr-1">
+                        <div v-if="player.user_id === game.games.winner" class="text-xs text-gray-300">
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                                 class="w-4 h-4 text-yellow-500 mr-1">
                                 <path fill-rule="evenodd"
@@ -45,7 +45,7 @@
                             </svg>
                         </div>
                         <div class="text-xs text-gray-300 truncate">
-                            {{ player.username }}
+                            {{ player.profiles.username }}
                         </div>
                     </div>
                 </div>
@@ -73,7 +73,6 @@ export default {
     data() {
         return {
             wonGame: null,
-            otherPlayers: []
         }
     },
     methods: {
