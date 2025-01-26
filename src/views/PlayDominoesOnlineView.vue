@@ -3,7 +3,7 @@
     <div class="lg:ml-20 p-2 mt-10 lg:px-48 xl:px-64 py-5">
         <div class="relative text-gray-200">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="w-full max-w-96 h-[500px] bg-night-dark-2 rounded-lg overflow-hidden">
+                <div class="w-full md:max-w-96 h-[500px] bg-night-dark-2 rounded-lg overflow-hidden relative">
                     <Transition>
                         <PlayerCard :loading="profileLoading" :user="user" :user_profile="user_profile"
                             v-if="showPlayerCard" @find-match="findMatch()" />

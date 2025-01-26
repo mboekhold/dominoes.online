@@ -28,7 +28,7 @@
                 {{ time_elapsed }}
             </div>
         </div>
-        <div class="mt-5 max-w-[375px] mx-auto">
+        <div class="mt-5 max-w-[350px] mx-auto">
             <img src="@/assets/world_map.png" alt="Finding match" class="mx-auto">
         </div>
         <div class="p-5" @click="goBack()">
