@@ -1,5 +1,5 @@
 <template>
-  <div class="p-2 pt-10 lg:ml-10 lg:px-20 lg:py-10  text-gray-200">
+  <div class="lg:ml-20 p-2 mt-10 lg:px-48 xl:px-64 py-5 text-gray-200">
     <div v-if="loading">
       <div class="flex flex-col lg:flex-row items-center space-y-4">
         <!-- Placeholder for user avatar -->
@@ -80,7 +80,7 @@
                 Games played
               </div>
               <div class="text-3xl font-medium">
-                0
+                {{ user_profile.games_played }}
               </div>
             </div>
           </div>
@@ -98,7 +98,7 @@
                 Games won
               </div>
               <div class="text-3xl font-medium">
-                0
+                {{ user_profile.wins }}
               </div>
             </div>
           </div>
@@ -115,7 +115,7 @@
                 Games lost
               </div>
               <div class="text-3xl font-medium">
-                0
+                {{ user_profile.games_played - user_profile.wins }}
               </div>
             </div>
           </div>
@@ -126,18 +126,46 @@
           </div>
           <div>
             <div class="ml-2 text-xl">
-              0%
+              {{ ((user_profile.wins / user_profile.games_played) * 100).toFixed(2) }}%
             </div>
           </div>
         </div>
       </div>
-      <div class="mt-10 text-4xl font-medium">
-        Recent games
-      </div>
-      <div class="mt-2 w-full min-h-44 bg-night-dark-3 p-5 rounded-lg">
-        <div v-if="gameHistory.length === 0" class="flex h-full w-full justify-center items-center">
-          <div class="text-2xl font-medium mt-12">
-            No games played yet
+      <div class="mt-10 flex-col md:flex-row flex gap-10">
+        <div>
+          <div>
+            <div class="text-xl font-medium">
+              Achievements
+            </div>
+          </div>
+          <div class="mt-2 h-44 w-full md:w-96  bg-night-dark-2 p-5 rounded-lg flex items-center justify-center">
+            <div class="text-gray-300">
+              No achievements yet.
+            </div>
+          </div>
+        </div>
+        <div class="w-full">
+          <div class="text-xl font-medium">
+            Game history
+          </div>
+          <div class="mt-2 w-full min-h-44 bg-night-dark-2 p-5 rounded-lg relative">
+            <div v-if="gameHistoryLoading">
+              <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <svg class="animate-spin h-8 w-8 text-white mr-2 " xmlns="http://www.w3.org/2000/svg" fill="none"
+                  viewBox="0 0 24 24">
+                  <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                  </circle>
+                  <path class="opacity-75" fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                  </path>
+                </svg>
+              </div>
+            </div>
+            <div v-else-if="!loading && gameHistory.length > 0">
+              <div v-for="game in gameHistory" :key="game.id" class="mb-2">
+                <GameCard :game="game" :user="user_profile" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -150,9 +178,10 @@
 import { supabase } from '../supabase';
 import { getUserAvatar } from '../utils';
 import EditProfileModal from '../components/EditProfileModal.vue';
+import GameCard from '../components/GameCard.vue';
 export default {
   components: {
-    EditProfileModal,
+    EditProfileModal, GameCard
   },
   data() {
     return {
@@ -160,6 +189,7 @@ export default {
       showEditProfileModal: false,
       country: null,
       loading: false,
+      gameHistoryLoading: false,
       user: null,
       user_profile: null,
       authenticated: false,
@@ -182,7 +212,7 @@ export default {
         this.user = (await supabase.auth.getSession()).data.session.user;
         const { data, error, status } = await supabase
           .from('profiles')
-          .select(`id, username, avatar_url,
+          .select(`id, username, avatar_url, wins, games_played,
                     countries (
                         id,
                         name,
@@ -212,6 +242,42 @@ export default {
         this.loading = false;
       }
     },
+    async getGameHistory() {
+      this.gameHistoryLoading = true;
+      try {
+        const { data, error } = await supabase
+          .from('user_game')
+          .select(`game_id, created_at, 
+                        games (winner)
+                    `)
+          .eq('user_id', this.user.id)
+          .eq('games.completed', true)
+          .order('created_at', { ascending: false })
+
+        if (error) throw error
+        this.gameHistory = data;
+      } catch (error) {
+        console.log(error.message)
+      }
+    },
+    async getPlayersInGame() {
+      try {
+        for (const game of this.gameHistory) {
+          const { data, error } = await supabase
+            .from('user_game')
+            .select('user_id, profiles (username, avatar_url)')
+            .eq('game_id', game.game_id)
+          if (error) {
+            throw error;
+          }
+          game.players = data;
+        }
+      } catch (error) {
+        console.error('Error getting other players in game', error);
+      } finally {
+        this.gameHistoryLoading = false;
+      }
+    },
     async signOut() {
       try {
         const { error } = await supabase.auth.signOut();
@@ -224,8 +290,10 @@ export default {
       }
     }
   },
-  mounted() {
-    this.getUserProfile();
+  async mounted() {
+    await this.getUserProfile();
+    await this.getGameHistory();
+    await this.getPlayersInGame();
   }
 }
 </script>

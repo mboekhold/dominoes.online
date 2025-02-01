@@ -40,7 +40,7 @@
                                                 </div>
                                             </div>
                                             <div class="relative w-fit">
-                                                <div @click="toggleSelectAvatar()"
+                                                <!-- <div @click="toggleSelectAvatar()"
                                                     class="absolute -bottom-3 -right-10 bg-night-dark border border-gray-600 px-2 py-1 rounded-lg">
                                                     <div class="flex items-center cursor-pointer">
                                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -53,7 +53,7 @@
                                                             Edit
                                                         </div>
                                                     </div>
-                                                </div>
+                                                </div> -->
                                                 <div>
                                                     <img :src="getUserAvatar(copy_profile)" class="rounded-md w-16 h-16">
                                                 </div>
@@ -103,7 +103,6 @@
 <script>
 import { getUserAvatar } from '../utils';
 import { supabase } from '../supabase';
-import { toHandlers } from 'vue';
 export default {
     props: {
         user_profile: Object,

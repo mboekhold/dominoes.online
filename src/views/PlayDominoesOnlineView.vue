@@ -150,7 +150,7 @@ export default {
                 }
             } catch (error) {
                 console.error('Error getting other players in game', error);
-            } {
+            } finally {
                 this.gameHistoryLoading = false;
             }
         }
