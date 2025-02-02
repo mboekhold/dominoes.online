@@ -8,6 +8,7 @@ import SignupView from '../views/SignupView.vue'
 import BaseView from '../views/BaseView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import LeaderboardView from '../views/LeaderboardView.vue'
+import NewsView from '../views/NewsView.vue'
 import CallbackView from '../views/CallbackView.vue'
 import SetUsernameView from '../views/SetUsernameView.vue'
 
@@ -27,6 +28,11 @@ const router = createRouter({
           path: '/leaderboard',
           name: 'leaderboard',
           component: LeaderboardView
+        },
+        {
+          path: '/news',
+          name: 'news',
+          component: NewsView
         },
         {
           path: '/profile',

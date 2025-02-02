@@ -63,6 +63,9 @@ export default {
             this.showFindingMatch = false;
         },
         getWinRate() {
+            if (this.user_profile.games_played === 0) {
+                return 0
+            }
             return ((this.user_profile.wins / this.user_profile.games_played) * 100).toFixed(1)
         }
     }

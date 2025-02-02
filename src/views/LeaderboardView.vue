@@ -34,7 +34,7 @@
               {{ leaderBoard[0].player.username ? leaderBoard[0].player.username : '---' }}
             </div>
             <div class="flex items-center">
-              <img :src="leaderBoard[0].player ? leaderBoard[0].player.countries.flag_url : ''" alt="Country flag"
+              <img v-if="leaderBoard[0].player" :src="leaderBoard[0].player ? leaderBoard[0].player.countries.flag_url : ''" alt="Country flag"
                 class="w-6 rounded-sm">
               <div class="text-xs ml-1">
                 {{ leaderBoard[0].player ? leaderBoard[0].player.countries.name : '---' }}
@@ -80,7 +80,7 @@
                 <div class="text-xs flex items-center">
                   <img v-if="rank.player.countries" :src="rank.player.countries ? rank.player.countries.flag_url : ''"
                     alt="Country flag" class="w-6 rounded-sm">
-                  <div class="ml-1 truncate text-xs">
+                  <div v-else class="ml-1 truncate text-xs">
                     {{ rank.player.countries ? rank.player.countries.name : '' }}
                   </div>
                 </div>

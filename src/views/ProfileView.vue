@@ -126,7 +126,12 @@
           </div>
           <div>
             <div class="ml-2 text-xl">
-              {{ ((user_profile.wins / user_profile.games_played) * 100).toFixed(2) }}%
+              <div v-if="user_profile.wins === 0">
+                 0%
+              </div>
+              <div v-else>
+                {{ ((user_profile.wins / user_profile.games_played) * 100).toFixed(2) }}%
+              </div>
             </div>
           </div>
         </div>
@@ -138,7 +143,7 @@
               Achievements
             </div>
           </div>
-          <div class="mt-2 h-44 w-full md:w-96  bg-night-dark-2 p-5 rounded-lg flex items-center justify-center">
+          <div class="mt-2 h-44 w-full md:w-80  bg-night-dark-2 p-5 rounded-lg flex items-center justify-center">
             <div class="text-gray-300">
               No achievements yet.
             </div>
@@ -161,9 +166,16 @@
                 </svg>
               </div>
             </div>
-            <div v-else-if="!loading && gameHistory.length > 0">
-              <div v-for="game in gameHistory" :key="game.id" class="mb-2">
-                <GameCard :game="game" :user="user_profile" />
+            <div v-else-if="!loading">
+              <div v-if="gameHistory.length > 0">
+                <div v-for="game in gameHistory" :key="game.id" class="mb-2">
+                  <GameCard :game="game" :user="user_profile" />
+                </div>
+              </div>
+              <div v-else>
+                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                  No games played yet
+                </div>
               </div>
             </div>
           </div>
