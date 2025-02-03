@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="!placeHorizontal" class="domino-vertical" :class="{'bottom-2' : selected}">
+        <div v-if="!placeHorizontal" class="domino-vertical" :class="{ 'bottom-2': selected }">
             <div class="h-full relative">
                 <template v-if="domino.top === 1">
                     <div class="dot center"></div>
@@ -226,15 +226,91 @@ export default {
     top: 10%;
     left: 39%;
 }
+
 .bottom-center {
     position: absolute;
     bottom: 10%;
     left: 39%;
 }
+
 .domino-vertical {
     @apply bg-white rounded-lg border border-black h-24 w-14 px-1 flex justify-between flex-col relative cursor-pointer;
 }
+
 .domino-horizontal {
     @apply bg-white rounded-lg border border-black h-14 w-24 py-1 flex justify-between flex-row relative cursor-pointer;
+}
+
+@media screen and (max-width: 1024px) {
+
+    .dot {
+        width: 7px;
+        height: 7px;
+        background-color: black;
+        border-radius: 50%;
+    }
+
+    .center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .top-left {
+        position: absolute;
+        top: 10%;
+        left: 10%;
+    }
+
+    .center-left {
+        position: absolute;
+        bottom: 39%;
+        left: 10%;
+    }
+
+    .bottom-left {
+        position: absolute;
+        bottom: 10%;
+        left: 10%;
+    }
+
+    .top-right {
+        position: absolute;
+        top: 10%;
+        right: 10%;
+    }
+
+    .center-right {
+        position: absolute;
+        bottom: 39%;
+        right: 10%;
+    }
+
+    .bottom-right {
+        position: absolute;
+        bottom: 10%;
+        right: 10%;
+    }
+
+    .top-center {
+        position: absolute;
+        top: 10%;
+        left: 39%;
+    }
+
+    .bottom-center {
+        position: absolute;
+        bottom: 10%;
+        left: 39%;
+    }
+
+    .domino-vertical {
+        @apply bg-white rounded-lg border border-black h-16 w-10 px-1 flex justify-between flex-col relative cursor-pointer;
+    }
+
+    .domino-horizontal {
+        @apply bg-white rounded-lg border border-black h-10 w-16 py-1 flex justify-between flex-row relative cursor-pointer;
+    }
 }
 </style>

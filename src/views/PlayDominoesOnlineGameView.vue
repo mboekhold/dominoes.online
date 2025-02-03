@@ -1,11 +1,11 @@
 <template>
-  <div class="ml-20">
+  <div class="lg:ml-20">
     <div v-if="loading">
       <div>
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 loader"></div>
       </div>
     </div>
-    <div v-else class="px-20 pt-5 relative text-gray-200">
+    <div v-else class="lg:px-20 pt-5 relative text-gray-200">
       <Board ref="board" :dealing="dealingDominoes" @on-play-domino="playDomino" />
       <Player v-if="players[0]" :player="players[0]" :turn="currentPlayerTurn === players[0]"
         @on-selected-domino="onSelectedDomino" />

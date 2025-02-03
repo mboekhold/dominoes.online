@@ -27,7 +27,7 @@
                         <div v-else>
                             <div v-if="gameHistory.length === 0"
                                 class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                                <div class="text-2xl font-medium">
+                                <div class="text-xl font-medium">
                                     No games played yet
                                 </div>
                             </div>
