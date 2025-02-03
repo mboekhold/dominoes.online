@@ -85,10 +85,6 @@
         <div v-if="player.nr === 2" :class="'togglePlayerBox' + player.nr"
             class="absolute z-10 cursor-pointer h-10 w-8 right-0 top-1/2 transform -translate-y-1/2 flex items-center justify-center"
             @click="openPlayerBox(player.nr)">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                :class="{ 'rotate-180': openPlayerBoxId === player.nr }" stroke="currentColor" class="toggle-icon h-6 w-6">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-            </svg>
         </div>
         <div v-else-if="player.nr === 3" :class="'togglePlayerBox' + player.nr"
             class="absolute z-10 cursor-pointer h-8 w-10 top-0 left-1/2 transform -translate-x-1/2"
@@ -306,9 +302,6 @@ export default {
 #playerHand4 {
     /* @apply flex items-center flex-col; */
     right: 10px;
-}
-.togglePlayerBox2 {
-   @apply  text-white rounded-lg bg-night-dark-3;
 }
 
 .notificationPlayer2::after {
