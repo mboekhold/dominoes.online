@@ -18,12 +18,12 @@
         </div>
         <div v-else-if="player.nr === 2"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-col -right-[200px] sm:right-0 overflow-hidden">
+            <div :class="'playerBox' + player.nr" class="flex flex-col -right-[75px] sm:right-0">
                 <div class="sm:hidden open-playerbox right-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex items-center"
                     @click="togglePlayerBox(player.nr)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         :class="{ 'rotate-180': openPlayerBoxId === player.nr }" stroke="currentColor"
-                        class="toggle-icon h-4 w-4">
+                        class="toggle-icon">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                     </svg>
                 </div>
@@ -43,8 +43,16 @@
         </div>
         <div v-else-if="player.nr === 3"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-row -top-[200px] sm:top-0 overflow-hidden">
+            <div :class="'playerBox' + player.nr" class="flex flex-row -top-[80px] sm:top-0">
                 <div class="ml-2 mr-6 mb-1">
+                    <div class="sm:hidden open-playerbox top-[75px] left-1/2 transform -translate-x-1/2 cursor-pointer w-10 h-8 flex justify-center items-center"
+                        @click="togglePlayerBox(player.nr)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                            stroke="currentColor" class="toggle-icon w-6"
+                            :class="{ 'rotate-180': openPlayerBoxId === player.nr }">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                        </svg>
+                    </div>
                     <img :src="getUserAvatar(player)" class="h-12 w-12 rounded-md border border-gray-700">
                     <div v-if="player.flag_url">
                         <img :src="player.flag_url" class="w-6 h-4 rounded-sm mt-1 mx-auto">
@@ -59,7 +67,7 @@
         </div>
         <div v-else-if="player.nr === 4"
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
-            <div :class="'playerBox' + player.nr" class="flex flex-col -left-[200px] sm:left-0 overflow-hidden">
+            <div :class="'playerBox' + player.nr" class="flex flex-col -left-[80px] sm:left-0">
                 <div class="sm:hidden open-playerbox left-[75px] top-1/2 transform -translate-y-1/2 cursor-pointer w-8 h-10 flex justify-center items-center"
                     @click="togglePlayerBox(player.nr)">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -280,7 +288,7 @@ export default {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: 60px;
+    left: 0px;
     width: 110px;
     height: 230px;
 }
@@ -374,8 +382,7 @@ export default {
 }
 
 .open-playerbox {
-    @apply p-1 text-white absolute rounded-lg;
-    background-color: #282f3d;
+    @apply p-1 text-white absolute rounded-lg bg-night-dark-3;
 }
 
 .toggle-icon {
@@ -386,6 +393,7 @@ export default {
     .playerBox1 {
         bottom: 75px;
     }
+
     .playerBoxWrapper2 {
         right: 0px;
     }
