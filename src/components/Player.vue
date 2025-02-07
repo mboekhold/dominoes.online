@@ -288,7 +288,7 @@ export default {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    left: 0px;
+    left: 60px;
     width: 110px;
     height: 230px;
 }
@@ -396,6 +396,9 @@ export default {
 
     .playerBoxWrapper2 {
         right: 0px;
+    }
+    .playerBoxWrapper4 {
+        left: 0px;
     }
 }
 </style>
