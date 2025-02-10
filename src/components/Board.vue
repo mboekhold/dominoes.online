@@ -26,7 +26,7 @@
 
                     </div>
                     <div v-if="showChevronUp"
-                        class="rounded-full border-gray-600 border p-1 flex items-center bg-white fixed top-12 sm:top-24 left-1/2">
+                        class="rounded-full border-gray-600 border p-1 flex items-center justify-center bg-white fixed top-32 sm:top-24 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
@@ -35,7 +35,7 @@
                         </svg>
                     </div>
                     <div v-if="showChevronDown"
-                        class="rounded-full border-gray-600  border p-1 flex items-center bg-white fixed bottom-32 left-1/2">
+                        class="rounded-full border-gray-600  border p-1 flex items-center justify-center bg-white fixed bottom-20 sm:bottom-32 left-1/2 -translate-x-1/2 w-8 h-8 sm:w-10 sm:h-10">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                             class="w-6 h-6 text-black">
                             <path fill-rule="evenodd"
@@ -44,15 +44,17 @@
                         </svg>
                     </div>
                 </div>
-                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform duration-500" :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing}">
-                    <div  class="absolute top-10 left-1/2 -translate-x-1/2 flex justify-center items-center gap-1">
-                        <div v-for="(domino, index) in dominoSetLength" class="bg-white rounded-md h-14 w-7" :id="`dealDomino${index}`" :ref="`dealDomino${index}`">
-                            
+                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform duration-500"
+                    :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing }">
+                    <div class="absolute top-10 left-1/2 -translate-x-1/2 flex justify-center items-center gap-1">
+                        <div v-for="(domino, index) in dominoSetLength" class="bg-white rounded-md h-10 w-6 sm:h-14 sm:w-7"
+                            :id="`dealDomino${index}`" :ref="`dealDomino${index}`">
+
                         </div>
                     </div>
                 </div>
             </div>
-           
+
         </div>
     </div>
 </template>
@@ -84,6 +86,7 @@ export default {
             showChevronUp: false,
             disableScroll: false,
             dominoSetLength: 28,
+            isMobile: false,
         }
     },
     methods: {
@@ -298,7 +301,7 @@ export default {
                 this.dominosOnBoard.unshift(domino);
                 if (domino.location.transitionOver) {
                     this.currentTailRow++;
-                    if(this.isOnMobile()) {
+                    if (this.isOnMobile()) {
                         this.moveDominoDown();
                     }
                 }
@@ -654,7 +657,7 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = tailElem.offsetTop;
                 const eBottom = eTop + tailElem.offsetHeight;
-                if(this.shouldPlaceDominoVertical(tail)) {
+                if (this.shouldPlaceDominoVertical(tail)) {
                     if ((eBottom - this.dominoHeight) - (cHeight - (cHeight - cScrollOffset)) <= 0) {
                         if (this.disableScroll) {
                             this.disableScroll = false;
@@ -669,7 +672,7 @@ export default {
                             this.disableScroll = false;
                         }
                         this.showChevronUp = true;
-    
+
                     } else {
                         this.showChevronUp = false;
                     }
@@ -761,6 +764,11 @@ export default {
         }
     },
     mounted() {
+        this.isMobile = window.innerWidth < 1024;
+        if (this.isMobile) {
+            this.dominoHeight = 64;
+            this.dominoWidth = 40;
+        }
         this.disableScroll = true;
         this.boardWidth = this.$refs.playingArea.clientWidth;
         this.boardHeight = this.$refs.playingArea.clientHeight + this.dominoHeight;
@@ -828,5 +836,15 @@ export default {
 
 #playingArea {
     scroll-behavior: smooth;
+}
+
+@media screen and (max-width: 1024px) {
+    .domino-placeholder-vertical {
+        @apply h-16 w-10;
+    }
+
+    .domino-placeholder-horizontal {
+        @apply h-10 w-16;
+    }
 }
 </style>

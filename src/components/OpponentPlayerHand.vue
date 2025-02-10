@@ -35,4 +35,16 @@ export default {
 .player4-domino {
     @apply bg-white rounded-lg border border-black h-8 w-14 py-1 justify-between flex-row relative -mt-3.5;
 }
+
+@media screen and (max-width: 1024px) {
+    .player2-domino {
+        @apply h-6 w-10 -mt-2;
+    }
+    .player3-domino {
+        @apply h-10 w-6 -ml-2;
+    }
+    .player4-domino {
+        @apply h-6 w-10 -mt-2;
+    }
+}
 </style>
