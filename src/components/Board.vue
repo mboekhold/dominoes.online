@@ -46,7 +46,7 @@
                 </div>
                 <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform duration-500"
                     :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing }">
-                    <div class="absolute top-10 left-1/2 -translate-x-1/2 flex justify-center items-center gap-1">
+                    <div class="absolute sm:top-10 left-1/2 -translate-x-1/2 justify-center items-center gap-1 flex flex-wrap p-2 w-full">
                         <div v-for="(domino, index) in dominoSetLength" class="bg-white rounded-md h-10 w-6 sm:h-14 sm:w-7"
                             :id="`dealDomino${index}`" :ref="`dealDomino${index}`">
 
@@ -836,6 +836,10 @@ export default {
 
 #playingArea {
     scroll-behavior: smooth;
+}
+
+.domino-dealt {
+    @apply bg-gray-400;
 }
 
 @media screen and (max-width: 1024px) {
