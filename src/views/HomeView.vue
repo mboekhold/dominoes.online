@@ -88,7 +88,7 @@
           <div class="mt-3 grid grid-cols-1 lg:grid-cols-4 gap-3">
             <div v-for="rank in leaderBoard.slice(1)">
               <div class="bg-night-dark-3 rounded-md p-2 relative lg:h-32">
-                <div class="flex">
+                <div class="flex items-center">
                   <div
                     class="h-8 w-6 lg:h-12 lg:w-10 rounded-md bg-[#2c2e3b] font-bold lg:text-3xl flex items-center justify-center text-white">
                     {{ rank.nr }}

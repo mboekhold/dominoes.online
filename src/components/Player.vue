@@ -6,10 +6,10 @@
                     class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
                     <div>
-                        <img :src="getUserAvatar(player)" class="w-8 h-8 sm:w-12 sm:h-12 rounded-md border border-gray-700">
+                        <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
                     </div>
                     <div v-if="player.flag_url">
-                        <img :src="player.flag_url" class="w-[20px] h-[14px] sm:w-6 sm:h-4 rounded-sm mt-1 mx-auto">
+                        <img :src="player.flag_url" class="w-[20px] h-[14px] lg:w-6 lg:h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
                 <PlayerHand :hand="player.hand" @on-selected-domino="selectedDomino" :id="'playerHand' + player.nr"
@@ -20,9 +20,9 @@
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:right-0">
                 <div class="mb-4 sm:mb-6 mt-2">
-                    <img :src="getUserAvatar(player)" class="w-8 h-8 sm:w-12 sm:h-12 rounded-md border border-gray-700">
+                    <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
                     <div v-if="player.flag_url">
-                        <img :src="player.flag_url" class="w-[20px] h-[14px] sm:w-6 sm:h-4 rounded-sm mt-1 mx-auto">
+                        <img :src="player.flag_url" class="w-[20px] h-[14px] lg:w-6 lg:h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
 
@@ -37,9 +37,9 @@
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.nr" class="flex flex-row sm:top-0">
                 <div class="ml-2 mr-6 mb-1">
-                    <img :src="getUserAvatar(player)" class="w-8 h-8 sm:w-12 sm:h-12 rounded-md border border-gray-700">
+                    <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
                     <div v-if="player.flag_url">
-                        <img :src="player.flag_url" class="w-[20px] h-[14px] sm:w-6 sm:h-4 rounded-sm mt-1 mx-auto">
+                        <img :src="player.flag_url" class="w-[20px] h-[14px] lg:w-6 lg:h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
@@ -53,9 +53,9 @@
             :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:left-0">
                 <div class="rounded-md mt-2 mb-4 sm:mb-5">
-                    <img :src="getUserAvatar(player)" class="w-8 h-8 sm:w-12 sm:h-12 rounded-md border border-gray-700">
+                    <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
                     <div v-if="player.flag_url">
-                        <img :src="player.flag_url" class="w-[20px] h-[14px] sm:w-6 sm:h-4 rounded-sm mt-1 mx-auto">
+                        <img :src="player.flag_url" class="w-[20px] h-[14px] lg:w-6 lg:h-4 rounded-sm mt-1 mx-auto">
                     </div>
                 </div>
 
@@ -189,7 +189,7 @@ export default {
 
 .playerBoxWrapper2 {
 
-    @apply h-24 z-20;
+    @apply h-24;
     position: absolute;
     top: 50%;
     transform: translateY(-50%);

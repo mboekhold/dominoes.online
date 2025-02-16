@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute top-8 sm:top-8 sm:right-8  sm:w-72">
+    <div class="absolute top-2 right-1/2 w-72 translate-x-1/2 sm:translate-x-0 sm:top-8 sm:right-8  sm:w-72">
         <!-- Use transition-group for list animations -->
         <TransitionGroup name="list" tag="div" class="space-y-2">
             <div v-for="notification in notifications" :key="notification"

@@ -2,7 +2,7 @@
     <div class="w-full h-screen rounded-xl mx-auto p-4 relative">
         <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
-            <div class="w-full h-full pb-[100px] sm:pt-12">
+            <div class="w-full h-full pb-[150px] pt-5 sm:pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full"
                     :class="{ 'overflow-hidden': disableScroll, 'overflow-auto': !disableScroll }">
                     <div class="w-fit">
@@ -632,7 +632,10 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
                 if (this.shouldPlaceDominoVertical(head)) {
-                    if ((eTop + this.dominoHeight) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                    console.log("A")
+                    if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
+                        console.log(eTop + this.dominoHeight)
+                        console.log(cHeight - (cHeight - cScrollOffset))
                         if (this.disableScroll) {
                             this.disableScroll = false;
                         }

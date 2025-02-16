@@ -288,17 +288,32 @@ export default {
       //   localStorage.setItem('didIntro', true);
       // }
     },
+    handleBeforeUnload(event) {
+      const message = 'Are you sure you want to leave?';
+      event.returnValue = message;
+      return message;
+    }
   },
   async mounted() {
     document.body.classList.add('overflow-hidden');
     await this.loadGameData()
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
   },
   async beforeUnmount() {
     document.body.classList.remove('overflow-hidden');
     if (this.socket) {
       this.socket.disconnect()
     }
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
+  beforeRouteLeave (to, from, next) {
+    const answer = window.confirm('Are you sure you want to leave?')
+    if (answer) {
+      next()
+    } else {
+      next(false)
+    }
+  }
 }
 </script>
 <style>

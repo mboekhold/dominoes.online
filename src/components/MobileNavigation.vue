@@ -1,8 +1,8 @@
 <template>
-    <div class="cursor-pointer p-4 text-gray-200 sticky top-0 border-b border-gray-700 z-10 bg-night-dark">
+    <div class="p-4 text-gray-200 sticky top-0 border-b border-gray-700 z-10 bg-night-dark">
         <div class="flex items-center">
             <div class="flex-1">
-                <div @click="toggleSideBar()" class="w-fit">
+                <div @click="toggleSideBar()" class="cursor-pointer w-fit">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
@@ -10,8 +10,8 @@
                     </svg>
                 </div>
             </div>
-            <div class="flex-grow" @click="goHome()">
-                <img class="min-w-12 w-12" src="@/assets/logo.png" alt="logo">
+            <div class="flex-grow">
+                <img @click="goHome()" class="cursor-pointer min-w-12 w-12" src="@/assets/logo.png" alt="logo">
             </div>
         </div>
     </div>
@@ -20,7 +20,7 @@
             class="fixed top-0 h-full w-64 text-gray-400 bg-night-dark-2 flex flex-col z-10 transition-all"
             :class="{ 'translate-x-0': sideBarOpen, '-translate-x-64': !sideBarOpen }">
             <div>
-                <div class="px-4 pt-6 pb-4 hover:cursor-pointer flex" @click="goHome()">
+                <div class="px-4 pt-6 pb-4 flex">
                     <div>
                         <img class="min-w-12 w-12" src="@/assets/logo.png" alt="logo">
                     </div>
