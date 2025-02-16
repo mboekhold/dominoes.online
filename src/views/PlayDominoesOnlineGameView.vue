@@ -260,15 +260,6 @@ export default {
     onSelectedDomino(selectedDomino) {
       if (this.currentPlayerTurn !== this.players[0]) return;
       this.$refs.board.previewDominoPlacement(selectedDomino);
-      // if (!this.didIntro) {
-      //   if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
-      //     setTimeout(() => {
-      //       if (this.driverObj !== null) {
-      //         this.driverObj.moveNext();
-      //       }
-      //     }, 100);
-      //   }
-      // }
     },
     playDomino(domino, selectedPosition) {
       if (this.currentPlayerTurn !== this.players[0]) return;
@@ -282,11 +273,6 @@ export default {
         position: selectedPosition
       }
       this.socket.emit('playDomino', data);
-      // if (!this.didIntro) {
-      //   this.driverObj.destroy();
-      //   this.didIntro = true;
-      //   localStorage.setItem('didIntro', true);
-      // }
     },
     handleBeforeUnload(event) {
       const message = 'Are you sure you want to leave?';
@@ -307,11 +293,15 @@ export default {
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
   beforeRouteLeave (to, from, next) {
-    const answer = window.confirm('Are you sure you want to leave?')
-    if (answer) {
-      next()
+    if (!this.winner) {
+      const answer = window.confirm('Are you sure you want to leave?')
+      if (answer) {
+        next()
+      } else {
+        next(false)
+      }
     } else {
-      next(false)
+      next()
     }
   }
 }

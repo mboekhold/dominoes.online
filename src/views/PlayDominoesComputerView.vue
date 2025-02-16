@@ -10,8 +10,8 @@
             <Board ref="board" :dominoSet="dominoSet" :dealing="dealingDominoes" @on-play-domino="playDomino"
                 @on-game-blocked="gameBlocked" />
             <!-- Current player -->
-            <Player :player="players[0]" @on-selected-domino="onSelectedDomino"
-                :turn="currentPlayerTurn === players[0]" @on-player-turn-timeout="turnTimeOut" />
+            <Player :player="players[0]" @on-selected-domino="onSelectedDomino" :turn="currentPlayerTurn === players[0]"
+                @on-player-turn-timeout="turnTimeOut" />
             <Player :player="players[1]" :turn="currentPlayerTurn === players[1]" />
             <Player :player="players[2]" :turn="currentPlayerTurn === players[2]" />
             <Player :player="players[3]" :turn="currentPlayerTurn === players[3]" />
@@ -66,7 +66,6 @@ export default {
             winner: null,
             gameEnded: false,
             driverObj: null,
-            didIntro: false,
             loading: true,
             dealingDominoes: false,
         }
@@ -126,15 +125,6 @@ export default {
         onSelectedDomino(selectedDomino) {
             if (this.currentPlayerTurn !== this.players[0]) return;
             this.$refs.board.previewDominoPlacement(selectedDomino);
-            if (!this.didIntro) {
-                if (this.$refs.board.getNextPlacementOptions(selectedDomino) !== undefined) {
-                    setTimeout(() => {
-                        if (this.driverObj !== null) {
-                            this.driverObj.moveNext();
-                        }
-                    }, 100);
-                }
-            }
         },
         playDomino(domino) {
             if (this.currentPlayerTurn !== this.players[0]) return;
@@ -148,11 +138,6 @@ export default {
             this.currentPlayerIndex = this.players.findIndex(x => x === this.currentPlayerTurn);
             this.currentPlayerTurn = (this.currentPlayerIndex + 1) % 4;
             this.currentPlayerTurn = this.players[this.currentPlayerTurn];
-            if (!this.didIntro) {
-                this.driverObj.destroy();
-                this.didIntro = true;
-                localStorage.setItem('didIntro', true);
-            }
             this.playsDone++;
             this.resolve();
         },
@@ -166,6 +151,7 @@ export default {
                 this.playsDone++;
                 return;
             }
+            console.log(player)
             const playableDomino = player.hand.find(domino => {
                 return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
             })
@@ -262,23 +248,14 @@ export default {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
+                    console.log("ME")
                     const playableDomino = this.currentPlayerTurn.hand.find(domino => {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
                     if (!playableDomino) {
                         this.showNotification(this.currentPlayerTurn, `${this.currentPlayerTurn.username} cannot play, pass`);
-                        this.currentPlayerTurn = (this.currentPlayerTurn + 1) % 4;
+                        this.nextPlayerTurn();
                         resolve();
-                    }
-                    if (!this.didIntro) {
-                        // Check if its first play else we need to wait for the driver object to load
-                        if (this.driverObj === null) {
-                            setTimeout(() => {
-                                this.driverObj.drive();
-                            }, 1000);
-                        } else {
-                            this.driverObj.drive();
-                        }
                     }
                 })
             } else {
@@ -299,7 +276,7 @@ export default {
             await this.dealHand();
             this.playerWithDoubleSix = this.findPlayerWithDoubleSix();
             // Player with double six starts, then goes clockwise
-            this.showNotification(this.playerWithDoubleSix, `${this.playerWithDoubleSix.username} starts`);
+            this.showNotification(this.playerWithDoubleSix, `Double 6 pose, ${this.playerWithDoubleSix.username} starts`);
             const playOrder = this.getPlayOrder(this.players, this.playerWithDoubleSix);
             this.currentPlayerTurn = playOrder[0];
             while (!this.gameEnded) {
@@ -349,53 +326,39 @@ export default {
         showNotification(player, message) {
             this.notifications.push({ player: player, message: message });
         },
-        initDriver() {
-            this.driverObj = new driver({
-                onCloseClick: () => {
-                    this.driverObj.destroy();
-                    localStorage.setItem('didIntro', true);
-                },
-                showProgress: true,
-                showButtons: ["close"],
-                steps: [
-                    {
-                        element: document.querySelector('.playerBox1'),
-                        popover: {
-                            title: "It's your turn",
-                            description: "This is your hand. Click on a matching domino to play it.",
-                        }
-                    },
-                    {
-                        element: '.preview',
-                        popover: {
-                            title: "Play Domino",
-                            description: "Possible placements are shown in yellow. Click on a placement to play the domino.",
-                        }
-                    }
-
-                ]
-            });
-        },
         turnTimeOut(player) {
-            console.log('Timeout');
             this.showNotification(player, `${player.username} took too long, pass`);
             this.nextPlayerTurn();
+        },
+        handleBeforeUnload(event) {
+            const message = 'Are you sure you want to leave?';
+            event.returnValue = message;
+            return message;
         }
     },
     async mounted() {
+        window.addEventListener('beforeunload', this.handleBeforeUnload);
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden');
-
         await this.getUserProfile();
-        this.didIntro = localStorage.getItem('didIntro');
-        if (!this.didIntro) {
-            this.initDriver();
-        }
         await this.startGame();
     },
     beforeUnmount() {
         document.body.classList.remove('overflow-hidden');
+        window.removeEventListener('beforeunload', this.handleBeforeUnload);
     },
+    beforeRouteLeave(to, from, next) {
+        if (!this.winner) {
+            const answer = window.confirm('Are you sure you want to leave?')
+            if (answer) {
+                next()
+            } else {
+                next(false)
+            }
+        } else {
+            next()
+        }
+    }
 }
 </script>
 

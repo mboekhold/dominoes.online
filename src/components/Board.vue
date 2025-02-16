@@ -632,10 +632,7 @@ export default {
                 const cScrollOffset = this.$refs.playingArea.scrollTop;
                 const eTop = headElem.offsetTop;
                 if (this.shouldPlaceDominoVertical(head)) {
-                    console.log("A")
                     if ((eTop + this.dominoWidth) - (cHeight - (cHeight - cScrollOffset)) >= cHeight) {
-                        console.log(eTop + this.dominoHeight)
-                        console.log(cHeight - (cHeight - cScrollOffset))
                         if (this.disableScroll) {
                             this.disableScroll = false;
                         }

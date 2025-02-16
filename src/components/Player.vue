@@ -17,7 +17,7 @@
             </div>
         </div>
         <div v-else-if="player.nr === 2"
-            :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
+            :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:right-0">
                 <div class="mb-4 sm:mb-6 mt-2">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -34,7 +34,7 @@
             </div>
         </div>
         <div v-else-if="player.nr === 3"
-            :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
+            :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-row sm:top-0">
                 <div class="ml-2 mr-6 mb-1">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -50,7 +50,7 @@
             </div>
         </div>
         <div v-else-if="player.nr === 4"
-            :class="['playerBoxWrapper' + player.nr, openPlayerBoxId === player.nr ? 'pointer-events-auto' : 'pointer-events-none']">
+            :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:left-0">
                 <div class="rounded-md mt-2 mb-4 sm:mb-5">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -92,9 +92,6 @@ export default {
     data() {
         return {
             intervalId: null,
-            openPlayerBoxId: null,
-            didIntro: false,
-            driverObj: null,
             // 30 seconds
             timerDuration: 30000
         }
@@ -103,15 +100,6 @@ export default {
         getUserAvatar,
         selectedDomino(domino) {
             this.$emit('on-selected-domino', domino);
-        },
-        togglePlayerBox(id) {
-            if (this.openPlayerBoxId === id) {
-                this.openPlayerBoxId = null;
-                this.closePlayerBox(id);
-            } else {
-                this.openPlayerBoxId = id;
-                this.openPlayerBox(id);
-            }
         },
         openPlayerBox(id) {
             let playerBox = document.getElementsByClassName('playerBox' + id)[0];
@@ -158,12 +146,6 @@ export default {
         turn(newVal, oldVal) {
             if (newVal) {
                 this.startTimer(this.player);
-            }
-            if (this.openPlayerBoxId !== this.playerId) {
-                this.openPlayerBox(this.player.nr);
-                setTimeout(() => {
-                    this.closePlayerBox(this.player.nr);
-                }, 3000);
             }
         }
     }

@@ -160,7 +160,6 @@ export default {
         await this.getUserProfile();
         await this.getGameHistory();
         await this.getPlayersInGame();
-        // console.log(this.gameHistory)
     },
     watch: {
         loading(newVal, oldVal) {

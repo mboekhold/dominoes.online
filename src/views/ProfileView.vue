@@ -260,10 +260,10 @@ export default {
         const { data, error } = await supabase
           .from('user_game')
           .select(`game_id, created_at, 
-                        games (winner)
+                        games!inner (winner)
                     `)
           .eq('user_id', this.user.id)
-          .eq('games.completed', true)
+          .filter('games.completed', 'eq', true)
           .order('created_at', { ascending: false })
 
         if (error) throw error
