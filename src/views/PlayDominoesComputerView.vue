@@ -27,8 +27,6 @@ import Board from '@/components/Board.vue'
 import Player from '@/components/Player.vue'
 import WinnerNotification from '@/components/WinnerNotification.vue';
 import PNotification from '@/components/PlayerNotification.vue';
-import { driver } from "driver.js";
-import "driver.js/dist/driver.css";
 import { supabase } from '../supabase';
 
 export default {
