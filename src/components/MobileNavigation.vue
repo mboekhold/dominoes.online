@@ -1,5 +1,5 @@
 <template>
-    <div class="p-4 text-gray-200 sticky top-0 border-b border-gray-700 z-10 bg-night-dark">
+    <div class="p-4 text-gray-200 sticky h-14 top-0 border-b border-gray-700 z-10 bg-night-dark">
         <div class="flex items-center">
             <div class="flex-1">
                 <div @click="toggleSideBar()" class="cursor-pointer w-fit">

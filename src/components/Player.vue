@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div v-if="player.nr === 1">
-            <div class="w-screen sm:w-[530px] sm:pt-5 sm:pr-5 sm:pb-5 flex" :class="'playerBox' + player.nr">
+        <div v-if="player.nr === 1" :class="'playerBoxWrapper' + player.nr">
+            <div class="w-screen sm:w-[530px] sm:pt-5 sm:pr-5 sm:pb-5 flex relative" :class="'playerBox' + player.nr">
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
                     class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
@@ -151,14 +151,17 @@ export default {
 </script>
 
 <style scoped>
+.playerBoxWrapper1 {
+    @apply h-24;
+    position: absolute;
+    bottom: 0px;
+    left: 50%;
+    height: 8.4rem;
+    transform: translateX(-50%);
+}
 .playerBox1 {
     @apply rounded-tl-xl rounded-tr-xl h-24;
     @apply bg-night-dark-3;
-    position: absolute;
-    bottom: 4vh;
-    /* padding-bottom: 50px; */
-    left: 50%;
-    transform: translateX(-50%);
     align-items: center;
     /* justify-content: center; */
 }
@@ -334,9 +337,14 @@ export default {
 }
 
 @media screen and (max-width: 1024px) {
+    .playerBoxWrapper1 {
+        @apply bottom-10;
+        align-items: end;
+    }
+
     .playerBox1 {
-        bottom: calc(12vh + env(safe-area-inset-bottom, 0));
-        @apply h-16;
+        @apply h-20;
+       
     }
 
     .playerBox2 {
