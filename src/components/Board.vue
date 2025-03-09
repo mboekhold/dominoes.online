@@ -44,11 +44,13 @@
                         </svg>
                     </div>
                 </div>
-                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform duration-500"
+                <div class="absolute bottom-0 h-64 w-full bg-[#282833] transition-transform duration-1000"
                     :class="{ 'translate-y-0': dealing, 'translate-y-96': !dealing }">
-                    <div class="absolute sm:top-10 left-1/2 -translate-x-1/2 justify-center items-center gap-1 flex flex-wrap p-2 w-full">
-                        <div v-for="(domino, index) in dominoSetLength" class="bg-white rounded-md h-10 w-6 sm:h-14 sm:w-7"
-                            :id="`dealDomino${index}`" :ref="`dealDomino${index}`">
+                    <div
+                        class="absolute sm:top-10 left-1/2 -translate-x-1/2 justify-center items-center gap-1 flex flex-wrap p-2 w-full">
+                        <div v-for="(domino, index) in dominoSetLength"
+                            class="bg-white rounded-md h-10 w-6 sm:h-14 sm:w-7" :id="`dealDomino${index}`"
+                            :ref="`dealDomino${index}`">
 
                         </div>
                     </div>
@@ -141,11 +143,8 @@ export default {
             return domino.top === domino.bottom;
         },
         previewDominoPlacement(domino) {
-            if (!domino) {
-                this.tailPreviewDomino = null;
-                this.headPreviewDomino = null;
-                return
-            }
+            this.tailPreviewDomino = null;
+            this.headPreviewDomino = null;
             // Set where it can be placed and if it needs to be rotated
             const dominoPlacement = this.getNextPlacementOptions(domino);
             if (dominoPlacement) {
