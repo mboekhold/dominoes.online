@@ -6,7 +6,8 @@
                     class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
                 <div class="mx-2">
                     <div>
-                        <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
+                        <img :src="getUserAvatar(player)"
+                            class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
                     </div>
                     <div v-if="player.flag_url">
                         <img :src="player.flag_url" class="w-[20px] h-[14px] lg:w-6 lg:h-4 rounded-sm mt-1 mx-auto">
@@ -16,8 +17,7 @@
                     :playerId="player.nr" class="flex" />
             </div>
         </div>
-        <div v-else-if="player.nr === 2"
-            :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player.nr === 2" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:right-0">
                 <div class="mb-4 sm:mb-6 mt-2">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -33,8 +33,7 @@
                     :playerId="player.nr" />
             </div>
         </div>
-        <div v-else-if="player.nr === 3"
-            :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player.nr === 3" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-row sm:top-0">
                 <div class="ml-2 mr-6 mb-1">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -49,8 +48,7 @@
                     :playerId="player.nr" />
             </div>
         </div>
-        <div v-else-if="player.nr === 4"
-            :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player.nr === 4" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:left-0">
                 <div class="rounded-md mt-2 mb-4 sm:mb-5">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -141,6 +139,31 @@ export default {
                 }, intervalDuration);
             }
         },
+        adjustPlayer1Box() {
+            let playerBox = document.getElementsByClassName('playerBox1')[0];
+            if (playerBox) {
+                const viewportHeight = window.innerHeight;
+                let baseBottom;
+                if (window.innerWidth < 768) {
+                    baseBottom = 99;
+                } else {
+                    baseBottom = 38;
+                }
+                const safeInset = window.visualViewport ? window.visualViewport.height - viewportHeight : 0;
+                playerBox.style.bottom = `${baseBottom + safeInset}px`;
+            }
+        }
+    },
+    mounted() {
+        this.adjustPlayer1Box();
+        window.addEventListener('resize', this.adjustPlayer1Box);
+        window.addEventListener('orientationchange', this.adjustPlayer1Box);
+        window.addEventListener('scroll', this.adjustPlayer1Box);
+    },
+    beforeUnmount() {
+        window.removeEventListener('resize', this.adjustPlayer1Box);
+        window.removeEventListener('orientationchange', this.adjustPlayer1Box);
+        window.removeEventListener('scroll', this.adjustPlayer1Box);
     },
     watch: {
         turn(newVal, oldVal) {
@@ -340,25 +363,31 @@ export default {
         bottom: calc(99px + env(safe-area-inset-bottom, 0));
         @apply h-16;
     }
+
     .playerBox2 {
         @apply w-14;
     }
+
     .playerBoxWrapper2 {
         right: 0px;
         top: 45%;
         height: 200px;
     }
+
     .playerBox3 {
         @apply h-16;
     }
+
     .playerBoxWrapper3 {
         width: 200px;
     }
+
     .playerBoxWrapper4 {
         left: 0px;
         top: 45%;
         height: 200px;
     }
+
     .playerBox4 {
         @apply w-14;
     }

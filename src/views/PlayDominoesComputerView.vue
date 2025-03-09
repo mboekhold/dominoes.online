@@ -1,6 +1,6 @@
 <!-- GAME MANAGER -->
 <template>
-    <div class="lg:ml-20 h-full">
+    <div class="lg:ml-20">
         <div v-if="loading">
             <div>
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 loader"></div>
