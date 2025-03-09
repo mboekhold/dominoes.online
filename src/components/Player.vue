@@ -337,7 +337,7 @@ export default {
 
 @media screen and (max-width: 1024px) {
     .playerBox1 {
-        bottom: 99px;
+        bottom: calc(99px + env(safe-area-inset-bottom, 0));
         @apply h-16;
     }
     .playerBox2 {
