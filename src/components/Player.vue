@@ -139,31 +139,6 @@ export default {
                 }, intervalDuration);
             }
         },
-        adjustPlayer1Box() {
-            let playerBox = document.getElementsByClassName('playerBox1')[0];
-            if (playerBox) {
-                const viewportHeight = window.innerHeight;
-                let baseBottom;
-                if (window.innerWidth < 768) {
-                    baseBottom = 99;
-                } else {
-                    baseBottom = 38;
-                }
-                const safeInset = window.visualViewport ? window.visualViewport.height - viewportHeight : 0;
-                playerBox.style.bottom = `${baseBottom + safeInset}px`;
-            }
-        }
-    },
-    mounted() {
-        this.adjustPlayer1Box();
-        window.addEventListener('resize', this.adjustPlayer1Box);
-        window.addEventListener('orientationchange', this.adjustPlayer1Box);
-        window.addEventListener('scroll', this.adjustPlayer1Box);
-    },
-    beforeUnmount() {
-        window.removeEventListener('resize', this.adjustPlayer1Box);
-        window.removeEventListener('orientationchange', this.adjustPlayer1Box);
-        window.removeEventListener('scroll', this.adjustPlayer1Box);
     },
     watch: {
         turn(newVal, oldVal) {
@@ -180,7 +155,7 @@ export default {
     @apply rounded-tl-xl rounded-tr-xl h-24;
     @apply bg-night-dark-3;
     position: absolute;
-    bottom: 38px;
+    bottom: 4vh;
     /* padding-bottom: 50px; */
     left: 50%;
     transform: translateX(-50%);
@@ -360,7 +335,7 @@ export default {
 
 @media screen and (max-width: 1024px) {
     .playerBox1 {
-        bottom: calc(99px + env(safe-area-inset-bottom, 0));
+        bottom: calc(12vh + env(safe-area-inset-bottom, 0));
         @apply h-16;
     }
 
