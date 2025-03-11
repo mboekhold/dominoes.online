@@ -149,7 +149,6 @@ export default {
                 this.playsDone++;
                 return;
             }
-            console.log(player)
             const playableDomino = player.hand.find(domino => {
                 return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
             })
@@ -236,7 +235,7 @@ export default {
                         avatar_url: null,
                         hand: []
                     }
-                    this.players.push(player);
+                    this.players.unshift(player);
                 }
                 this.loading = false;
             }
@@ -246,7 +245,6 @@ export default {
                 await new Promise(resolve => {
                     // Reference to resolve function to be used later if the player does decide to play
                     this.resolve = resolve;
-                    console.log("ME")
                     const playableDomino = this.currentPlayerTurn.hand.find(domino => {
                         return this.$refs.board.getNextPlacementOptions(domino) !== undefined;
                     })
@@ -338,11 +336,13 @@ export default {
         window.addEventListener('beforeunload', this.handleBeforeUnload);
         this.basePath = import.meta.env.VITE_BASE_PATH;
         document.body.classList.add('overflow-hidden');
+        document.getElementById('app').classList.add('overflow-hidden');
         await this.getUserProfile();
         await this.startGame();
     },
     beforeUnmount() {
         document.body.classList.remove('overflow-hidden');
+        document.getElementById('app').classList.remove('overflow-hidden');
         window.removeEventListener('beforeunload', this.handleBeforeUnload);
     },
     beforeRouteLeave(to, from, next) {

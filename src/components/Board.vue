@@ -783,11 +783,15 @@ export default {
             if (this.isOnMobile()) {
                 if (val) {
                     setTimeout(() => {
-                        const boardView = this.$refs.board.getBoundingClientRect();
+                        const playingArea = this.$refs.playingArea.getBoundingClientRect();
                         const rect = this.$refs.headPreview.getBoundingClientRect();
-                        if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                        if (rect.bottom + this.dominoHeight >= playingArea.bottom) {
                             this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
                         }
+                         // Check if adding the tail domino is touching the border of the board
+                         if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                                this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
+                            }
                     }, 200);
                 }
             }
@@ -797,9 +801,9 @@ export default {
                 if (val) {
                     if (!this.headPreviewDomino) {
                         setTimeout(() => {
-                            const boardView = this.$refs.board.getBoundingClientRect();
+                            const playingArea = this.$refs.playingArea.getBoundingClientRect();
                             const rect = this.$refs.tailPreview.getBoundingClientRect();
-                            if (rect.top - this.dominoHeight <= boardView.top) {
+                            if (rect.top - this.dominoHeight <= playingArea.top) {
                                 this.$refs.playingArea.scrollTo(0, 50, "smooth");
                             }
                         }, 200);

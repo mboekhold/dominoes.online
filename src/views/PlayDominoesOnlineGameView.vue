@@ -282,11 +282,13 @@ export default {
   },
   async mounted() {
     document.body.classList.add('overflow-hidden');
+    document.getElementById('app').classList.add('overflow-hidden');
     await this.loadGameData()
     window.addEventListener('beforeunload', this.handleBeforeUnload);
   },
   async beforeUnmount() {
     document.body.classList.remove('overflow-hidden');
+    document.getElementById('app').classList.remove('overflow-hidden');
     if (this.socket) {
       this.socket.disconnect()
     }

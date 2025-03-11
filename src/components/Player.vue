@@ -176,7 +176,6 @@ export default {
     top: 50%;
     transform: translateY(-50%);
     right: 60px;
-    width: 110px;
     height: 230px;
 }
 
@@ -201,12 +200,10 @@ export default {
 }
 
 .playerBoxWrapper3 {
-    @apply h-24;
     position: absolute;
     left: 50%;
     top: 0px;
     transform: translateX(-50%);
-    height: 110px;
     width: 230px;
 }
 
@@ -235,7 +232,6 @@ export default {
     top: 50%;
     transform: translateY(-50%);
     left: 60px;
-    width: 110px;
     height: 230px;
 }
 
