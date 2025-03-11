@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-screen rounded-xl mx-auto p-4 relative">
+    <div class="w-full h-dvh rounded-xl mx-auto p-4 relative">
         <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
             <div class="w-full h-full pb-[150px] pt-5 sm:pt-12">
@@ -848,6 +848,10 @@ export default {
 
     .domino-placeholder-horizontal {
         @apply h-10 w-16;
+    }
+
+    #playingArea {
+        height: 90%;
     }
 }
 </style>
