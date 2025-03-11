@@ -156,7 +156,6 @@ export default {
     position: absolute;
     bottom: 0px;
     left: 50%;
-    height: 8.4rem;
     transform: translateX(-50%);
 }
 .playerBox1 {
@@ -338,13 +337,10 @@ export default {
 
 @media screen and (max-width: 1024px) {
     .playerBoxWrapper1 {
-        @apply bottom-10;
-        align-items: end;
+        height: 8.4rem;
     }
-
     .playerBox1 {
-        @apply h-20;
-       
+        @apply h-20;    
     }
 
     .playerBox2 {
