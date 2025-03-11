@@ -849,9 +849,5 @@ export default {
     .domino-placeholder-horizontal {
         @apply h-10 w-16;
     }
-
-    #playingArea {
-        height: 90%;
-    }
 }
 </style>
