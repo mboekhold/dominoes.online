@@ -789,9 +789,9 @@ export default {
                             this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
                         }
                          // Check if adding the tail domino is touching the border of the board
-                         if (rect.bottom + this.dominoHeight >= boardView.bottom) {
-                                this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
-                            }
+                        //  if (rect.bottom + this.dominoHeight >= boardView.bottom) {
+                        //         this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
+                        //     }
                     }, 200);
                 }
             }
