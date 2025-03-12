@@ -786,6 +786,7 @@ export default {
                         const playingArea = this.$refs.playingArea.getBoundingClientRect();
                         const rect = this.$refs.headPreview.getBoundingClientRect();
                         if (rect.bottom + this.dominoHeight >= playingArea.bottom) {
+                            this.showChevrons();
                             this.$refs.playingArea.scrollTo(0, this.$refs.playingArea.scrollHeight, "smooth");
                         }
                          // Check if adding the tail domino is touching the border of the board
@@ -804,6 +805,7 @@ export default {
                             const playingArea = this.$refs.playingArea.getBoundingClientRect();
                             const rect = this.$refs.tailPreview.getBoundingClientRect();
                             if (rect.top - this.dominoHeight <= playingArea.top) {
+                                this.showChevrons();
                                 this.$refs.playingArea.scrollTo(0, 50, "smooth");
                             }
                         }, 200);
