@@ -78,7 +78,12 @@ export default {
     methods: {
         getUserAvatar,
         playAgain() {
-            this.$router.push({ name: 'online' });
+            if(this.$route.name === 'computer') {
+                // location.reload();
+                this.$router.push({ name: 'home' });
+            } else {
+                this.$router.push({ name: 'online' });
+            }
         },
         cancel() {
             this.$emit('on-cancel');
