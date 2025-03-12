@@ -28,7 +28,7 @@
                     class="relative text-white transform overflow-hidden rounded-lg window text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-md">
                     <div class="p-8">
                         <div>
-                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                            <div class="mt-3 sm:ml-4 sm:mt-0 text-left">
                                 <h3 class="text-2xl font-semibold leading-6" id="modal-title">Settings</h3>
                                 <div class="mt-5 text-white">
                                     <form @submit.prevent="" class="flex flex-col space-y-5">
