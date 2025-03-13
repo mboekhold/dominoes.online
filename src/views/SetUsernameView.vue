@@ -49,7 +49,7 @@ export default {
         this.loading = true;
         const userId = (await supabase.auth.getSession()).data.session.user.id
         const { error } = await supabase.from('profiles').insert([
-          { id: userId, username: this.username },
+          { id: userId, username: this.username.toLowerCase() },
         ]);
         if (error) throw error;
       } catch (error) {

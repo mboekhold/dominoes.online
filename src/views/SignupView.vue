@@ -109,11 +109,13 @@ export default {
     },
     methods: {
         async signUpuser() {
+            // Reset error message in case user tries to sign up again
+            this.error = '';
             // Check if username exists
             const { data, error } = await supabase
                 .from('profiles')
                 .select('id')
-                .eq('username', this.username)
+                .eq('username', this.username.toLowerCase())
                 .single();
             if (data) {
                 this.error = 'Username already exists';
@@ -127,7 +129,7 @@ export default {
                 });
                 if (error) throw error;
                 const { err } = await supabase.from('profiles').insert([
-                    { id: data.user.id, username: this.username },
+                    { id: data.user.id, username: this.username.toLowerCase() },
                 ]);
                 if (err) throw err;
             } catch (error) {
