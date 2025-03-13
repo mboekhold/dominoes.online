@@ -2,7 +2,7 @@
     <div class="w-full h-dvh rounded-xl mx-auto p-4 relative">
         <div class="border-t border-l border-r border-gray-700 w-full h-full rounded-t-xl flex items-center justify-center relative"
             ref="board">
-            <div class="w-full h-full pb-[150px] pt-5 sm:pt-12">
+            <div class="w-full h-full pb-[150px] lg:pb-[100px] pt-5 sm:pt-12">
                 <div ref="playingArea" id="playingArea" class="relative h-full w-full"
                     :class="{ 'overflow-hidden': disableScroll, 'overflow-auto': !disableScroll }">
                     <div class="w-fit">
