@@ -115,7 +115,7 @@ export default {
             const { data, error } = await supabase
                 .from('profiles')
                 .select('id')
-                .eq('username', this.username.toLowerCase())
+                .ilike('username', this.username)
                 .single();
             if (data) {
                 this.error = 'Username already exists';
@@ -129,7 +129,7 @@ export default {
                 });
                 if (error) throw error;
                 const { err } = await supabase.from('profiles').insert([
-                    { id: data.user.id, username: this.username.toLowerCase() },
+                    { id: data.user.id, username: this.username },
                 ]);
                 if (err) throw err;
             } catch (error) {

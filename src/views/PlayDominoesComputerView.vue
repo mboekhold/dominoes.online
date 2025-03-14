@@ -237,7 +237,7 @@ export default {
                     }
                     this.players.unshift(player);
                 }
-                this.loading = true;
+                this.loading = false;
             }
         },
         async playRound() {
