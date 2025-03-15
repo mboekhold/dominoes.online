@@ -6,10 +6,13 @@
                 <div class="w-full md:max-w-96 h-[500px] bg-night-dark-2 rounded-lg overflow-hidden relative">
                     <Transition>
                         <PlayerCard :loading="profileLoading" :user="user" :user_profile="user_profile"
-                            v-if="showPlayerCard" @find-match="findMatch()" />
+                            v-if="showPlayerCard" @find-match="findMatch()" @play-with-friends="playWithFriends()" />
                     </Transition>
                     <Transition>
                         <FindingMatchCard :user_profile="user_profile" v-if="showFindingMatch" @go-back="goBack()" />
+                    </Transition>
+                    <Transition>
+                        <PlayWithFriendsCard :user_profile="user_profile" v-if="showPlayWithFriends" @go-back="goBack()" />
                     </Transition>
                 </div>
                 <div class="w-full max-w-[800px] min-h-[500px] relative">
@@ -49,17 +52,20 @@ import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
 import GameCard from '@/components/GameCard.vue';
 import { supabase } from '../supabase';
+import PlayWithFriendsCard from '@/components/PlayWithFriendsCard.vue';
 export default {
     components: {
         Board,
         PlayerCard,
         FindingMatchCard,
+        PlayWithFriendsCard,
         GameCard
     },
     data() {
         return {
             showPlayerCard: true,
             showFindingMatch: false,
+            showPlayWithFriends: false,
             profileLoading: false,
             gameHistoryLoading: false,
             user: null,
@@ -75,8 +81,15 @@ export default {
                 this.showFindingMatch = true
             }, 200)
         },
+        playWithFriends() {
+            this.showPlayerCard = false
+            setTimeout(() => {
+                this.showPlayWithFriends = true
+            }, 200)
+        },
         goBack() {
             this.showFindingMatch = false
+            this.showPlayWithFriends = false
 
             setTimeout(() => {
                 this.showPlayerCard = true
