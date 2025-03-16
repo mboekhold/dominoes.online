@@ -34,10 +34,10 @@
               {{ leaderBoard[0].player.username ? leaderBoard[0].player.username : '---' }}
             </div>
             <div class="flex items-center">
-              <img v-if="leaderBoard[0].player" :src="leaderBoard[0].player ? leaderBoard[0].player.countries.flag_url : ''" alt="Country flag"
+              <img v-if="leaderBoard[0].player && leaderBoard[0].player.countries" :src="leaderBoard[0].player ? leaderBoard[0].player.countries.flag_url : ''" alt="Country flag"
                 class="w-6 rounded-sm">
               <div class="text-xs ml-1">
-                {{ leaderBoard[0].player ? leaderBoard[0].player.countries.name : '---' }}
+                {{ leaderBoard[0].player && leaderBoard[0].player.countries ? leaderBoard[0].player.countries.name : '---' }}
               </div>
             </div>
             <div class="w-fit absolute lg:relative left-5 bottom-2 lg:left-0 lg:bottom-0">
