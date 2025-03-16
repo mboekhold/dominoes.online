@@ -60,11 +60,11 @@
                   {{ leaderBoard[0].player ? leaderBoard[0].player.username : '---' }}
                 </div>
                 <div class="flex items-center">
-                  <img v-if="leaderBoard[0].player"
+                  <img v-if="leaderBoard[0].player && leaderBoard[0].player.countries"
                     :src="leaderBoard[0].player ? leaderBoard[0].player.countries.flag_url : ''" alt="Country flag"
                     class="w-6 rounded-sm">
                   <div class="text-xs ml-1">
-                    {{ leaderBoard[0].player ? leaderBoard[0].player.countries.name : '---' }}
+                    {{ leaderBoard[0].player && leaderBoard[0].player.countries ? leaderBoard[0].player.countries.name : '---' }}
                   </div>
                 </div>
                 <div class="w-fit absolute lg:relative left-5 bottom-4 lg:left-0 lg:bottom-0">
@@ -104,10 +104,10 @@
                       {{ rank.player ? rank.player.username : '---' }}
                     </div>
                     <div class="flex items-center text-xs">
-                      <img v-if="rank.player" :src="rank.player ? rank.player.countries.flag_url : ''" alt="Country flag"
+                      <img v-if="rank.player && rank.player.countries" :src="rank.player ? rank.player.countries.flag_url : ''" alt="Country flag"
                         class="w-4 rounded-sm">
                       <div class="text-xs ml-1">
-                        {{ rank.player ? rank.player.countries.name : '---' }}
+                        {{ rank.player && rank.player.countries ? rank.player.countries.name : '---' }}
                       </div>
                     </div>
                   </div>

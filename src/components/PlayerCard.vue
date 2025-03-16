@@ -21,7 +21,7 @@
                             {{ user_profile.countries ? user_profile.countries.name : '' }}
                         </div>
                     </div>
-                    <div class="text-gray-400 mt-10 w-fit mx-auto">
+                    <div v-if="authenticated" class="text-gray-400 mt-10 w-fit mx-auto">
                         <div>
                             {{ getWinRate() }}% win rate
                         </div>
@@ -46,15 +46,21 @@
 </template>
 
 <script>
-import { getUserAvatar } from '../utils'
+import { getUserAvatar, isUserAuthenticated } from '../utils'
 export default {
     props: {
         loading: Boolean,
         user: Object,
         user_profile: Object
     },
+    data() {
+        return {
+            authenticated: false
+        }
+    },
     methods: {
         getUserAvatar,
+        isUserAuthenticated,
         findMatch() {
             this.$emit('find-match')
         },
@@ -71,6 +77,9 @@ export default {
         playWithFriends() {
             this.$emit('play-with-friends')
         }
+    },
+    async mounted() {
+        this.authenticated = await isUserAuthenticated()
     }
 }
 </script>

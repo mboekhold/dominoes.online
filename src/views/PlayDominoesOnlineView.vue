@@ -12,15 +12,18 @@
                         <FindingMatchCard :user_profile="user_profile" v-if="showFindingMatch" @go-back="goBack()" />
                     </Transition>
                     <Transition>
-                        <PlayWithFriendsCard :user_profile="user_profile" v-if="showPlayWithFriends" @go-back="goBack()" />
+                        <PlayWithFriendsCard :user_profile="user_profile" v-if="showPlayWithFriends"
+                            @go-back="goBack()" />
                     </Transition>
                 </div>
                 <div class="w-full max-w-[800px] min-h-[500px] relative">
                     <div class="w-full h-full bg-night-dark-2 rounded-lg">
-                        <div v-if="gameHistoryLoading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <svg class="animate-spin h-8 w-8 text-white mr-2 "
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        <div v-if="gameHistoryLoading"
+                            class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                            <svg class="animate-spin h-8 w-8 text-white mr-2 " xmlns="http://www.w3.org/2000/svg"
+                                fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                    stroke-width="4">
                                 </circle>
                                 <path class="opacity-75" fill="currentColor"
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
@@ -52,6 +55,7 @@ import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
 import GameCard from '@/components/GameCard.vue';
 import { supabase } from '../supabase';
+import { generateUsername, isUserAuthenticated } from '../utils';
 import PlayWithFriendsCard from '@/components/PlayWithFriendsCard.vue';
 export default {
     components: {
@@ -75,7 +79,12 @@ export default {
         }
     },
     methods: {
-        findMatch() {
+        isUserAuthenticated,
+        generateUsername,
+        async findMatch() {
+            if (await isUserAuthenticated() === false) {
+                this.$router.push('/login')
+            }
             this.showPlayerCard = false
             setTimeout(() => {
                 this.showFindingMatch = true
@@ -90,7 +99,8 @@ export default {
         goBack() {
             this.showFindingMatch = false
             this.showPlayWithFriends = false
-
+            // Remove roomId query parameter from the URL
+            this.$router.replace({ query: {} })
             setTimeout(() => {
                 this.showPlayerCard = true
             }, 200)
@@ -167,12 +177,45 @@ export default {
             } finally {
                 this.gameHistoryLoading = false;
             }
-        }
+        },
+        setAnonymousUserProfile() {
+            this.user = {}
+            const username = localStorage.getItem('generated_username')
+            if (username) {
+                this.user_profile = {
+                    id: null,
+                    username,
+                    avatar_url: null,
+                    wins: 0,
+                    games_played: 0,
+                    countries: null
+                }
+            } else {
+                const generated_username = generateUsername()
+                localStorage.setItem('generated_username', generated_username)
+                this.user_profile = {
+                    id: null,
+                    username: generated_username,
+                    avatar_url: null,
+                    wins: 0,
+                    games_played: 0,
+                    countries: null
+                }
+
+            }
+            
+        },
     },
     async mounted() {
         await this.getUserProfile();
         await this.getGameHistory();
         await this.getPlayersInGame();
+        if (!this.authenticated) {
+            this.setAnonymousUserProfile();
+        }
+        if (this.$route.query.roomId) {
+            this.playWithFriends();
+        }
     },
     watch: {
         loading(newVal, oldVal) {
