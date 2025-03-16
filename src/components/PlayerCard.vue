@@ -34,10 +34,10 @@
                             class="block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                             Find a match
                         </button>
-                        <button @click="playWithFriends()"
+                        <!-- <button @click="playWithFriends()"
                             class="mt-5 block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                             Play with friends
-                        </button>
+                        </button> -->
                     </div>
                 </div>
                     
