@@ -49,7 +49,12 @@
                                         d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
                                 <div class="ml-1">
-                                    Waiting for host to start the game
+                                    <div v-if="user_profile.username == players[0]?.profile.username">
+                                        Need {{ 4 - players.length }} more players to start
+                                    </div>
+                                    <div v-else>
+                                        Waiting for host to start the game
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -75,9 +80,25 @@
                     </div>
                 </div>
             </div>
+            <div v-if="players[0]?.profile.username == user_profile.username" class="px-5 mt-5" @click="startGame()">
+                <button :class="{ 'disabled': players.length < 4  || gameLoading }"
+                    class="flex items-center justify-center text-center bg-blue-600 hover:bg-blue-500 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
+                    <svg v-if="gameLoading" class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg"
+                        fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                    <div>
+                        Start Game
+                    </div>
+                </button>
+            </div>
             <div class="p-5" @click="goBack()">
                 <button
-                    class="mt-4 block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
+                    class="block text-center border border-gray-600 hover:bg-gray-800 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                     Cancel
                 </button>
             </div>
@@ -94,6 +115,7 @@ export default {
     data() {
         return {
             loading: false,
+            gameLoading: false,
             socket: null,
             showErrorConnecting: false,
             roomLink: null,
@@ -132,7 +154,7 @@ export default {
                 this.socket.on('start-game', async (gameId) => {
                     console.log('Start game')
                     this.$router.push({
-                        name: 'online-game',
+                        name: 'custom-game',
                         params: {
                             id: gameId
                         }
@@ -155,6 +177,12 @@ export default {
             setTimeout(() => {
                 this.copied = false
             }, 2000)
+        },
+        startGame() {
+            this.gameLoading = true
+            this.socket.emit('start-game', {
+                roomId: this.roomId
+            })
         }
     },
     mounted() {
@@ -173,6 +201,10 @@ export default {
     }
 }
 </script>
-<style lang="">
-
+<style scope>
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
 </style>
