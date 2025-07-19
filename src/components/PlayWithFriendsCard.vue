@@ -49,7 +49,7 @@
                                         d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
                                 </svg>
                                 <div class="ml-1">
-                                    <div v-if="user_profile.username == players[0]?.profile.username">
+                                    <div v-if="user_profile.username == players[0]?.user_profile.username">
                                         Need {{ 4 - players.length }} more players to start
                                     </div>
                                     <div v-else>
@@ -63,15 +63,15 @@
                                 Room
                             </div>
                             <div v-for="(player, index) in players" class="mt-2 flex items-center">
-                                <img class="w-8 rounded-md" :src="getUserAvatar(player.profile)">
+                                <img class="w-8 rounded-md" :src="getUserAvatar(player.user_profile)">
                                 <div class="ml-2">
-                                    {{ player.profile.username }}
+                                    {{ player.user_profile.username }}
                                 </div>
                                 <div class="flex items-center ml-2 text-xs text-gray-400">
                                     <div v-if="index == 0">
                                         (host)
                                     </div>
-                                    <div class="ml-1" v-if="user_profile.username == player.profile.username">
+                                    <div class="ml-1" v-if="user_profile.username == player.user_profile.username">
                                         (me)
                                     </div>
                                 </div>
@@ -80,7 +80,7 @@
                     </div>
                 </div>
             </div>
-            <div v-if="players[0]?.profile.username == user_profile.username" class="px-5 mt-5" @click="startGame()">
+            <div v-if="players[0]?.user_profile.username == user_profile.username" class="px-5 mt-5" @click="startGame()">
                 <button :class="{ 'disabled': players.length < 4  || gameLoading }"
                     class="flex items-center justify-center text-center bg-blue-600 hover:bg-blue-500 hover:border-gray-400 text-gray-200 p-4 rounded-lg h-16 w-full text-xl font-bold">
                     <svg v-if="gameLoading" class="animate-spin h-5 w-5 text-white mr-2" xmlns="http://www.w3.org/2000/svg"
@@ -141,7 +141,7 @@ export default {
                     console.log('Connected to server')
                     this.socket.emit('join-room', {
                         roomId: this.roomId,
-                        username: this.user_profile.username
+                        user_profile: this.user_profile
                     })
                 })
                 this.socket.on('disconnect', async () => {

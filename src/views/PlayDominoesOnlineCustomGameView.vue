@@ -30,6 +30,7 @@ import PNotification from '../components/PlayerNotification.vue'
 import GNotification from '../components/GameNotification.vue'
 import WinnerNotification from '../components/WinnerNotification.vue'
 import GameBlockedNotification from '../components/GameBlockedNotification.vue';
+import { isUserAuthenticated } from '../utils';
 export default {
   components: {
     Board, Player, PNotification, GNotification, GameBlockedNotification, WinnerNotification
@@ -56,6 +57,21 @@ export default {
     }
   },
   methods: {
+    loadCurrentUser() {
+      const user = JSON.parse(localStorage.getItem('generated_user'));
+      if (user) {
+        this.user = user;
+        this.user_profile = user.user_profile;
+        this.players.push({
+          id: user.id,
+          username: user.user_profile.username,
+          flag_url: null,
+          country_name: null,
+          avatar_url: null,
+          hand: [],
+        });
+      }
+    },
     async loadGameData() {
       const gameId = this.$route.params.id
       if (gameId == null) {
@@ -63,11 +79,6 @@ export default {
       }
       try {
         await this.initPresence()
-
-        this.loadUser(user[0])
-
-        await this.assignPlayerIds()
-
       } catch (error) {
         console.error(error)
       } finally {
@@ -92,15 +103,17 @@ export default {
         })
       })
       this.socket.on('connectedPlayers', async (players) => {
-        console.log('Connected players')
-        this.players = JSON.parse(players)
+        for (let i = 0; i < players.length; i++) {
+          this.loadUser(players[i])
+        }
+        await this.assignPlayerIds()
       })
       this.socket.on('disconnect', async () => {
         console.log('Disconnected from server')
       })
       this.socket.on('playerDisconnected', async (playerId) => {
         const player = this.players.find(p => p.id === playerId)
-        const message = `${player.username} has disconnected from the game.`
+        const message = `${player.user_profile} has disconnected from the game.`
         const notification = {
           player: player,
           message
@@ -111,10 +124,11 @@ export default {
         await this.animateDealHands()
       })
       this.socket.on('hand', async (hand) => {
+        console.log('Received hand:', hand)
         this.hand = hand
       })
-      this.socket.on('startingPlayer', async (playerId) => {
-        const player = this.players.find(p => p.id === playerId)
+      this.socket.on('startingPlayer', async (playerName) => {
+        const player = this.players.find(p => p.username === playerName)
         this.currentPlayerTurn = player
         const message = `Double 6 pose, ${player.username} starts`
         const notification = {
@@ -130,12 +144,12 @@ export default {
         this.players.find(p => p.id === player).hand.pop()
         this.$refs.board.placeDomino(domino, position)
       })
-      this.socket.on('nextPlayerTurn', async (playerId) => {
-        const player = this.players.find(p => p.id === playerId)
+      this.socket.on('nextPlayerTurn', async (playerName) => {
+        const player = this.players.find(p => p.username === playerName)
         this.currentPlayerTurn = player
       })
-      this.socket.on('playerIntervalPassed', async (playerId) => {
-        const player = this.players.find(p => p.id === playerId)
+      this.socket.on('playerIntervalPassed', async (playerName) => {
+        const player = this.players.find(p => p.username === playerName)
         const message = `${player.username} took too long and has passed their turn.`
         const notification = {
           player: player,
@@ -143,8 +157,8 @@ export default {
         }
         this.pnotifications.push(notification)
       })
-      this.socket.on('playerCannotPlay', async (playerId) => {
-        const player = this.players.find(p => p.id === playerId)
+      this.socket.on('playerCannotPlay', async (playerName) => {
+        const player = this.players.find(p => p.username === playerName)
         const message = `${player.username} cannot play and has passed their turn.`
         const notification = {
           player: player,
@@ -168,65 +182,26 @@ export default {
         this.showWinnerModal = true;
       })
     },
-    async getUserProfile() {
-      try {
-        this.user = (await supabase.auth.getSession()).data.session.user;
-        const { data, error, status } = await supabase
-          .from('profiles')
-          .select(`id, username, avatar_url, wins, games_played,
-                    countries (
-                        id,
-                        name,
-                        flag_url
-                    )`)
-          .eq('id', this.user.id)
-          .single();
-
-        if (error && status !== 406) throw error
-        this.user_profile = data;
-
-        if (data.avatar_url) {
-          let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
-          if (err) throw err
-          if (file) {
-            const url = URL.createObjectURL(file)
-            this.user_profile.avatar_url = url
-          }
-        }
-
-      } catch (error) {
-        console.log(error.message)
-      } finally {
-        if (this.user) {
-          this.authenticated = true;
-        } else {
-          this.user_profile = {
-            username: localStorage.getItem('generated_username')
-          }
-        }
-      }
-    },
     async assignPlayerIds() {
       // First put the current user at the bottom of the list
-      const user = (await supabase.auth.getSession()).data.session.user;
-      const player = this.players.find(p => p.id === user.id)
+      const player = this.players.find(p => p.id === this.user.id)
       if (player) {
         const playerIndex = this.players.indexOf(player)
         // Perform a rotation of the players array
         this.players = [...this.players.slice(playerIndex), ...this.players.slice(0, playerIndex)];
-        console.log(this.players)
         for (let i = 0; i < this.players.length; i++) {
           this.players[i].nr = i + 1
         }
       }
     },
+
     loadUser(user) {
       const player = {
         id: user.id,
-        username: user.username,
-        flag_url: user.countries?.flag_url,
-        country_name: user.countries?.name,
-        avatar_url: user.avatar_url,
+        username: user.user_profile.username,
+        flag_url: null,
+        country_name: null,
+        avatar_url: null,
         hand: [],
       }
       this.players.push(player)
@@ -267,7 +242,7 @@ export default {
       await new Promise(resolve => setTimeout(resolve, 300))
       for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 4; j++) {
-          const user = (await supabase.auth.getSession()).data.session.user;
+          const user = this.user;
           if (this.players[j].id === user.id) {
             const randomIndex = indexOptions.pop();
             this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
@@ -293,7 +268,6 @@ export default {
       const dominoInHand = this.players[0].hand.find(x => x.top === domino.top && x.bottom === domino.bottom || x.top === domino.bottom && x.bottom === domino.top);
       this.players[0].hand = this.players[0].hand.filter(d => d !== dominoInHand);
       // Send the domino to the server
-      console.log(selectedPosition)
       const data = {
         domino: dominoInHand,
         position: selectedPosition
@@ -309,9 +283,8 @@ export default {
   async mounted() {
     document.body.classList.add('overflow-hidden');
     document.getElementById('app').classList.add('overflow-hidden');
-    await this.getUserProfile();
-    await this.initPresence();
-    // await this.loadGameData()
+    this.loadCurrentUser();
+    await this.loadGameData()
     window.addEventListener('beforeunload', this.handleBeforeUnload);
   },
   async beforeUnmount() {

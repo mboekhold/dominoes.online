@@ -55,7 +55,7 @@ import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
 import GameCard from '@/components/GameCard.vue';
 import { supabase } from '../supabase';
-import { generateUsername, isUserAuthenticated } from '../utils';
+import { generateUser, isUserAuthenticated } from '../utils';
 import PlayWithFriendsCard from '@/components/PlayWithFriendsCard.vue';
 export default {
     components: {
@@ -80,7 +80,7 @@ export default {
     },
     methods: {
         isUserAuthenticated,
-        generateUsername,
+        generateUser,
         async findMatch() {
             if (await isUserAuthenticated() === false) {
                 this.$router.push('/login')
@@ -180,30 +180,26 @@ export default {
         },
         setAnonymousUserProfile() {
             this.user = {}
-            const username = localStorage.getItem('generated_username')
-            if (username) {
-                this.user_profile = {
-                    id: null,
-                    username,
-                    avatar_url: null,
-                    wins: 0,
-                    games_played: 0,
-                    countries: null
-                }
+            const user = JSON.parse(localStorage.getItem('generated_user'))
+            if (user) {
+                this.user = user
+                this.user_profile = user.user_profile
             } else {
-                const generated_username = generateUsername()
-                localStorage.setItem('generated_username', generated_username)
+                const generated_user = generateUser()
+                localStorage.setItem('generated_user', JSON.stringify(generated_user))
+                this.user = generated_user;
                 this.user_profile = {
-                    id: null,
-                    username: generated_username,
-                    avatar_url: null,
-                    wins: 0,
-                    games_played: 0,
-                    countries: null
+                    id: generated_user.id,
+                    user_profile: {
+                        username: generated_user.user_profile.username,
+                        avatar_url: null,
+                        wins: 0,
+                        games_played: 0,
+                        countries: null
+                    }
                 }
-
             }
-            
+
         },
     },
     async mounted() {

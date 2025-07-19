@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="player.nr === 1" :class="'playerBoxWrapper' + player.nr">
+        <div v-if="player?.nr === 1" :class="'playerBoxWrapper' + player.nr">
             <div class="w-screen sm:w-[530px] sm:pt-5 sm:pr-5 sm:pb-5 flex relative" :class="'playerBox' + player.nr">
                 <div :class="turn ? 'block' : 'hidden'" :ref="'turn' + player.nr"
                     class="absolute bottom-1 w-full h-1 bg-orange-400"></div>
@@ -17,7 +17,7 @@
                     :playerId="player.nr" class="flex" />
             </div>
         </div>
-        <div v-else-if="player.nr === 2" :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player?.nr === 2" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:right-0">
                 <div class="mb-4 sm:mb-6 mt-2">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -33,7 +33,7 @@
                     :playerId="player.nr" />
             </div>
         </div>
-        <div v-else-if="player.nr === 3" :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player?.nr === 3" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-row sm:top-0">
                 <div class="ml-2 mr-6 mb-1">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
@@ -48,7 +48,7 @@
                     :playerId="player.nr" />
             </div>
         </div>
-        <div v-else-if="player.nr === 4" :class="'playerBoxWrapper' + player.nr">
+        <div v-else-if="player?.nr === 4" :class="'playerBoxWrapper' + player.nr">
             <div :class="'playerBox' + player.nr" class="flex flex-col sm:left-0">
                 <div class="rounded-md mt-2 mb-4 sm:mb-5">
                     <img :src="getUserAvatar(player)" class="w-8 h-8 lg:w-12 lg:h-12 rounded-md border border-gray-700">
