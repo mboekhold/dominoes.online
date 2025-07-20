@@ -62,14 +62,14 @@ export default {
       if (user) {
         this.user = user;
         this.user_profile = user.user_profile;
-        this.players.push({
-          id: user.id,
-          username: user.user_profile.username,
-          flag_url: null,
-          country_name: null,
-          avatar_url: null,
-          hand: [],
-        });
+        // this.players.push({
+        //   id: user.id,
+        //   username: user.user_profile.username,
+        //   flag_url: null,
+        //   country_name: null,
+        //   avatar_url: null,
+        //   hand: [],
+        // });
       }
     },
     async loadGameData() {
@@ -141,7 +141,7 @@ export default {
         const player = data.player
         const domino = data.domino
         const position = data.position
-        this.players.find(p => p.id === player).hand.pop()
+        this.players.find(p => p.username === player.user_profile.username).hand.pop()
         this.$refs.board.placeDomino(domino, position)
       })
       this.socket.on('nextPlayerTurn', async (playerName) => {
@@ -184,12 +184,17 @@ export default {
     },
     async assignPlayerIds() {
       // First put the current user at the bottom of the list
-      const player = this.players.find(p => p.id === this.user.id)
+      const player = this.players.find(p => p.id === this.user_profile.id)
+      console.log('Current player:', player)
       if (player) {
         const playerIndex = this.players.indexOf(player)
+        console.log('Current player index:', playerIndex)
         // Perform a rotation of the players array
         this.players = [...this.players.slice(playerIndex), ...this.players.slice(0, playerIndex)];
+        console.log('Players after rotation:', this.players)
         for (let i = 0; i < this.players.length; i++) {
+          
+          console.log('Assigning player nr:', i + 1, this.players[i])
           this.players[i].nr = i + 1
         }
       }
@@ -197,7 +202,7 @@ export default {
 
     loadUser(user) {
       const player = {
-        id: user.id,
+        id: user.user_profile.id,
         username: user.user_profile.username,
         flag_url: null,
         country_name: null,
@@ -242,7 +247,7 @@ export default {
       await new Promise(resolve => setTimeout(resolve, 300))
       for (let i = 0; i < 7; i++) {
         for (let j = 0; j < 4; j++) {
-          const user = this.user;
+          const user = this.user_profile;
           if (this.players[j].id === user.id) {
             const randomIndex = indexOptions.pop();
             this.animateDominoFromDeckToPlayer(randomIndex, this.players[j]);
