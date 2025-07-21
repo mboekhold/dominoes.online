@@ -190,13 +190,11 @@ export default {
                 this.user = generated_user;
                 this.user_profile = {
                     id: generated_user.id,
-                    user_profile: {
-                        username: generated_user.user_profile.username,
-                        avatar_url: null,
-                        wins: 0,
-                        games_played: 0,
-                        countries: null
-                    }
+                    username: generated_user.user_profile.username,
+                    avatar_url: null,
+                    wins: 0,
+                    games_played: 0,
+                    countries: null
                 }
             }
 

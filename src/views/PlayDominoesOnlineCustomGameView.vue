@@ -57,19 +57,62 @@ export default {
     }
   },
   methods: {
-    loadCurrentUser() {
-      const user = JSON.parse(localStorage.getItem('generated_user'));
-      if (user) {
-        this.user = user;
-        this.user_profile = user.user_profile;
-        // this.players.push({
-        //   id: user.id,
-        //   username: user.user_profile.username,
-        //   flag_url: null,
-        //   country_name: null,
-        //   avatar_url: null,
-        //   hand: [],
-        // });
+    async getUserProfile() {
+      this.profileLoading = true;
+      this.gameHistoryLoading = true;
+      try {
+        this.user = (await supabase.auth.getSession()).data.session.user;
+        const { data, error, status } = await supabase
+          .from('profiles')
+          .select(`id, username, avatar_url, wins, games_played,
+                    countries (
+                        id,
+                        name,
+                        flag_url
+                    )`)
+          .eq('id', this.user.id)
+          .single();
+
+        if (error && status !== 406) throw error
+        this.user_profile = data;
+
+        if (data.avatar_url) {
+          let { data: file, error: err } = await supabase.storage.from('avatars').download(data.avatar_url)
+          if (err) throw err
+          if (file) {
+            const url = URL.createObjectURL(file)
+            this.user_profile.avatar_url = url
+          }
+        }
+
+      } catch (error) {
+        console.log(error.message)
+      } finally {
+        if (this.user) {
+          this.authenticated = true;
+        }
+        this.profileLoading = false;
+      }
+    },
+    async loadCurrentUser() {
+      const is_authenticated = await isUserAuthenticated();
+      if (!is_authenticated) {
+        const user = JSON.parse(localStorage.getItem('generated_user'));
+        if (user) {
+          this.user = user;
+          this.user_profile = user.user_profile;
+          // this.players.push({
+          //   id: user.id,
+          //   username: user.user_profile.username,
+          //   flag_url: null,
+          //   country_name: null,
+          //   avatar_url: null,
+          //   hand: [],
+          // });
+        }
+      }
+      else {
+        await this.getUserProfile();
       }
     },
     async loadGameData() {
@@ -111,9 +154,9 @@ export default {
       this.socket.on('disconnect', async () => {
         console.log('Disconnected from server')
       })
-      this.socket.on('playerDisconnected', async (playerId) => {
-        const player = this.players.find(p => p.id === playerId)
-        const message = `${player.user_profile} has disconnected from the game.`
+      this.socket.on('playerDisconnected', async (username) => {
+        const player = this.players.find(p => p.username === username)
+        const message = `${username} has disconnected from the game.`
         const notification = {
           player: player,
           message
@@ -177,7 +220,7 @@ export default {
         this.showGameBlockedModal = true
       })
       this.socket.on('playerWon', async (player) => {
-        const winner = this.players.find(p => p.id === player)
+        const winner = this.players.find(p => p.username === player)
         this.winner = winner;
         this.showWinnerModal = true;
       })
@@ -193,7 +236,7 @@ export default {
         this.players = [...this.players.slice(playerIndex), ...this.players.slice(0, playerIndex)];
         console.log('Players after rotation:', this.players)
         for (let i = 0; i < this.players.length; i++) {
-          
+
           console.log('Assigning player nr:', i + 1, this.players[i])
           this.players[i].nr = i + 1
         }
@@ -288,7 +331,7 @@ export default {
   async mounted() {
     document.body.classList.add('overflow-hidden');
     document.getElementById('app').classList.add('overflow-hidden');
-    this.loadCurrentUser();
+    await this.loadCurrentUser();
     await this.loadGameData()
     window.addEventListener('beforeunload', this.handleBeforeUnload);
   },
