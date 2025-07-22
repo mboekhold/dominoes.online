@@ -11,9 +11,17 @@ module.exports = {
         'night-dark-2': '#1b1b24',
         // Buttons, Inputs, etc.
         'night-dark-3': '#22222b',
+      },
+      keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
+      },
+      animation: {
+        wiggle: 'wiggle 1s ease-in-out 7',
       }
     },
-  },
-  plugins: [],
+    plugins: [],
+  }
 }
-

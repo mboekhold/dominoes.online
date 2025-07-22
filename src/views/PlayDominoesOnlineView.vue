@@ -3,7 +3,7 @@
     <div class="lg:ml-20 p-2 mt-10 lg:px-48 xl:px-64 py-5">
         <div class="relative text-gray-200">
             <div class="flex flex-col md:flex-row gap-10">
-                <div class="w-full md:max-w-96 h-[500px] bg-night-dark-2 rounded-lg overflow-hidden relative">
+                <div class="w-full md:max-w-96 min-h-[500px] bg-night-dark-2 rounded-lg overflow-hidden relative">
                     <Transition>
                         <PlayerCard :loading="profileLoading" :user="user" :user_profile="user_profile"
                             v-if="showPlayerCard" @find-match="findMatch()" @play-with-friends="playWithFriends()" />
@@ -16,7 +16,7 @@
                             @go-back="goBack()" />
                     </Transition>
                 </div>
-                <div class="w-full max-w-[800px] min-h-[500px] relative">
+                <div class="w-full max-w-[800px] h-fit min-h-[500px] relative">
                     <div class="w-full h-full bg-night-dark-2 rounded-lg">
                         <div v-if="gameHistoryLoading"
                             class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
@@ -55,7 +55,7 @@ import PlayerCard from '@/components/PlayerCard.vue';
 import FindingMatchCard from '@/components/FindingMatchCard.vue';
 import GameCard from '@/components/GameCard.vue';
 import { supabase } from '../supabase';
-import { generateUsername, isUserAuthenticated } from '../utils';
+import { generateUser, isUserAuthenticated } from '../utils';
 import PlayWithFriendsCard from '@/components/PlayWithFriendsCard.vue';
 export default {
     components: {
@@ -80,7 +80,7 @@ export default {
     },
     methods: {
         isUserAuthenticated,
-        generateUsername,
+        generateUser,
         async findMatch() {
             if (await isUserAuthenticated() === false) {
                 this.$router.push('/login')
@@ -180,30 +180,24 @@ export default {
         },
         setAnonymousUserProfile() {
             this.user = {}
-            const username = localStorage.getItem('generated_username')
-            if (username) {
-                this.user_profile = {
-                    id: null,
-                    username,
-                    avatar_url: null,
-                    wins: 0,
-                    games_played: 0,
-                    countries: null
-                }
+            const user = JSON.parse(localStorage.getItem('generated_user'))
+            if (user) {
+                this.user = user
+                this.user_profile = user.user_profile
             } else {
-                const generated_username = generateUsername()
-                localStorage.setItem('generated_username', generated_username)
+                const generated_user = generateUser()
+                localStorage.setItem('generated_user', JSON.stringify(generated_user))
+                this.user = generated_user;
                 this.user_profile = {
-                    id: null,
-                    username: generated_username,
+                    id: generated_user.id,
+                    username: generated_user.user_profile.username,
                     avatar_url: null,
                     wins: 0,
                     games_played: 0,
                     countries: null
                 }
-
             }
-            
+
         },
     },
     async mounted() {

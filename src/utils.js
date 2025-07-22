@@ -8,7 +8,7 @@ export function didUserWinGame(game, user) {
     return game.games.winner === user.id
 }
 
-export function generateUsername() {
+export function generateUser() {
     const adjectives = ["Swift", "Brave", "Clever", "Mysterious", "Silent", "Loyal", "Witty", "Fierce"];
     const nouns = ["Tiger", "Panda", "Storm", "Lantern", "Wolf", "Falcon", "Shadow", "Phoenix"];
 
@@ -16,7 +16,16 @@ export function generateUsername() {
     const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
     const randomNumber = Math.floor(100 + Math.random() * 900); // 3-digit number
 
-    return `${randomAdjective}${randomNoun}${randomNumber}`;
+    const userId = Math.random().toString(36).substring(2, 15); // Random alphanumeric string
+    const profileId = Math.random().toString(36).substring(2, 15); // Random alphanumeric string
+    return {
+        id: userId,
+        user_profile: {
+            id: profileId,
+            username: `${randomAdjective}${randomNoun}${randomNumber}`,
+            avatar_url: null,
+        }
+    };
 }
 
 export async function isUserAuthenticated() {
