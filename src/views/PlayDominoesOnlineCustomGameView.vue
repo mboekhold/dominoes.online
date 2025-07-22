@@ -210,9 +210,9 @@ export default {
         this.pnotifications.push(notification)
       })
       this.socket.on('gameBlocked', async (data) => {
-        const winner = this.players.find(p => p.id === data.winner)
+        const winner = this.players.find(p => p.username === data.winner)
         for (let i = 0; i < data.players.length; i++) {
-          const player = this.players.find(p => p.id === data.players[i].id)
+          const player = this.players.find(p => p.username === data.players[i].user_profile.username)
           player.hand = data.players[i].hand
         }
         this.winner = winner
