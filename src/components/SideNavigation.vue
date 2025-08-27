@@ -1,7 +1,7 @@
 <template>
     <div @mouseover="expand = true" @mouseleave="expand = false" :class="{ 'w-20': !expand, 'w-64': expand }"
         class="fixed h-full text-gray-400 bg-night-dark-2 flex flex-col transition-all z-10">
-        <div>
+        <div class="border-b border-gray-700 pb-2">
             <div class="px-4 pt-6 pb-4 hover:cursor-pointer flex" @click="goHome()">
                 <div>
                     <img class="min-w-12 w-12" src="@/assets/logo.png" alt="logo">
@@ -17,8 +17,8 @@
                     </div>
                 </div>
             </div>
-            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goHome()">
-                <div>
+            <div class="mt-4 px-6 py-4 flex items-center hover:cursor-pointer hover:text-white hover:bg-gray-700" @click="goHome()">
+                <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7 ">
                         <path
                             d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
@@ -30,9 +30,9 @@
                     Home
                 </div>
             </div>
-            <div class="mt-4 px-6 py-4 flex hover:cursor-pointer hover:text-white hover:bg-gray-700"
+            <div class="mt-4 px-6 py-4 flex items-center hover:cursor-pointer hover:text-white hover:bg-gray-700"
                 @click="goLeaderboard()">
-                <div>
+                <div class="flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-7 w-7">
                         <path fill-rule="evenodd"
                             d="M5.166 2.621v.858c-1.035.148-2.059.33-3.071.543a.75.75 0 0 0-.584.859 6.753 6.753 0 0 0 6.138 5.6 6.73 6.73 0 0 0 2.743 1.346A6.707 6.707 0 0 1 9.279 15H8.54c-1.036 0-1.875.84-1.875 1.875V19.5h-.75a2.25 2.25 0 0 0-2.25 2.25c0 .414.336.75.75.75h15a.75.75 0 0 0 .75-.75 2.25 2.25 0 0 0-2.25-2.25h-.75v-2.625c0-1.036-.84-1.875-1.875-1.875h-.739a6.706 6.706 0 0 1-1.112-3.173 6.73 6.73 0 0 0 2.743-1.347 6.753 6.753 0 0 0 6.139-5.6.75.75 0 0 0-.585-.858 47.077 47.077 0 0 0-3.07-.543V2.62a.75.75 0 0 0-.658-.744 49.22 49.22 0 0 0-6.093-.377c-2.063 0-4.096.128-6.093.377a.75.75 0 0 0-.657.744Zm0 2.629c0 1.196.312 2.32.857 3.294A5.266 5.266 0 0 1 3.16 5.337a45.6 45.6 0 0 1 2.006-.343v.256Zm13.5 0v-.256c.674.1 1.343.214 2.006.343a5.265 5.265 0 0 1-2.863 3.207 6.72 6.72 0 0 0 .857-3.294Z"
@@ -41,6 +41,21 @@
                 </div>
                 <div class="ml-3" :class="{ 'hidden': !showText }">
                     Leaderboard
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="mt-2 px-6 py-4 flex items-center hover:cursor-pointer hover:text-white hover:bg-gray-700"
+                @click="goToDiscord()">
+                <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em"
+                        viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M18.942 5.555a16.3 16.3 0 0 0-4.126-1.296a12 12 0 0 0-.529 1.097a15.2 15.2 0 0 0-4.573 0A12 12 0 0 0 9.18 4.26c-1.448.25-2.834.692-4.129 1.3c-2.611 3.946-3.319 7.794-2.965 11.587a16.5 16.5 0 0 0 5.06 2.593q.613-.841 1.084-1.785a10.7 10.7 0 0 1-1.706-.83q.215-.16.418-.331c3.29 1.539 6.866 1.539 10.118 0q.206.171.418.33a10.6 10.6 0 0 1-1.71.833a13 13 0 0 0 1.084 1.785a16.5 16.5 0 0 0 5.064-2.595c.415-4.398-.71-8.21-2.973-11.59M8.678 14.813c-.988 0-1.798-.922-1.798-2.045s.792-2.047 1.798-2.047c1.005 0 1.815.922 1.798 2.047c.001 1.123-.793 2.045-1.798 2.045m6.644 0c-.988 0-1.798-.922-1.798-2.045s.793-2.047 1.798-2.047c1.006 0 1.816.922 1.798 2.047c0 1.123-.793 2.045-1.798 2.045" />
+                    </svg>
+                </div>
+                <div class="ml-3" :class="{ 'hidden': !showText }">
+                    Discord Server
                 </div>
             </div>
         </div>
@@ -129,6 +144,9 @@ export default {
         },
         goProfile() {
             this.$router.push({ name: 'profile' });
+        },
+        goToDiscord() {
+            window.open("https://discord.gg/CC3PFHJSzZ", "_blank");
         },
         async getUserProfile() {
             // check if there is a session..

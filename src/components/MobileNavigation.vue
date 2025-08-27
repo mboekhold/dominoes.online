@@ -19,7 +19,7 @@
         <div ref="sidebar"
             class="fixed top-0 h-full w-64 text-gray-400 bg-night-dark-2 flex flex-col z-10 transition-all"
             :class="{ 'translate-x-0': sideBarOpen, '-translate-x-64': !sideBarOpen }">
-            <div>
+            <div class="pb-2 border-b border-gray-700">
                 <div class="px-4 pt-6 pb-4 flex">
                     <div>
                         <img class="min-w-12 w-12" src="@/assets/logo.png" alt="logo">
@@ -61,6 +61,20 @@
                     </div>
                     <div class="ml-3">
                         Leaderboard
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div class="mt-2 px-6 py-4 flex items-center hover:cursor-pointer hover:text-white hover:bg-gray-700"
+                    @click="goToDiscord()">
+                    <div class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M18.942 5.555a16.3 16.3 0 0 0-4.126-1.296a12 12 0 0 0-.529 1.097a15.2 15.2 0 0 0-4.573 0A12 12 0 0 0 9.18 4.26c-1.448.25-2.834.692-4.129 1.3c-2.611 3.946-3.319 7.794-2.965 11.587a16.5 16.5 0 0 0 5.06 2.593q.613-.841 1.084-1.785a10.7 10.7 0 0 1-1.706-.83q.215-.16.418-.331c3.29 1.539 6.866 1.539 10.118 0q.206.171.418.33a10.6 10.6 0 0 1-1.71.833a13 13 0 0 0 1.084 1.785a16.5 16.5 0 0 0 5.064-2.595c.415-4.398-.71-8.21-2.973-11.59M8.678 14.813c-.988 0-1.798-.922-1.798-2.045s.792-2.047 1.798-2.047c1.005 0 1.815.922 1.798 2.047c.001 1.123-.793 2.045-1.798 2.045m6.644 0c-.988 0-1.798-.922-1.798-2.045s.793-2.047 1.798-2.047c1.006 0 1.816.922 1.798 2.047c0 1.123-.793 2.045-1.798 2.045" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        Discord Server
                     </div>
                 </div>
             </div>
@@ -151,6 +165,9 @@ export default {
         goProfile() {
             this.$router.push({ name: 'profile' });
             this.toggleSideBar();
+        },
+        goToDiscord() {
+            window.open("https://discord.gg/CC3PFHJSzZ", "_blank");
         },
         handleClickOutside(event) {
             const sidebar = this.$refs.sidebar;
